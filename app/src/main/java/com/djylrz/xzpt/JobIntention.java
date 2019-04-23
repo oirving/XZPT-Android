@@ -18,17 +18,18 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
     private EditText salary;
     private TextView checkindate;
 
-    private int checkInYear;//记录入职的出生年
-    private int checkInMonth;//月
-    private int checkInDay;//日
+    private String  checkInYear;//记录入职的出生年
+    private String checkInMonth;//月
+    private String checkInDay;//日
 
-    private String Job=null;
-    private String Location=null;
-    private String CompanyDerection=null;
-    private String Salary=null;
+    private String Job;
+    private String Location;
+    private String CompanyDerection;
+    private String Salary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pernoal_information);
 
@@ -61,9 +62,9 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
                 new DatePickerDialog(JobIntention.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        checkInYear=year;//出生年
-                        checkInMonth=monthOfYear+1;//出生月
-                        checkInDay=dayOfMonth;//出生日
+                        checkInYear=String.valueOf(year);//出生年
+                        checkInMonth=String.valueOf(monthOfYear+1);//出生月
+                        checkInDay=String.valueOf(dayOfMonth);//出生日
                         checkindate.setText("期望入职时间："+String.format("%d-%d-%d",year,monthOfYear+1,dayOfMonth));
                     }
                 },2019,4,20).show();
