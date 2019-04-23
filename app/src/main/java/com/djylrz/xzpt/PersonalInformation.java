@@ -40,9 +40,6 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         Button worktime = (Button) findViewById(R.id.workTime_button);
         worktime.setOnClickListener(this);
 
-        Button back = (Button)findViewById(R.id.finish_button);//取消按钮
-        back.setOnClickListener(this);
-
         Button next = (Button)findViewById(R.id.info_next_button);//下一步按钮
         next.setOnClickListener(this);
 
@@ -93,10 +90,6 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                 //下一步按钮
                 Intent intent = new Intent(PersonalInformation.this,JobIntention.class);
                 startActivity(intent);
-                break;
-            case R.id.finish_button:
-                //取消按钮
-                finish();
                 break;
 
             default:

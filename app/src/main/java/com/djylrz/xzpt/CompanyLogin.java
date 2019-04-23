@@ -38,10 +38,15 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
     public void onClick(View v) {//按钮响应事件
         switch (v.getId()) {
             case R.id.company_login_button:
-                Intent login = new Intent();//跳到新页面
-                //startActivity(login);
-                break;
-            case R.id.company_forget_password_button:
+//                if (验证成功) {
+//                    Intent login = new Intent();//跳到新页面,还没写
+//                    startActivity(login);
+//                }
+//                else {//验证失败
+//
+//                }
+
+                    case R.id.company_forget_password_button:
                 Intent forgetPassword = new Intent();//跳到忘记密码
                 //startActivity(forgetPassword);
                 break;

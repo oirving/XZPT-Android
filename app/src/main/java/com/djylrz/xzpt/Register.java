@@ -1,7 +1,9 @@
 package com.djylrz.xzpt;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +15,7 @@ public class Register extends BaseActivity implements View.OnClickListener {
     private EditText mail;//邮箱
     private EditText password;//密码
     private EditText passwordCheck;//确认密码
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +39,34 @@ public class Register extends BaseActivity implements View.OnClickListener {
         String passwordCheck=this.passwordCheck.getText().toString();
 
         if(mailChek(mail)&&passwordCheck(password,passwordCheck)) {
-            //验证通过
-            Intent intent = new Intent(Register.this,PersonalInformation.class);
-            startActivity(intent);
+            //基本验证通过
             Toast.makeText(Register.this,"已发送邮件至:"+mail,Toast.LENGTH_LONG).show();
-            //传到数据库...
+            //密码传到数据库...
             //发邮件...
+            //使用dialog接收输入验证码
+            final EditText et = new EditText(Register.this);//输入验证码
+            final String VerificationCode="12345";//可以存从接口获得的匹配验证码，暂时是假的
+
+            AlertDialog.Builder dialog = new AlertDialog.Builder(Register.this);
+            dialog.setTitle("请输入验证码");
+            dialog.setView(et);
+            dialog.setCancelable(false);
+            dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //匹配验证码
+                    if(VerificationCode.equals(et.getText().toString())) {
+                        Intent intent = new Intent(Register.this,PersonalInformation.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(Register.this,"验证码错误",Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+
+
+                }
+            });
+            dialog.show();
         }
         else if(!mailChek(mail)) {
             Toast.makeText(Register.this,"邮箱错误:"+mail,Toast.LENGTH_LONG).show();

@@ -22,10 +22,10 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
     private int checkInMonth;//月
     private int checkInDay;//日
 
-    private String Job;
-    private String Location;
-    private String CompanyDerection;
-    private String Salary;
+    private String Job=null;
+    private String Location=null;
+    private String CompanyDerection=null;
+    private String Salary=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

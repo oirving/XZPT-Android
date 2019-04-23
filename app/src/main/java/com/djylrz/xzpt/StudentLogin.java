@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class StudentLogin extends BaseActivity implements View.OnClickListener {
 
@@ -40,12 +41,19 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
     public void onClick(View v) {//按钮响应事件
         switch (v.getId()) {
             case R.id.student_login_button:
-                Intent login = new Intent();//跳到新页面,还没写
-                startActivity(login);
+//                if (验证成功) {
+//                    Intent login = new Intent();//跳到新页面,还没写
+//                    startActivity(login);
+//                }
+//                else {//验证失败
+//
+//                }
+
                 break;
             case R.id.student_forget_password_button:
-                Intent forgetPassword = new Intent();//跳到忘记密码
-                startActivity(forgetPassword);
+//                Intent forgetPassword = new Intent();//跳到忘记密码
+//                startActivity(forgetPassword);
+                Toast.makeText(StudentLogin.this,"忘记密码",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.student_register_button:
                 Intent rigister = new Intent(StudentLogin.this,Register.class);//跳到注册

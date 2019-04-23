@@ -5,6 +5,10 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,8 +18,8 @@
 
         <ImageView
             android:id="@+id/student_head_portrait"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             android:src="@drawable/fzu"
             android:layout_marginBottom="20dp"
             android:layout_gravity="center"
@@ -39,7 +43,7 @@
                 android:id="@+id/student_input_name"
                 android:layout_width="200dp"
                 android:layout_height="50dp"
-                android:hint="手机/用户名"
+                android:hint="邮箱/用户名"
                 android:maxLines="2"
                 />
 
@@ -135,5 +139,6 @@
 
     </LinearLayout>
 
+    </ScrollView>
 
 </LinearLayout>
