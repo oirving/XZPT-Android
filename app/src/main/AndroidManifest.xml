@@ -9,13 +9,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".StudentLogin"/>
+        <activity android:name=".Register" />
+        <activity android:name=".PersonalInformation" />
+        <activity android:name=".JobIntention" />
+        <activity android:name=".CompanyLogin" />
+        <activity android:name=".ActorChoose" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity"/>
     </application>
 
 </manifest>
