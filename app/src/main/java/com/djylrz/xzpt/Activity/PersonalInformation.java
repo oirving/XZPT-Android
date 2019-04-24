@@ -1,16 +1,18 @@
-package com.djylrz.xzpt;
+package com.djylrz.xzpt.Activity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.djylrz.xzpt.R;
 
 public class PersonalInformation extends BaseActivity implements View.OnClickListener {
+
+    private static final String TAG = "PersonalInformation";
 
     private EditText name;
     private TextView showBirthday;
@@ -33,7 +35,6 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pernoal_information);
-
         Button birthday = (Button) findViewById(R.id.birthday_button);//生日选择
         birthday.setOnClickListener(this);
 
@@ -46,17 +47,6 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         showBirthday = (TextView)findViewById(R.id.show_birthday);
         showWorkTime = (TextView)findViewById(R.id.show_worktime);
 
-        name = (EditText)findViewById(R.id.info_name);
-        Name = name.getText().toString();//名字
-
-        education = (EditText)findViewById(R.id.info_education);
-        Education = education.getText().toString();//学历
-
-        school = (EditText)findViewById(R.id.info_school);
-        School = school.getText().toString();//学校
-
-        major = (EditText)findViewById(R.id.info_major);
-        Major = major.getText().toString();//专业
     }
 
     @Override
@@ -88,7 +78,22 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.info_next_button:
                 //下一步按钮
-                Intent intent = new Intent(PersonalInformation.this,JobIntention.class);
+                //点击下一步按钮之后再获取信息
+                name = (EditText)findViewById(R.id.info_name);
+                education = (EditText)findViewById(R.id.info_education);
+
+                school = (EditText)findViewById(R.id.info_school);
+
+                major = (EditText)findViewById(R.id.info_major);
+
+
+                Major = major.getText().toString();//专业
+                Name = name.getText().toString();//名字
+                Education = education.getText().toString();//学历
+                School = school.getText().toString();//学校
+                Intent intent = new Intent(PersonalInformation.this, MainActivity.class);
+                //传递参数
+                //todo：把当前获取的所有个人信息传递到JobIntention.java—to欧文
                 startActivity(intent);
                 break;
 

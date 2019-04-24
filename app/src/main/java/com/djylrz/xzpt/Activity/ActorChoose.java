@@ -1,12 +1,11 @@
-package com.djylrz.xzpt;
+package com.djylrz.xzpt.Activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import com.djylrz.xzpt.R;
 
 
 public class ActorChoose extends BaseActivity implements View.OnClickListener{
@@ -29,12 +28,12 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.choose_student:
-                Intent student = new Intent(ActorChoose.this,StudentLogin.class);
+                Intent student = new Intent(ActorChoose.this, StudentLogin.class);
                 startActivity(student);
                 Toast.makeText(ActorChoose.this,"学生用户",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.choose_company:
-                Intent company = new Intent(ActorChoose.this,CompanyLogin.class);
+                Intent company = new Intent(ActorChoose.this, CompanyLogin.class);
                 startActivity(company);
                 Toast.makeText(ActorChoose.this,"企业用户",Toast.LENGTH_SHORT).show();
                 break;
