@@ -1,16 +1,14 @@
-package com.djylrz.xzpt;
+package com.djylrz.xzpt.Activity;
 
 import android.app.DatePickerDialog;
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.*;
+import com.djylrz.xzpt.R;
 
 public class JobIntention extends BaseActivity implements View.OnClickListener{
+
+    private static final String TAG = "JobIntention";
 
     private EditText job;
     private EditText location;
@@ -32,7 +30,6 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pernoal_information);
-
         Button back = (Button)findViewById(R.id.job_intention_finish_button);//取消按钮
         back.setOnClickListener(this);
 
@@ -58,7 +55,7 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.checkin_date_button:
-                //获取生日
+                //获取入职时间
                 new DatePickerDialog(JobIntention.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -76,14 +73,14 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
                 break;
             case R.id.info_complete_button:
                 //下一步按钮
-                //下个页面还没写
-                Intent intent = new Intent();
-                startActivity(intent);
+                //todo：把当前获取的个人信息和上个界面的信息收集，完成个人信息填写——to小榕
+
                 break;
             default:
                 break;
         }
     }
+
 }
 
 
