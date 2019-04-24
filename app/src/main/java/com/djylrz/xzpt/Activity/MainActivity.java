@@ -1,7 +1,8 @@
-package com.djylrz.xzpt;
+package com.djylrz.xzpt.Activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import com.djylrz.xzpt.R;
 
 public class MainActivity extends AppCompatActivity {
 
