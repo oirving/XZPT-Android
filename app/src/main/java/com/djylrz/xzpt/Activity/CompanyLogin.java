@@ -49,7 +49,8 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View v) {//按钮响应事件
+    public void onClick(View v) {
+        //按钮响应事件
         switch (v.getId()) {
             case R.id.company_login_button:
                 new LoginAsyncTask().execute();
@@ -116,6 +117,7 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
                 switch (responseJSON.getString(PostParameterName.RESPOND_RESULTCODE)){
                     case "200":{
                         //TODO：已经验证企业用户名密码正确，请在下面实现企业用户登录成功后的界面跳转——to欧文
+                        //企业登录成功界面暂无
                         Log.d(TAG, "onPostExecute: 企业用户登录成功！");
                     }break;
                     case "2008":{

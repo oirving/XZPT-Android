@@ -120,6 +120,8 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
                 switch (responseJSON.getString(PostParameterName.RESPOND_RESULTCODE)){
                     case "200":{
                         //TODO：已经验证学生用户名密码正确，请在下面实现学生登录成功后的界面跳转——to欧文
+                        //Done
+                        Intent intent = new Intent(StudentLogin.this,MainActivity.class);
                         Log.d(TAG, "postLogin: 学生用户登录成功！");
                     }break;
                     case "2008":{

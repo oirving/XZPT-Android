@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="10dp"
+    android:background="@drawable/rectangle_style"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <Button
+            android:id="@+id/resume_state_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="通过"
+            android:textSize="30dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <ImageView
+                android:id="@+id/resume_edit_imageview"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="right"
+                android:src="@drawable/edit"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/resume"
+            />
+
+        <Button
+            android:id="@+id/resume_export_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_style"
+            android:layout_gravity="center"
+            android:text="导出"
+            android:textSize="30dp"
+            />
+
+        <TextView
+            android:id="@+id/resume_position_textview"
+            android:layout_marginTop="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="安卓工程师"
+            android:textSize="30dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            >
+            <TextView
+                android:id="@+id/resume_username_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="小李"
+                android:textSize="30dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/resume_time_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1周前"
+                    android:textSize="30dp"
+                    android:layout_gravity="right"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
