@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,8 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.djylrz.xzpt.Activity.MainActivity;
+import com.djylrz.xzpt.Activity.PersonalInformation;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.utils.RecyclerDivider;
 import com.djylrz.xzpt.utils.UserInfoOptionAdapter;
@@ -19,7 +23,7 @@ import com.djylrz.xzpt.utils.UserSelector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentUser extends Fragment {
+public class FragmentUser extends Fragment implements View.OnClickListener{
 
     private RecyclerView userOption;
     private UserInfoOptionAdapter adapter;
@@ -44,6 +48,8 @@ public class FragmentUser extends Fragment {
         userSelectorList.add(help);
 
         View view = inflater.inflate(R.layout.fragment5_user, container, false);
+        Button userInfoButton = (Button) view.findViewById(R.id.perfect_info_button);
+        userInfoButton.setOnClickListener(this);
         userOption = (RecyclerView) view.findViewById(R.id.user_option_list);
         linearLayoutManager =new LinearLayoutManager(getContext());
         adapter = new UserInfoOptionAdapter(userSelectorList);
@@ -51,5 +57,17 @@ public class FragmentUser extends Fragment {
         userOption.setLayoutManager(linearLayoutManager);
         userOption.addItemDecoration (new RecyclerDivider(getContext(), LinearLayoutManager.HORIZONTAL, 3,  R.color.colorDark));
         return view;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.perfect_info_button:
+                Intent intent = new Intent(getContext(), PersonalInformation.class);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
     }
 }

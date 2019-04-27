@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.*;
 import com.djylrz.xzpt.R;
 
+import static com.djylrz.xzpt.R.id.checkin_date_button;
+
 public class JobIntention extends BaseActivity implements View.OnClickListener{
 
     private static final String TAG = "JobIntention";
@@ -14,11 +16,11 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
     private EditText location;
     private EditText companyDerection;
     private EditText salary;
-    private TextView checkindate;
+    private TextView checkinDate;
 
-    private String  checkInYear;//记录入职的出生年
-    private String checkInMonth;//月
-    private String checkInDay;//日
+    private int checkInYear;//记录入职的出生年
+    private int checkInMonth;//月
+    private int checkInDay;//日
 
     private String Job;
     private String Location;
@@ -37,7 +39,10 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
         Button next = (Button)findViewById(R.id.info_complete_button);//完成按钮
         next.setOnClickListener(this);
 
-        checkindate = (TextView)findViewById(R.id.show_checkin_date);
+        Button checkinDateButton = (Button) findViewById(R.id.checkin_date_button);//日期选择
+        checkinDateButton.setOnClickListener(this);
+
+        checkinDate = (TextView)findViewById(R.id.show_checkin_date);
 
         job = (EditText)findViewById(R.id.info_job);
         Job = job.getText().toString();//期望职位
@@ -60,12 +65,12 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
                 new DatePickerDialog(JobIntention.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        checkInYear=String.valueOf(year);//出生年
-                        checkInMonth=String.valueOf(monthOfYear+1);//出生月
-                        checkInDay=String.valueOf(dayOfMonth);//出生日
-                        checkindate.setText("期望入职时间："+String.format("%d-%d-%d",year,monthOfYear+1,dayOfMonth));
+                        checkInYear=year;//入职年
+                        checkInMonth=monthOfYear+1;//入职月
+                        checkInDay=dayOfMonth;//入职日
+                        checkinDate.setText("期望的入职日期："+String.format("%d-%d-%d",year,monthOfYear+1,dayOfMonth));
                     }
-                },2019,4,20).show();
+                },1970,1,2).show();
                 break;
 
             case R.id.job_intention_finish_button:
