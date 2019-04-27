@@ -29,7 +29,8 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pernoal_information);
+        setContentView(R.layout.activity_job_intention);
+
         Button back = (Button)findViewById(R.id.job_intention_finish_button);//取消按钮
         back.setOnClickListener(this);
 

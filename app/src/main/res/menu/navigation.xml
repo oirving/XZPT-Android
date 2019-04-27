@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/navigation_date"
+        android:icon="@drawable/date"
+        android:title="@string/title_date"
+        />
+    <item
+        android:id="@+id/navigation_resume"
+        android:icon="@drawable/resume"
+        android:title="@string/title_home" />
+    <item
+        android:id="@+id/navigation_find_job"
+        android:icon="@drawable/findjob"
+        android:title="@string/title_job" />
+
+    <item
+        android:id="@+id/navigation_experience"
+        android:icon="@drawable/experience"
+        android:title="@string/title_dashboard" />
+
+    <item
+        android:id="@+id/navigation_user"
+        android:icon="@drawable/ic_launcher_user"
+        android:title="@string/title_notifications" />
+
+</menu>
