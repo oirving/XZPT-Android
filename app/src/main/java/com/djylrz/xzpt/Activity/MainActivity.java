@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.djylrz.xzpt.R;
@@ -30,9 +33,10 @@ import java.util.List;
  * @author :oirving
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private  static final String TAG = "UserOption";
+
     private ViewPager viewPager;
     private List<Fragment> fragmentList;
     private BottomNavigationView navigation;
@@ -69,10 +73,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         initView();
         navigation= (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
+
+
 
     /**
      * 初始化fragment
