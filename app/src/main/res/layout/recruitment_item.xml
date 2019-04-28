@@ -104,7 +104,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:text="编辑岗位"/>
+            android:text="button"/>
         <Button
             android:id="@+id/recruitment_op"
             android:textColor="@color/colorAccent"
@@ -112,7 +112,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:text="结束招聘"/>
+            android:text="button"/>
 
     </LinearLayout>
 

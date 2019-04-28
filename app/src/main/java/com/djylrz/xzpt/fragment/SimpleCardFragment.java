@@ -21,14 +21,14 @@ import java.util.List;
 public class SimpleCardFragment extends Fragment {
     private String mTitle;
     private List<Recruitment> recruitmentList = new ArrayList<Recruitment>();
-    private int type;
+    private int type = 9999;
 
     public static SimpleCardFragment getInstance(String title) {
         SimpleCardFragment sf = new SimpleCardFragment();
         sf.mTitle = title;
         if(title.equals("已发布岗位")){
             sf.type =0;
-        }else{
+        }else if(title.equals("已停招岗位")){
             sf.type =1;
         }
         return sf;

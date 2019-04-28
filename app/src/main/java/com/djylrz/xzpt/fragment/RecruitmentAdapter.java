@@ -80,9 +80,10 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
                 Recruitment recruitment = mRecruitments.get(position);
                 if(type == 0){
                     Toast.makeText(v.getContext(), "you clicked end button " + recruitment.getJobName(), Toast.LENGTH_SHORT).show();
-                }else{
+                }else if(type == 1){
                     Toast.makeText(v.getContext(), "you clicked delete button " + recruitment.getJobName(), Toast.LENGTH_SHORT).show();
-
+                }else{
+                    Toast.makeText(v.getContext(), "you clicked  button " + recruitment.getJobName(), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -99,10 +100,12 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
         holder.recruitmentLocation.setText(recruitment.getLocation());
         holder.recruitmentDegree.setText(recruitment.getDegree());
         holder.recruitmentWorkTime.setText(recruitment.getWorkTime()+"");
-        holder.editRecruitment.setText("编辑岗位");
+
         if(type == 0){
+            holder.editRecruitment.setText("编辑岗位");
             holder.opRecruitment.setText("结束招聘");
-        }else{
+        }else if(type == 1){
+            holder.editRecruitment.setText("编辑岗位");
             holder.opRecruitment.setText("删除岗位");
         }
     }

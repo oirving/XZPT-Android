@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+android:orientation="vertical"
+android:layout_height="match_parent"
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+tools:context=".Activity.AddRecruitmentActivity">
+<android.support.v7.widget.Toolbar
+    android:id="@+id/asa_toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="?attr/colorPrimary"
+    android:elevation="4dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:title="发布岗位">
+    <RelativeLayout
+        android:id="@+id/rl_tool"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary">
+        <TextView
+            android:id="@+id/tv_toobar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingLeft="0dp"
+            android:textColor="#ffffff"
+            android:text="发布岗位"
+            tools:ignore="RtlSymmetry" />
+        <FrameLayout
+            android:id="@+id/fl_save"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp">
+            <TextView
+                android:id="@+id/tv_toolbar_save"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ffffff"
+                android:text="发布"/>
+        </FrameLayout>
+    </RelativeLayout>
+
+
+</android.support.v7.widget.Toolbar>
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <TextView
+                android:id="@+id/job_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="40dp"
+                android:textColor="#000"
+                android:text="岗位名称"/>
+            <EditText
+                android:id="@+id/job_name_et"
+                android:layout_width="match_parent"
+                android:layout_toRightOf="@id/job_name_tv"
+                android:layout_height="40dp"
+                android:paddingLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@null"
+                android:hint="请输入岗位名称"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#4fa3a3a3"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <TextView
+                android:id="@+id/job_description_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="40dp"
+                android:textColor="#000"
+                android:text="岗位描述"/>
+            <EditText
+                android:id="@+id/job_description_et"
+                android:layout_width="match_parent"
+                android:layout_toRightOf="@id/job_description_tv"
+                android:layout_height="40dp"
+                android:paddingLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@null"
+                android:hint="请输入岗位描述"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#4fa3a3a3"
+            />
+
+    </LinearLayout>
+    </ScrollView>
+</LinearLayout>
