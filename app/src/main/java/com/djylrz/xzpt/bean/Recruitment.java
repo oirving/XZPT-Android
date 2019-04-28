@@ -9,56 +9,38 @@ import java.sql.Timestamp;
  * @create: 2019-04-28 00:54
  */
 public class Recruitment {
-    private java.sql.Timestamp publishTime;
-    private String companyId;
-    private String description;
     private long recruitmentId;
+    private java.sql.Timestamp publishTime;
+    private long validate;
+    private String companyId;
+    private String jobName;
+    private String description;
     private String contact;
-    private String qualifications;
     private String location;
     private String deliveryRequest;
-    private String duty;
     private String salary;
+    private String degree;
+    private long workTime;
+    private long industryLabel;
+    private String stationLabel;
     private long type;
-    private long validate;
 
-    public Recruitment(Timestamp publishTime, String companyId, String description, long recruitmentId, String contact, String qualifications, String location, String deliveryRequest, String duty, String salary, long type, long validate) {
-        this.publishTime = publishTime;
-        this.companyId = companyId;
-        this.description = description;
+    public Recruitment(long recruitmentId, Timestamp publishTime, long validate, String companyId, String jobName, String description, String contact, String location, String deliveryRequest, String salary, String degree, long workTime, long industryLabel, String stationLabel, long type) {
         this.recruitmentId = recruitmentId;
+        this.publishTime = publishTime;
+        this.validate = validate;
+        this.companyId = companyId;
+        this.jobName = jobName;
+        this.description = description;
         this.contact = contact;
-        this.qualifications = qualifications;
         this.location = location;
         this.deliveryRequest = deliveryRequest;
-        this.duty = duty;
         this.salary = salary;
+        this.degree = degree;
+        this.workTime = workTime;
+        this.industryLabel = industryLabel;
+        this.stationLabel = stationLabel;
         this.type = type;
-        this.validate = validate;
-    }
-
-    public Timestamp getPublishTime() {
-        return publishTime;
-    }
-
-    public void setPublishTime(Timestamp publishTime) {
-        this.publishTime = publishTime;
-    }
-
-    public String getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(String companyId) {
-        this.companyId = companyId;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public long getRecruitmentId() {
@@ -69,20 +51,52 @@ public class Recruitment {
         this.recruitmentId = recruitmentId;
     }
 
+    public Timestamp getPublishTime() {
+        return publishTime;
+    }
+
+    public void setPublishTime(Timestamp publishTime) {
+        this.publishTime = publishTime;
+    }
+
+    public long getValidate() {
+        return validate;
+    }
+
+    public void setValidate(long validate) {
+        this.validate = validate;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getContact() {
         return contact;
     }
 
     public void setContact(String contact) {
         this.contact = contact;
-    }
-
-    public String getQualifications() {
-        return qualifications;
-    }
-
-    public void setQualifications(String qualifications) {
-        this.qualifications = qualifications;
     }
 
     public String getLocation() {
@@ -101,14 +115,6 @@ public class Recruitment {
         this.deliveryRequest = deliveryRequest;
     }
 
-    public String getDuty() {
-        return duty;
-    }
-
-    public void setDuty(String duty) {
-        this.duty = duty;
-    }
-
     public String getSalary() {
         return salary;
     }
@@ -117,19 +123,43 @@ public class Recruitment {
         this.salary = salary;
     }
 
+    public String getDegree() {
+        return degree;
+    }
+
+    public void setDegree(String degree) {
+        this.degree = degree;
+    }
+
+    public long getWorkTime() {
+        return workTime;
+    }
+
+    public void setWorkTime(long workTime) {
+        this.workTime = workTime;
+    }
+
+    public long getIndustryLabel() {
+        return industryLabel;
+    }
+
+    public void setIndustryLabel(long industryLabel) {
+        this.industryLabel = industryLabel;
+    }
+
+    public String getStationLabel() {
+        return stationLabel;
+    }
+
+    public void setStationLabel(String stationLabel) {
+        this.stationLabel = stationLabel;
+    }
+
     public long getType() {
         return type;
     }
 
     public void setType(long type) {
         this.type = type;
-    }
-
-    public long getValidate() {
-        return validate;
-    }
-
-    public void setValidate(long validate) {
-        this.validate = validate;
     }
 }
