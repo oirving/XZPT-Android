@@ -1,35 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="50dp"
     android:background="#eeeeee"
+    android:fillViewport="true"
     android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-    <com.flyco.tablayout.SegmentTabLayout
-        android:id="@+id/tl"
-        android:layout_width="match_parent"
-        android:layout_height="36dp"
-        android:layout_marginTop="10dp"
-        android:paddingLeft="25dp"
-        android:paddingRight="25dp"
-        tools:tl_bar_color="#ffffff"
-        tools:tl_indicator_anim_enable="true"
-        tools:tl_indicator_color="@color/colorPrimary"
-        tools:tl_indicator_margin_bottom="2dp"
-        tools:tl_indicator_margin_left="2dp"
-        tools:tl_indicator_margin_right="2dp"
-        tools:tl_indicator_margin_top="2dp"
-        tools:tl_textBold="SELECT"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/vp"
-        android:layout_width="match_parent"
-        android:layout_height="84dp"/>
+        <com.flyco.tablayout.SegmentTabLayout
+            android:id="@+id/tl"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            tools:tl_bar_color="#ffffff"
+            tools:tl_indicator_anim_enable="true"
+            tools:tl_indicator_color="@color/colorPrimary"
+            tools:tl_indicator_margin_bottom="2dp"
+            tools:tl_indicator_margin_left="2dp"
+            tools:tl_indicator_margin_right="2dp"
+            tools:tl_indicator_margin_top="2dp"
+            tools:tl_textBold="SELECT" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </LinearLayout>
 </ScrollView>
