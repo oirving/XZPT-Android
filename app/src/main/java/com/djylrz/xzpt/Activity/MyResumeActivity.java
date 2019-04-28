@@ -12,6 +12,7 @@ import com.djylrz.xzpt.utils.ResumeListAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class MyResumeActivity extends AppCompatActivity {
 
     private List<ResumeItem>mResumeList = new ArrayList<>();

@@ -1,15 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#eeeeee"
     >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/primary_rectangle"
+        >
+        <ImageView
+            android:id="@+id/recruitment_search_imageview"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:src="@drawable/search"
+            android:layout_gravity="left"
+            />
+        <EditText
+            android:id="@+id/recruitment_search_input_edittext"
+            android:layout_weight="9"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:maxLines="1"
+            android:visibility="invisible"
+            />
+        <Button
+            android:id="@+id/recruitment_search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="查询"
+            android:textSize="20dp"
+            android:background="@drawable/rectangle_style"
+            android:visibility="invisible"
+            />
 
-    <ImageView
-        android:id="@+id/date_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/fzu"
-        />
+    </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recruitment_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:background="@color/white"
+        >
+
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>
