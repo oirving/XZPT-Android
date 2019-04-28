@@ -7,4 +7,9 @@
     <color name="colorSelector">#5cb19a</color>
     <color name="colorHead">#5cb19a</color>
     <color name="colorButton">#a8d3cf</color>
+    <color name="gray">#F5F5F5</color><!--灰色 -->
+    <color name="white">#FFFFFF</color><!--白色 -->
+    <color name="black">#444444</color><!--黑色 -->
+    <color name="gray_text">#AAAAAA</color><!--灰色 -->
+    <color name="gray_background">#FFAAAAAA</color><!--灰色 -->
 </resources>

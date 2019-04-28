@@ -17,6 +17,7 @@ public class FragmentResume extends Fragment {
 
     @Nullable
     @Override
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment2_resume,container,false);
         imageView = (ImageView) view.findViewById(R.id.resume_image);
