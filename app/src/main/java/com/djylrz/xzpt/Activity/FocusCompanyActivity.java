@@ -17,7 +17,7 @@ import com.djylrz.xzpt.utils.ResumeListAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FocusCompanyActivity extends AppCompatActivity {
+public class FocusCompanyActivity extends BaseActivity {
 
     private ImageView companyLogo;
     String []companyName;

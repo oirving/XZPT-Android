@@ -48,8 +48,9 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
         userSelectorList.add(help);
 
         View view = inflater.inflate(R.layout.fragment5_user, container, false);
-        Button userInfoButton = (Button) view.findViewById(R.id.perfect_info_button);
+        Button userInfoButton = (Button) view.findViewById(R.id.perfect_info_button);//完善信息按钮
         userInfoButton.setOnClickListener(this);
+
         userOption = (RecyclerView) view.findViewById(R.id.user_option_list);
         linearLayoutManager =new LinearLayoutManager(getContext());
         adapter = new UserInfoOptionAdapter(userSelectorList);

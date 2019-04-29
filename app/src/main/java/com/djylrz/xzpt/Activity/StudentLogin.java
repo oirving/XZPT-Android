@@ -52,7 +52,10 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
     public void onClick(View v) {//按钮响应事件
         switch (v.getId()) {
             case R.id.student_login_button:
-                new LoginAsyncTask().execute();
+                //开发期间直接跳到登陆界面
+                Intent intent = new Intent(StudentLogin.this,MainActivity.class);
+                startActivity(intent);
+                //new LoginAsyncTask().execute();
                 break;
             case R.id.student_forget_password_button:
 //                Intent forgetPassword = new Intent();//跳到忘记密码
@@ -122,6 +125,7 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
                         //TODO：已经验证学生用户名密码正确，请在下面实现学生登录成功后的界面跳转——to欧文
                         //Done
                         Intent intent = new Intent(StudentLogin.this,MainActivity.class);
+                        startActivity(intent);
                         Log.d(TAG, "postLogin: 学生用户登录成功！");
                     }break;
                     case "2008":{
