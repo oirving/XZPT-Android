@@ -2,6 +2,7 @@ package com.djylrz.xzpt.Activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,8 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import com.djylrz.xzpt.bean.Company;
+import com.djylrz.xzpt.bean.PostResult;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.R;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import okhttp3.*;
 import org.json.JSONException;
@@ -53,10 +57,7 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
         //按钮响应事件
         switch (v.getId()) {
             case R.id.company_login_button:
-                //开发期间，不登录直接跳转到主页
-                Intent intent = new Intent(CompanyLogin.this, Main2Activity.class);//跳到企业主界面
-                startActivity(intent);
-                //new LoginAsyncTask().execute();
+                new LoginAsyncTask().execute();
                 break;
             case R.id.company_forget_password_button:
                 //Intent forgetPassword = new Intent();//跳到忘记密码
@@ -65,8 +66,8 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
             case R.id.company_back_button:
                 finish();
                 break;
-                default:
-                    break;
+            default:
+                break;
         }
     }
 
@@ -83,17 +84,18 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
         @Override
         protected String doInBackground(String... strings) {
             //声明传递的JSON串
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty(PostParameterName.REQUEST_EMAIL, id.getText().toString());
-            jsonObject.addProperty(PostParameterName.REQUEST_PASSWORD, password.getText().toString());
-            Log.d(TAG, "onClick: "+jsonObject.toString());
+            Company company = new Company();
+            company.setEmail(id.getText().toString());
+            company.setPasswd(password.getText().toString());
+            Log.d(TAG, "doInBackground: company json is "+new Gson().toJson(company));
+
             //创建一个OkHttpClient对象
             OkHttpClient okHttpClient = new OkHttpClient();
             //创建一个RequestBody(参数1：数据类型 参数2传递的json串)
-            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString());
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), new Gson().toJson(company));
             //创建一个请求对象
             Request request = new Request.Builder()
-                    .url(PostParameterName.POST_URL_LOGIN)
+                    .url(PostParameterName.POST_URL_COMPANY_LOGIN)
                     .post(requestBody)
                     .build();
             //发送请求获取响应
@@ -114,26 +116,32 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
         @Override
         protected void onPostExecute(String responseData) {
             super.onPostExecute(responseData);
-            JSONObject responseJSON;
-            try {
-                responseJSON = new JSONObject(responseData);
-                switch (responseJSON.getString(PostParameterName.RESPOND_RESULTCODE)){
-                    case "200":{
-                        //TODO：已经验证企业用户名密码正确，请在下面实现企业用户登录成功后的界面跳转——to欧文
-                        //企业登录成功界面暂无
-                        Log.d(TAG, "onPostExecute: 企业用户登录成功！");
-                    }break;
-                    case "2008":{
-                        //用户名密码有误
-                        Toast.makeText(CompanyLogin.this,"用户名密码错误",Toast.LENGTH_SHORT).show();
-                    }break;
-                    default:{
-                        //未知错误
-                        Toast.makeText(CompanyLogin.this,"登录失败，错误码："+responseJSON.getString(PostParameterName.RESPOND_RESULTCODE),Toast.LENGTH_SHORT).show();
-                    }
+            PostResult result = new Gson().fromJson(responseData,PostResult.class);
+            switch (result.getResultCode()){
+                case "200":{
+                    //获取企业token，并保存到SharedPreferences
+                    Company company = new Company();
+                    company.setToken(result.getResultObject());
+                    SharedPreferences companyToken = getSharedPreferences("token", 0);
+                    SharedPreferences.Editor editor = companyToken.edit();
+                    editor.putString(PostParameterName.TOKEN,company.getToken());
+                    editor.commit();
+
+                    //TODO：已经验证企业用户名密码正确，请在下面实现企业用户登录成功后的界面跳转——to欧文
+                    //企业登录成功界面暂无
+                    Log.d(TAG, "onPostExecute: 企业用户登录成功！");
+                    //跳转到企业首页
+                    Intent intent = new Intent(CompanyLogin.this,Main2Activity.class);
+                    startActivity(intent);
+                }break;
+                case "2008":{
+                    //用户名密码有误
+                    Toast.makeText(CompanyLogin.this,"用户名密码错误",Toast.LENGTH_SHORT).show();
+                }break;
+                default:{
+                    //未知错误
+                    Toast.makeText(CompanyLogin.this,"登录失败，错误码："+result.getResultCode(),Toast.LENGTH_SHORT).show();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
 
         }
