@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -40,17 +41,26 @@ public class FragmentComHome extends Fragment {
 
         mFragments = new ArrayList<>();
         mDecorView = inflater.inflate(R.layout.fragment6_com_home,container,false);
+        //设置标题栏
         toolbar = mDecorView.findViewById(R.id.home_toolbar);
-        toolbar.setTitle("");
-        textViewAdd = mDecorView.findViewById(R.id.tv_toolbar_add);
-        textViewAdd.setOnClickListener(new View.OnClickListener() {
+        toolbar.setTitle("企业首页");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.inflateMenu(R.menu.add_menu);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AddRecruitmentActivity.class);
-                startActivity(intent);
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.home_menu_add:
+                        //新增岗位
+                        Intent intent = new Intent(getContext(),AddRecruitmentActivity.class);
+                        startActivity(intent);
+                        break;
+                    default:
+                        break;
+                }
+                return true;
             }
         });
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         for (String title : mTitles) {
             mFragments.add(SimpleCardFragment.getInstance(title));
         }

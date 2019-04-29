@@ -46,6 +46,7 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
             //跳转到企业首页
             Intent intent = new Intent(CompanyLogin.this,Main2Activity.class);
             startActivity(intent);
+            finish();
         }
 
         id = (EditText)findViewById(R.id.company_input_name);//输入的账号
@@ -144,6 +145,7 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
                     //跳转到企业首页
                     Intent intent = new Intent(CompanyLogin.this,Main2Activity.class);
                     startActivity(intent);
+                    finish();
                 }break;
                 case "2008":{
                     //用户名密码有误

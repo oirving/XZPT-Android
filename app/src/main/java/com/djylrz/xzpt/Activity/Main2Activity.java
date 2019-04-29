@@ -6,7 +6,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.fragment.FragmentAdapter;
@@ -24,6 +26,7 @@ public class Main2Activity extends AppCompatActivity {
     private ViewPager viewPager;
     private List<Fragment> fragmentList;
     private BottomNavigationView navigation;
+    private long exitTime = 0;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -35,11 +38,14 @@ public class Main2Activity extends AppCompatActivity {
                 case R.id.navigation_home:
                     viewPager.setCurrentItem(0);
                     return true;
-                case R.id.navigation_message:
+                case R.id.navigation_judge_resume:
                     viewPager.setCurrentItem(1);
                     return true;
-                case R.id.navigation_mine:
+                case R.id.navigation_message:
                     viewPager.setCurrentItem(2);
+                    return true;
+                case R.id.navigation_mine:
+                    viewPager.setCurrentItem(3);
                     return true;
             }
             return false;
@@ -56,6 +62,7 @@ public class Main2Activity extends AppCompatActivity {
         //向ViewPager添加各页面
         fragmentList = new ArrayList<>();
         fragmentList.add(new FragmentComHome());
+
         FragmentAdapter myAdapter = new FragmentAdapter(getSupportFragmentManager(), this, fragmentList);
         viewPager.setAdapter(myAdapter);
         viewPager.setOffscreenPageLimit(5);
@@ -100,5 +107,21 @@ public class Main2Activity extends AppCompatActivity {
         initView();
         navigation= (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    }
+
+    //防止回退到登录界面
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if ((System.currentTimeMillis() - exitTime) > 2000) {
+                Toast.makeText(getApplicationContext(), "再按一次退出校招平台", Toast.LENGTH_SHORT).show();
+                exitTime = System.currentTimeMillis();
+            } else {
+                finish();
+                System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
