@@ -23,7 +23,7 @@ public class Recruitment {
     private long workTime;
     private long industryLabel;
     private String stationLabel;
-    private long type;
+    private long jobType;
 
     public Recruitment(long recruitmentId, Timestamp publishTime, long validate, String companyId, String jobName, String description, String contact, String location, String deliveryRequest, String salary, String degree, long workTime, long industryLabel, String stationLabel, long type) {
         this.recruitmentId = recruitmentId;
@@ -40,7 +40,7 @@ public class Recruitment {
         this.workTime = workTime;
         this.industryLabel = industryLabel;
         this.stationLabel = stationLabel;
-        this.type = type;
+        this.jobType = type;
     }
 
     public long getRecruitmentId() {
@@ -156,10 +156,10 @@ public class Recruitment {
     }
 
     public long getType() {
-        return type;
+        return jobType;
     }
 
     public void setType(long type) {
-        this.type = type;
+        this.jobType = type;
     }
 }
