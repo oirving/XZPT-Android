@@ -12,9 +12,12 @@ import android.widget.TextView;
 
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Recruitment;
+import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 @SuppressLint("ValidFragment")
@@ -22,6 +25,7 @@ public class SimpleCardFragment extends Fragment {
     private String mTitle;
     private List<Recruitment> recruitmentList = new ArrayList<Recruitment>();
     private int type = 9999;
+    RecruitmentAdapter adapter;
 
     public static SimpleCardFragment getInstance(String title) {
         SimpleCardFragment sf = new SimpleCardFragment();
@@ -47,8 +51,36 @@ public class SimpleCardFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
         recyclerView.setLayoutManager(layoutManager);
-        RecruitmentAdapter adapter = new RecruitmentAdapter(recruitmentList,type);
+        adapter = new RecruitmentAdapter(recruitmentList,type);
         recyclerView.setAdapter(adapter);
+
+        // 设置加载更多监听
+        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+            @Override
+            public void onLoadMore() {
+                adapter.setLoadState(adapter.LOADING);
+
+                //假设最多加载52条item
+                if (recruitmentList.size() < 52) {
+                    // 模拟获取网络数据，延时1s
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    initRecruitments();
+                                    adapter.setLoadState(adapter.LOADING_COMPLETE);
+                                }
+                            });
+                        }
+                    }, 1000);
+                } else {
+                    // 显示加载到底的提示
+                    adapter.setLoadState(adapter.LOADING_END);
+                }
+            }
+        });
 
         return v;
     }
