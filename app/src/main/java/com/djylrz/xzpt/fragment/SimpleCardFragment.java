@@ -14,6 +14,7 @@ import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
+import com.djylrz.xzpt.utils.RecruitmentAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
