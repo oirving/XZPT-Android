@@ -130,6 +130,9 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
                     //TODO：已经验证企业用户名密码正确，请在下面实现企业用户登录成功后的界面跳转——to欧文
                     //企业登录成功界面暂无
                     Log.d(TAG, "onPostExecute: 企业用户登录成功！");
+                    //跳转到企业首页
+                    Intent intent = new Intent(CompanyLogin.this,Main2Activity.class);
+                    startActivity(intent);
                 }break;
                 case "2008":{
                     //用户名密码有误
