@@ -11,7 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.FocusCompanyActivity"></activity>
+        <activity android:name=".Activity.AddRecruitmentActivity"></activity>
+        <activity android:name=".Activity.Main2Activity" />
+        <activity android:name=".Activity.FocusCompanyActivity" />
         <activity android:name=".Activity.NewResumeActivity" />
         <activity android:name=".Activity.MyResumeActivity" />
         <activity android:name=".Activity.FeedbackAndSuggestion" />
@@ -23,14 +25,14 @@
         <activity android:name=".Activity.PersonalInformation" />
         <activity android:name=".Activity.JobIntention" />
         <activity android:name=".Activity.CompanyLogin" />
-        <activity android:name=".Activity.ActorChoose" />
-        <activity android:name=".Activity.MainActivity">
+        <activity android:name=".Activity.ActorChoose">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Activity.MainActivity"></activity>
     </application>
 
 </manifest>

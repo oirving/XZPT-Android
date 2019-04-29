@@ -53,7 +53,10 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
         //按钮响应事件
         switch (v.getId()) {
             case R.id.company_login_button:
-                new LoginAsyncTask().execute();
+                //开发期间，不登录直接跳转到主页
+                Intent intent = new Intent(CompanyLogin.this, Main2Activity.class);//跳到企业主界面
+                startActivity(intent);
+                //new LoginAsyncTask().execute();
                 break;
             case R.id.company_forget_password_button:
                 //Intent forgetPassword = new Intent();//跳到忘记密码

@@ -4,50 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="130dp"
-        android:background="@color/colorHead"
-        >
-        <ImageButton
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
-            <TextView
-                android:id="@+id/user_name_textview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="30dp"
-                android:text="小 李"
-                android:gravity="right"
-                android:textSize="40dp"
-                android:textColor="@android:color/white"
-                />
-
-            <Button
-                android:id="@+id/perfect_info_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="完善信息 >"
-                android:textColor="@android:color/white"
-                android:background="@android:color/transparent"
-                android:layout_gravity="right"
-                android:textSize="20dp"
-                android:layout_marginRight="20dp"
-                />
-
-        </LinearLayout>
-
-
-    </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/user_option_list"
         android:layout_width="match_parent"
