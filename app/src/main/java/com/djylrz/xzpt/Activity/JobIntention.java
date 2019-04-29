@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.*;
 import com.djylrz.xzpt.R;
 
-import static com.djylrz.xzpt.R.id.checkin_date_button;
 
 public class JobIntention extends BaseActivity implements View.OnClickListener{
 
