@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.utils;
+package com.djylrz.xzpt.fragment;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -11,15 +11,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.utils.ResumeItem;
 
 import java.util.List;
 
-public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.ViewHolder> {
+public class ResumeModelAdapter extends RecyclerView.Adapter<ResumeModelAdapter.ViewHolder> {
 
     private List<ResumeItem> mResumeList;
 
 
-    public ResumeListAdapter(List<ResumeItem> resumeList) {
+    public ResumeModelAdapter(List<ResumeItem> resumeList) {
         mResumeList = resumeList;
     }
 
