@@ -8,4 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="ToolbarTheme" parent="Theme.AppCompat.Light">
+        <!-- 设置 toolbar 溢出菜单的文字的颜色 -->
+        <item name="android:textColor">@color/white</item>
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="colorButtonNormal">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+    </style>
 </resources>

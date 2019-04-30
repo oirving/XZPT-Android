@@ -30,11 +30,13 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
             case R.id.choose_student:
                 Intent student = new Intent(ActorChoose.this, StudentLogin.class);
                 startActivity(student);
+                finish();
                 Toast.makeText(ActorChoose.this,"学生用户",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.choose_company:
                 Intent company = new Intent(ActorChoose.this, CompanyLogin.class);
                 startActivity(company);
+                finish();
                 Toast.makeText(ActorChoose.this,"企业用户",Toast.LENGTH_SHORT).show();
                 break;
         }
