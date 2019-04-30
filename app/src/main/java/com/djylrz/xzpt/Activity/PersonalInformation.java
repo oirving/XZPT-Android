@@ -1,105 +1,120 @@
 package com.djylrz.xzpt.Activity;
 
-import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Spinner;
+import android.widget.Toast;
+
 import com.djylrz.xzpt.R;
 
 public class PersonalInformation extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "PersonalInformation";
 
-    private EditText name;
-    private TextView showBirthday;
-    private EditText education;
-    private EditText school;
-    private EditText major;
-    private TextView showWorkTime;
-    private int birthYear;//记录选择的出生年
-    private int birthMonth;//月
-    private int birthDay;//日
-    private int workYear;//记录工作的年
-    private int workMonth;//月
-    private int workDay;//日
-    private String Name;
-    private String Education;
-    private String School;
-    private String Major;
+    private EditText name;//姓名
+    private Spinner sex;//性别
+    private EditText age;//年龄
+    private EditText phoneNum;//电话号码
+    private EditText mailAddress;//邮箱
+    private EditText currentCity;//居住城市
+    private EditText school;//毕业院校
+    private Spinner highestEducation;//最高学历
+    private EditText major;//主修专业
+    private EditText startTime;//教育开始时间
+    private EditText endTime;//教育结束时间
+    private ArrayAdapter<String> sexAdapter;
+    private ArrayAdapter<String> highestEducationAdapter;
+    private String[] sexArray=new String[]{"男","女"};
+    private String[] highestEducationArray=new String[]{"学历不限","大专","本科","硕士","博士及以上"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pernoal_information);
-        Button birthday = (Button) findViewById(R.id.birthday_button);//生日选择
-        birthday.setOnClickListener(this);
 
-        Button worktime = (Button) findViewById(R.id.workTime_button);
-        worktime.setOnClickListener(this);
+        name =  (EditText) findViewById(R.id.info_name);
+        age = (EditText) findViewById(R.id.info_age);
+        phoneNum = (EditText) findViewById(R.id.info_phonenum);
+        mailAddress = (EditText) findViewById(R.id.info_mail);
+        currentCity = (EditText) findViewById(R.id.info_currentcity);
+        school = (EditText) findViewById(R.id.info_school);
+        major = (EditText) findViewById(R.id.info_major);
+        startTime = (EditText) findViewById(R.id.info_start_time);
+        endTime = (EditText) findViewById(R.id.info_end_time);
+        sex = (Spinner) findViewById(R.id.sex_spinner);
+        highestEducation = (Spinner) findViewById(R.id.highestEducation);
+        //性别下拉框
+        sexAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,sexArray);
+        sexAdapter .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sex.setAdapter(sexAdapter);
+        //性别下拉框点击事件
+        sex.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(PersonalInformation.this,"性别"+sexArray[position], Toast.LENGTH_SHORT).show();
+                //todo 获得position，映射为性别存入user->小榕
+                //user.setSex(position+1);
+            }
 
-        Button next = (Button)findViewById(R.id.info_next_button);//下一步按钮
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        //最高学历下拉框
+        highestEducationAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,highestEducationArray);
+        highestEducationAdapter .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        highestEducation.setAdapter(highestEducationAdapter);
+        //点击事件
+        highestEducation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(PersonalInformation.this,"性别"+highestEducationArray[position], Toast.LENGTH_SHORT).show();
+                //todo 获得position，映射为学历存入user->小榕
+                //user.setHighestEducation(position+1);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        Button next = (Button)findViewById(R.id.info_next_button);//保存按钮
         next.setOnClickListener(this);
-
-        showBirthday = (TextView)findViewById(R.id.show_birthday);
-        showWorkTime = (TextView)findViewById(R.id.show_worktime);
-
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.birthday_button:
-                //获取生日
-                new DatePickerDialog(PersonalInformation.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        birthYear=year;//出生年
-                        birthMonth=monthOfYear+1;//出生月
-                        birthDay=dayOfMonth;//出生日
-                        showBirthday.setText("您的出生日期是："+String.format("%d-%d-%d",year,monthOfYear+1,dayOfMonth));
-                    }
-                },1970,1,2).show();
-                break;
-            case R.id.workTime_button:
-                //获取工作日期
-                new DatePickerDialog(PersonalInformation.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        workYear=year;
-                        workMonth=monthOfYear+1;
-                        workDay=dayOfMonth;
-                        showWorkTime.setText("您参与工作的时间是："+String.format("%d-%d-%d",year,monthOfYear+1,dayOfMonth));
-                    }
-                },1970,1,2).show();
-                break;
+            //保存按钮
             case R.id.info_next_button:
-                //下一步按钮
-                //点击下一步按钮之后再获取信息
-                name = (EditText)findViewById(R.id.info_name);
-                education = (EditText)findViewById(R.id.info_education);
-
-                school = (EditText)findViewById(R.id.info_school);
-
-                major = (EditText)findViewById(R.id.info_major);
-
-
-                Major = major.getText().toString();//专业
-                Name = name.getText().toString();//名字
-                Education = education.getText().toString();//学历
-                School = school.getText().toString();//学校
-                Intent intent = new Intent(PersonalInformation.this, MainActivity.class);
-                //传递参数
-                //todo：把当前获取的所有个人信息传递到JobIntention.java—to欧文
-                startActivity(intent);
+                //保存参数
+                //todo 保存获得数据,确认保存状态 ->小榕
+//                if() { //保存成功
+                   finish();//结束当前页面
+//                } else {
+//                    Toast.makeText(PersonalInformation.this,"保存失败", Toast.LENGTH_SHORT).show();
+//                }
                 break;
-
             default:
                 break;
         }
     }
+    //初始化页面可用这个函数
+//    public initpage(User user) {
+//        name.setText(user.getUserName);
+//        age.setText();
+//        phoneNum.setText();
+//        mailAddress.setText();
+//        currentCity.setText();
+//        school.setText();
+//        major.setText();
+//        startTime.setText();
+//        endTime.setText();
+//    }
 }
 
