@@ -12,7 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.bean.PostResult;
+import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import okhttp3.*;
 import org.json.JSONException;
@@ -64,7 +67,7 @@ public class Register extends BaseActivity implements View.OnClickListener {
             dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if(et.getText().toString().equals("")) {//验证码不为空
+                    if(!et.getText().toString().equals("")) {//验证码不为空
                         verificationCode=et.getText().toString();//获取输入的验证码
                         new RegisterAsyncTask().execute();//注册
                     } else {
@@ -108,12 +111,9 @@ public class Register extends BaseActivity implements View.OnClickListener {
 
         @Override
         protected String doInBackground(String... strings) {
-
             //声明传递的JSON串
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty(PostParameterName.REQUEST_EMAIL, mail.getText().toString());
-
-            Log.d(TAG, "onClick: "+jsonObject.toString());
+            User user = new User();
+            user.setEmail(mail.getText().toString());
 
             //创建一个OkHttpClient对象
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -123,7 +123,7 @@ public class Register extends BaseActivity implements View.OnClickListener {
 
             String responseData = "";
             //创建一个RequestBody(参数1：数据类型 参数2传递的json串)
-            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString());
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), new Gson().toJson(user));
             //创建一个请求对象
             Request request = new Request.Builder()
                     .url(PostParameterName.POST_URL_GETVERIFICATIONCODE)
@@ -146,24 +146,19 @@ public class Register extends BaseActivity implements View.OnClickListener {
         @Override
         protected void onPostExecute(String responseData) {
             super.onPostExecute(responseData);
-            try {
-                JSONObject responseJSON = new JSONObject(responseData);
-                switch (responseJSON.getString(PostParameterName.RESPOND_RESULTCODE)){
-                    case "200":{
-                        //获取验证码成功，验证码已发送至到邮箱
-                        Log.d(TAG, "getVerificationCode: 发送验证码成功");
-                        Toast.makeText(Register.this,"已发送验证码至邮件:"+mail,Toast.LENGTH_LONG).show();
-                    }break;
-                    default:{
-                        //未知错误
-                        Toast.makeText(Register.this,"验证码获取失败，错误码："+responseJSON.getString(PostParameterName.RESPOND_RESULTCODE),Toast.LENGTH_SHORT).show();
-                    }
-                }
-                //界面跳转
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            PostResult result = new Gson().fromJson(responseData,PostResult.class);
+            switch (result.getResultCode()){
+                case "200":{
+                    //获取验证码成功，验证码已发送至到邮箱
+                    Log.d(TAG, "getVerificationCode: 发送验证码成功");
+                    Toast.makeText(Register.this,"已发送验证码至邮件:"+mail.getText().toString(),Toast.LENGTH_LONG).show();
 
+                }break;
+                default:{
+                    //未知错误
+                    Toast.makeText(Register.this,"验证码获取失败，错误码："+result.getResultCode(),Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 
@@ -172,18 +167,15 @@ public class Register extends BaseActivity implements View.OnClickListener {
         @Override
         protected String doInBackground(String... strings) {
             //声明传递的JSON串
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty(PostParameterName.REQUEST_EMAIL, mail.getText().toString());
-            jsonObject.addProperty(PostParameterName.REQUEST_PASSWORD, password.getText().toString());
-
-            //测试组装的JSON格式是否正确
-            Log.d(TAG, "onClick: "+jsonObject.toString());
+            User user = new User();
+            user.setEmail(mail.getText().toString());
+            user.setPasswd(password.getText().toString());
 
             //创建一个OkHttpClient对象
             OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
 
             //创建一个RequestBody(参数1：数据类型 参数2传递的json串)
-            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString());
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),new Gson().toJson(user));
             //创建一个请求对象
             Request request = new Request.Builder()
                     .url(PostParameterName.POST_URL_REGISTER+verificationCode)//url传参：验证码
@@ -212,28 +204,22 @@ public class Register extends BaseActivity implements View.OnClickListener {
         @Override
         protected void onPostExecute(String responseData) {
             super.onPostExecute(responseData);
-            try {
-                JSONObject responseJSON = new JSONObject(responseData);
-                switch (responseJSON.getString(PostParameterName.RESPOND_RESULTCODE)){
-                    case "200":{
-                        //注册成功
-                        Log.d(TAG, "getVerificationCode: 注册成功");
-                        //跳转到登录界面
-                        Intent intent = new Intent(Register.this, StudentLogin.class);
-                        startActivity(intent);
-                    }break;
-                    default:{
-                        //未知错误
-                        Toast.makeText(Register.this,"注册失败，错误码："
-                                +responseJSON.getString(PostParameterName.RESPOND_RESULTCODE)
-                                +responseJSON.getString(PostParameterName.RESPOND_RESULMSG),Toast.LENGTH_SHORT).show();
-                    }
+            PostResult result = new Gson().fromJson(responseData,PostResult.class);
+            switch (result.getResultCode()){
+                case "200":{
+                    //注册成功
+                    Log.d(TAG, "getVerificationCode: 注册成功");
+                    //跳转到登录界面
+                    Intent intent = new Intent(Register.this, StudentLogin.class);
+                    startActivity(intent);
+                }break;
+                default:{
+                    //未知错误
+                    Toast.makeText(Register.this,"注册失败，错误码："
+                            +result.getResultCode()
+                            +result.getResultMsg(),Toast.LENGTH_SHORT).show();
                 }
-                //界面跳转
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
-
         }
     }
 
