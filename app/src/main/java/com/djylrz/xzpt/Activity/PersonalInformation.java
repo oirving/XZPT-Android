@@ -22,8 +22,11 @@ import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 
 public class PersonalInformation extends BaseActivity implements View.OnClickListener {
 
@@ -121,8 +124,8 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                             @Override
                             public void onResponse(JSONObject response) {
                                 Log.d(TAG, "onResponse: 返回"+response.toString());
-
-                                final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), TempResponseData.class);
+                                Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
+                                final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), jsonType);
 //                                user = new Gson().from
 //                                user = new Gson().fromJson(response.toString(),User.class);
                                 Log.d(TAG, "onResponse: "+postResult.getResultCode());
