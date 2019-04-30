@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="通过"
-            android:textSize="30dp"
+            android:textSize="15dp"
             />
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,8 +25,8 @@
             >
             <ImageView
                 android:id="@+id/resume_edit_imageview"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="right"
                 android:src="@drawable/edit"
                 />
@@ -47,21 +47,21 @@
 
         <Button
             android:id="@+id/resume_export_button"
-            android:layout_width="200dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:background="@drawable/rectangle_style"
             android:layout_gravity="center"
             android:text="导出"
-            android:textSize="30dp"
+            android:textSize="15dp"
             />
 
         <TextView
             android:id="@+id/resume_position_textview"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="安卓工程师"
-            android:textSize="30dp"
+            android:textSize="15dp"
             />
 
         <LinearLayout
@@ -74,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="小李"
-                android:textSize="30dp"
+                android:textSize="15dp"
                 />
 
             <LinearLayout
@@ -88,7 +88,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1周前"
-                    android:textSize="30dp"
+                    android:textSize="15dp"
                     android:layout_gravity="right"
                     />
             </LinearLayout>

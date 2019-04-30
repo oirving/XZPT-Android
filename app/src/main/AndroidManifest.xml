@@ -11,7 +11,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.Main2Activity"></activity>
+        <activity android:name=".Activity.ResetPasswordActivity"></activity>
+        <activity android:name=".Activity.ForgetPasswordActivity" />
+        <activity android:name=".Activity.EditPracticeActivity" />
+        <activity android:name=".Activity.EditProjectActivity" />
+        <activity android:name=".Activity.EditAwardsActivity" />
+        <activity android:name=".Activity.Main2Activity" />
         <activity android:name=".Activity.FocusCompanyActivity" />
         <activity android:name=".Activity.NewResumeActivity" />
         <activity android:name=".Activity.MyResumeActivity" />
@@ -31,8 +36,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.MainActivity">
-        </activity>
+        <activity android:name=".Activity.MainActivity" />
     </application>
 
 </manifest>

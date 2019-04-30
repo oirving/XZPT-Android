@@ -10,14 +10,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.google.gson.JsonObject;
-import okhttp3.*;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class StudentLogin extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "StudentLogin";
@@ -58,8 +65,8 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
                 //new LoginAsyncTask().execute();
                 break;
             case R.id.student_forget_password_button:
-//                Intent forgetPassword = new Intent();//跳到忘记密码
-//                startActivity(forgetPassword);
+                Intent forgetPassword = new Intent(StudentLogin.this,ForgetPasswordActivity.class);//跳到忘记密码
+                startActivity(forgetPassword);
                 Toast.makeText(StudentLogin.this,"忘记密码",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.student_register_button:

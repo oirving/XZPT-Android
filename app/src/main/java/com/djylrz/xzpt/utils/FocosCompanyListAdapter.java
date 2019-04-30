@@ -27,14 +27,13 @@ public class FocosCompanyListAdapter extends RecyclerView.Adapter<FocosCompanyLi
         }
     }
 
-    public FocosCompanyListAdapter(List<FocusCompanyItem> focusCompanyItems){
+    public FocosCompanyListAdapter(List<FocusCompanyItem> focusCompanyItems) {
         mFocusCompanyItems = focusCompanyItems;
     }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.focuscompany_items,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.focuscompany_items,viewGroup,false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
