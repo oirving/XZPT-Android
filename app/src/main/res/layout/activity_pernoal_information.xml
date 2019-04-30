@@ -30,7 +30,8 @@
                     android:id="@+id/info_name"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
-                    android:maxLines="2" />
+                    android:maxLines="2"
+                    android:inputType="textPersonName"/>
             </LinearLayout>
 
             <LinearLayout
@@ -70,7 +71,9 @@
                     android:id="@+id/info_age"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
-                    android:maxLines="2" />
+                    android:maxLines="2"
+                    android:minLines="1"
+                    android:inputType="number"/>
 
             </LinearLayout>
 
@@ -91,7 +94,8 @@
                     android:id="@+id/info_phonenum"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
-                    android:maxLines="2" />
+                    android:maxLines="2"
+                    android:inputType="phone"  />
 
             </LinearLayout>
 
@@ -112,7 +116,8 @@
                     android:id="@+id/info_mail"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
-                    android:maxLines="2" />
+                    android:maxLines="2"
+                    android:inputType="textEmailAddress"/>
 
             </LinearLayout>
 
@@ -216,7 +221,8 @@
                         android:layout_width="100dp"
                         android:layout_height="50dp"
                         android:hint="开始时间"
-                        android:maxLines="2" />
+                        android:maxLines="2"
+                        android:inputType="datetime"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -228,7 +234,8 @@
                         android:layout_width="100dp"
                         android:layout_height="50dp"
                         android:hint="结束时间"
-                        android:maxLines="2" />
+                        android:maxLines="2"
+                        android:inputType="datetime"/>
 
                 </LinearLayout>
 
@@ -250,7 +257,7 @@
                     android:background="@color/colorButton"
                     android:textColor="@color/white"
                     android:text="保 存"
-                    android:textSize="20dp" />
+                    android:textSize="20dp"/>
 
             </LinearLayout>
 

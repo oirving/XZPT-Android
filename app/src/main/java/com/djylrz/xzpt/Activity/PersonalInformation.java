@@ -1,10 +1,6 @@
 package com.djylrz.xzpt.Activity;
 
-import android.annotation.SuppressLint;
-import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,8 +11,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import android.widget.*;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -24,15 +18,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PostResult;
+import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.bean.User;
-import com.djylrz.xzpt.utils.OkHttpUtils;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.lang.reflect.Method;
-import java.sql.Date;
 
 public class PersonalInformation extends BaseActivity implements View.OnClickListener {
 
@@ -124,12 +115,20 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
             user.setToken(token);
 
             try {
+                Log.d(TAG, "onCreate: 获取个人信息，只填了token"+new Gson().toJson(user));
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_USER_BY_TOKEN+user.getToken(),new JSONObject(new Gson().toJson(user)),
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                user = new Gson().fromJson(response.toString(),User.class);
                                 Log.d(TAG, "onResponse: 返回"+response.toString());
+
+                                final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), TempResponseData.class);
+//                                user = new Gson().from
+//                                user = new Gson().fromJson(response.toString(),User.class);
+                                Log.d(TAG, "onResponse: "+postResult.getResultCode());
+//                                user = new Gson().fromJson(postResult.getResultObject(),User.class);
+                                user = postResult.getResultObject();
+                                user.setToken(token);
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -172,6 +171,7 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                 //user.setStartTime(new Date(startTime.getText().toString()));//教育开始时间 string->Date，没有限定输入格式
                 //user.setEndTime(endTime.getText().toString())//教育结束时间，string->Date,没有限定输入格式                ;
                 //发送修改个人信息请求
+                Log.d(TAG, "onClick: "+PostParameterName.POST_URL_UPDATE_USER_INRO+user.getToken());
                 try {
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_UPDATE_USER_INRO+user.getToken(),new JSONObject(new Gson().toJson(user)),
                             new Response.Listener<JSONObject>() {
@@ -213,6 +213,7 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
     //初始化页面可用这个函数
     //todo:初始化界面
     private void initpage(User user) {
+        setEditTextSaveEnableFalse();
         name.setText(user.getUserName());
         age.setText(String.valueOf(user.getAge()));
         phoneNum.setText(user.getTelephone());
@@ -227,13 +228,13 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
     }
 
     private void setEditTextSaveEnableFalse(){
-        name.setSaveEnabled(false);
-        name.setSaveEnabled(false);
-        name.setSaveEnabled(false);
-        name.setSaveEnabled(false);
-        name.setSaveEnabled(false);
-        name.setSaveEnabled(false);
-        name.setSaveEnabled(false);
+        name.setSaveEnabled(true);
+        age.setSaveEnabled(false);
+        phoneNum.setSaveEnabled(false);
+        mailAddress.setSaveEnabled(false);
+        currentCity.setSaveEnabled(false);
+        school.setSaveEnabled(false);
+        major.setSaveEnabled(false);
     }
 
 }
