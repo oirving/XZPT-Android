@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.utils;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -42,7 +43,7 @@ public class UserInfoOptionAdapter extends RecyclerView.Adapter<UserInfoOptionAd
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.user_selector,parent,false);
         final ViewHolder holder = new ViewHolder(v);
@@ -76,6 +77,7 @@ public class UserInfoOptionAdapter extends RecyclerView.Adapter<UserInfoOptionAd
                         editor.commit();
                         Intent intent4 = new Intent(v.getContext(), ActorChoose.class);
                         v.getContext().startActivity(intent4);
+                        ((Activity)v.getContext()).finish();
                         break;
                         default:
                             break;
