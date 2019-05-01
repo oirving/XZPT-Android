@@ -48,10 +48,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                     user.setToken(userToken.getString(PostParameterName.STUDENT_TOKEN,null));
                     studentLoginWithToken(user);
                 }else{
-                    Intent student = new Intent(ActorChoose.this, StudentLogin.class);
-                    startActivity(student);
-                    finish();
-                    Toast.makeText(ActorChoose.this,"学生用户",Toast.LENGTH_SHORT).show();
+                    studentLogin();
                 }
 
                 break;
@@ -65,10 +62,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                     company.setToken(token);
                     companyLoginWithToken(company);
                 }else{
-                    Intent company = new Intent(ActorChoose.this, CompanyLogin.class);
-                    startActivity(company);
-                    finish();
-                    Toast.makeText(ActorChoose.this,"企业用户",Toast.LENGTH_SHORT).show();
+                    companyLogin();
                 }
                 break;
         }
@@ -101,7 +95,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                                         default:{
                                             Toast.makeText(ActorChoose.this, "使用token登录失败", Toast.LENGTH_SHORT).show();
                                             Log.d(TAG, "run: 使用token登录失败，跳转用户名密码登录"+postResult.getResultCode());
-
+                                            studentLogin();
                                         }
 
                                     }
@@ -120,7 +114,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
 
     }
 
-    private void companyLoginWithToken(Company company){
+    private void companyLoginWithToken(final Company company){
         VolleyNetUtil.getInstance().setRequestQueue(getApplicationContext());//获取requestQueue
 
         try {
@@ -148,7 +142,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                                         default:{
                                             Toast.makeText(ActorChoose.this, "使用token登录失败", Toast.LENGTH_SHORT).show();
                                             Log.d(TAG, "run: 使用token登录失败，跳转用户名密码登录"+postResult.getResultCode());
-
+                                            companyLogin();
                                         }
 
                                     }
@@ -165,5 +159,21 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
             e.printStackTrace();
         }
 
+    }
+
+    //学生端使用用户名密码登录
+    private void studentLogin(){
+        Intent student = new Intent(ActorChoose.this, StudentLogin.class);
+        startActivity(student);
+        finish();
+        Toast.makeText(ActorChoose.this,"学生用户",Toast.LENGTH_SHORT).show();
+    }
+
+    //企业端使用用户名和密码登录
+    private void companyLogin(){
+        Intent company = new Intent(ActorChoose.this, CompanyLogin.class);
+        startActivity(company);
+        finish();
+        Toast.makeText(ActorChoose.this,"企业用户",Toast.LENGTH_SHORT).show();
     }
 }
