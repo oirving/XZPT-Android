@@ -50,7 +50,7 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
 
     private User user = new User();//用户实体对象
     private String token;
-    public RequestQueue requestQueue;
+    private RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +111,7 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         //用户已经登录，查询个人信息并显示
         requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
         SharedPreferences userToken = getSharedPreferences("token",0);
-        token = userToken.getString(PostParameterName.TOKEN,null);
+        token = userToken.getString(PostParameterName.STUDENT_TOKEN,null);
         if (token != null){
             Log.d(TAG, "onCreate: TOKEN is "+token);
 
@@ -126,10 +126,7 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                                 Log.d(TAG, "onResponse: 返回"+response.toString());
                                 Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
                                 final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), jsonType);
-//                                user = new Gson().from
-//                                user = new Gson().fromJson(response.toString(),User.class);
                                 Log.d(TAG, "onResponse: "+postResult.getResultCode());
-//                                user = new Gson().fromJson(postResult.getResultObject(),User.class);
                                 user = postResult.getResultObject();
                                 user.setToken(token);
                                 runOnUiThread(new Runnable() {
