@@ -1,31 +1,43 @@
 package com.djylrz.xzpt.fragment;
 
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.utils.ResumeModelItem;
+import com.djylrz.xzpt.utils.ResumeModelListAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FragmentResume extends Fragment {
+    private List<ResumeModelItem> resumeModelItemList = new ArrayList<>();
+    private ResumeModelListAdapter resumeModelListAdapter;
 
-//    private ImageView imageView;
-//
-//    @Nullable
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_my_resume);
-//
-//        initResumeList();
-//        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.myresume_list);
-//        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
-//        recyclerView.setLayoutManager(layoutManager);
-//        ResumeListAdapter adapter = new ResumeListAdapter(mResumeList);
-//        recyclerView.setAdapter(adapter);
-//
-//    }
-//
-//    private void initResumeList() {
-//        for(int i=0;i<numOfResume;i++) {
-//            //信息填入，上面的参数填好就不用管这里了，没填好之前点击会崩
-//            ResumeItem resumeItem = new ResumeItem("通过","董事局主席","小李","2019-4-21");
-//            mResumeList.add(resumeItem);
-//        }
-//    }
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment2_resume,container,false);
+        initResumeModel();
+        resumeModelListAdapter = new ResumeModelListAdapter(resumeModelItemList);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.resume_model_list);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(resumeModelListAdapter);
+        return view;
+    }
+
+    public void initResumeModel() {
+        for(int i =0;i<20;i++) {
+            ResumeModelItem resumeModelItem = new ResumeModelItem(R.drawable.resumemodel2);
+            resumeModelItemList.add(resumeModelItem);
+        }
+    }
 }
