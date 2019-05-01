@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.bean.Company;
 import com.djylrz.xzpt.bean.PostResult;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
@@ -55,10 +56,20 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
 
                 break;
             case R.id.choose_company:
-                Intent company = new Intent(ActorChoose.this, CompanyLogin.class);
-                startActivity(company);
-                finish();
-                Toast.makeText(ActorChoose.this,"企业用户",Toast.LENGTH_SHORT).show();
+                //验证是否已经登录
+                SharedPreferences preferences = getSharedPreferences("token",0);
+                String token = preferences.getString(PostParameterName.TOKEN,null);
+                if(token != null){
+                    Log.d(TAG, "已存在企业用户token");
+                    Company company = new Company();
+                    company.setToken(token);
+                    companyLoginWithToken(company);
+                }else{
+                    Intent company = new Intent(ActorChoose.this, CompanyLogin.class);
+                    startActivity(company);
+                    finish();
+                    Toast.makeText(ActorChoose.this,"企业用户",Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
@@ -86,6 +97,53 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                                             Log.d(TAG, "postLogin: 学生用户登录成功！");
                                             startActivity(intent);
                                             finish();
+                                        }break;
+                                        default:{
+                                            Toast.makeText(ActorChoose.this, "使用token登录失败", Toast.LENGTH_SHORT).show();
+                                            Log.d(TAG, "run: 使用token登录失败，跳转用户名密码登录"+postResult.getResultCode());
+
+                                        }
+
+                                    }
+                                }
+                            });
+                        }
+                    }, new com.android.volley.Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("TAG", error.getMessage(), error);
+                }});
+            VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void companyLoginWithToken(Company company){
+        VolleyNetUtil.getInstance().setRequestQueue(getApplicationContext());//获取requestQueue
+
+        try {
+            Log.d(TAG, "onCreate: 使用token登录"+new Gson().toJson(company));
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_COMPANY_LOGIN_WITH_TOKEN+company.getToken(),
+                    new JSONObject(new Gson().toJson(company)),
+                    new com.android.volley.Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG, "onResponse: 返回"+response.toString());
+                            final PostResult postResult = new Gson().fromJson(response.toString(), PostResult.class);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    switch (postResult.getResultCode()){
+                                        case "200":{
+                                            //跳转到企业首页
+                                            Intent intent = new Intent(ActorChoose.this,Main2Activity.class);
+                                            startActivity(intent);
+                                            Log.d(TAG, "postLogin: 企业用户登录成功！");
+                                            finish();
+
                                         }break;
                                         default:{
                                             Toast.makeText(ActorChoose.this, "使用token登录失败", Toast.LENGTH_SHORT).show();
