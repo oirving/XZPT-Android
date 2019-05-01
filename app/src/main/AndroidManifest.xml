@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:networkSecurityConfig="@xml/network_config"
         android:theme="@style/AppTheme">
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
         <activity android:name=".Activity.AddRecruitmentActivity"></activity>
         <activity android:name=".Activity.ResetPasswordActivity"></activity>
         <activity android:name=".Activity.ForgetPasswordActivity" />

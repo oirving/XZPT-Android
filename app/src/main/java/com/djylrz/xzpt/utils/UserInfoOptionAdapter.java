@@ -1,6 +1,7 @@
 package com.djylrz.xzpt.utils;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,11 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.djylrz.xzpt.Activity.FocusCompanyActivity;
-import com.djylrz.xzpt.Activity.HelpAndFeedbackActivity;
-import com.djylrz.xzpt.Activity.JobIntention;
-import com.djylrz.xzpt.Activity.MyResumeActivity;
-import com.djylrz.xzpt.Activity.StudentLogin;
+import com.djylrz.xzpt.Activity.*;
 import com.djylrz.xzpt.R;
 
 import java.util.List;
@@ -71,6 +68,14 @@ public class UserInfoOptionAdapter extends RecyclerView.Adapter<UserInfoOptionAd
                     case 3:
                         Intent intent3 = new Intent(v.getContext(), HelpAndFeedbackActivity.class);
                         v.getContext().startActivity(intent3);
+                        break;
+                    case 4:
+                        SharedPreferences userToken = v.getContext().getSharedPreferences("token",0);
+                        SharedPreferences.Editor editor = userToken.edit();
+                        editor.remove(PostParameterName.STUDENT_TOKEN);
+                        editor.commit();
+                        Intent intent4 = new Intent(v.getContext(), ActorChoose.class);
+                        v.getContext().startActivity(intent4);
                         break;
                         default:
                             break;

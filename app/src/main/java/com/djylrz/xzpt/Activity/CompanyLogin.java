@@ -35,16 +35,16 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_company_login);
 
-        //验证是否已经登录
-        SharedPreferences preferences = getSharedPreferences("token",0);
-        String token = preferences.getString(PostParameterName.TOKEN,"");
-        if(token != null){
-            Log.d(TAG, "onCreate: 已登录用户，token为："+token);
-            //跳转到企业首页
-            Intent intent = new Intent(CompanyLogin.this,Main2Activity.class);
-            startActivity(intent);
-            finish();
-        }
+//        //验证是否已经登录
+//        SharedPreferences preferences = getSharedPreferences("token",0);
+//        String token = preferences.getString(PostParameterName.TOKEN,"");
+//        if(token != null){
+//            Log.d(TAG, "onCreate: 已登录用户，token为："+token);
+//            //跳转到企业首页
+//            Intent intent = new Intent(CompanyLogin.this,Main2Activity.class);
+//            startActivity(intent);
+//            finish();
+//        }
 
         id = (EditText)findViewById(R.id.company_input_name);//输入的账号
         password = (EditText)findViewById(R.id.company_input_password);//输入的密码
