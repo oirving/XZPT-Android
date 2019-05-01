@@ -18,6 +18,7 @@ public class User implements Serializable {
     private long sex;
     private String school;
     private String specialty;
+    private long highestEducation;
     private java.sql.Date startTime;
     private java.sql.Date endTime;
     private long workTime;
@@ -28,6 +29,7 @@ public class User implements Serializable {
     private String stationLabel;
     private String expectSalary;
     private String token;
+    private long age;
 
 
     public String getUserId() {
@@ -108,6 +110,15 @@ public class User implements Serializable {
 
     public void setSpecialty(String specialty) {
         this.specialty = specialty;
+    }
+
+
+    public long getHighestEducation() {
+        return highestEducation;
+    }
+
+    public void setHighestEducation(long highestEducation) {
+        this.highestEducation = highestEducation;
     }
 
 
@@ -200,6 +211,13 @@ public class User implements Serializable {
         this.token = token;
     }
 
+
+    public long getAge() {
+        return age;
+    }
+
+    public void setAge(long age) {
+        this.age = age;
+    }
+
 }
-
-
