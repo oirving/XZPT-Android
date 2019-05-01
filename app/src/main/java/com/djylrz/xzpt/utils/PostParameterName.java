@@ -8,6 +8,8 @@ public class PostParameterName {
     public static final String POST_URL_LOGIN = HOST+"/user/login";//学生登录接口
     public static final String POST_URL_REGISTER = HOST+"/user/register?code=";//用户注册接口
     public static final String POST_URL_GETVERIFICATIONCODE = HOST+"/getverificationcode/";//获取验证码接口
+    public static final String POST_URL_GET_USER_BY_TOKEN = HOST +"/user/getuserbytoken?token=";//查看用户信息
+    public static final String POST_URL_UPDATE_USER_INRO = HOST + "/user/updateinfo?token=";//修改用户信息
 
     public static final String POST_URL_COMPANY_LOGIN = HOST + "/company/login/";//企业登录接口
 

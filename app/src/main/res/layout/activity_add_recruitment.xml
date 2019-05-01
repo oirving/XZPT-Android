@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="40dp"
+                android:layout_marginLeft="20dp"
                 android:textColor="#000"
                 android:text="岗位名称"/>
             <EditText
@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="40dp"
+                android:layout_marginLeft="20dp"
                 android:textColor="#000"
                 android:text="岗位描述"/>
             <EditText
@@ -78,7 +78,192 @@
             android:layout_height="1dp"
             android:background="#4fa3a3a3"
             />
-
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <TextView
+                android:id="@+id/job_contact_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:textColor="#000"
+                android:text="联系人及联系方式"/>
+            <EditText
+                android:id="@+id/job_contact_et"
+                android:layout_width="match_parent"
+                android:layout_toRightOf="@id/job_contact_tv"
+                android:layout_height="40dp"
+                android:paddingLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@null"
+                android:hint="请输入联系人及联系方式"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#4fa3a3a3"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/job_location_layout">
+            <TextView
+                android:id="@+id/job_location_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:textColor="#000"
+                android:text="工作地点"/>
+            <TextView
+                android:id="@+id/job_location_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/iv_select_location"
+                android:layout_marginRight="20dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:text="福建省福州市闽侯县"
+                />
+            <ImageView
+                android:id="@+id/iv_select_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/icon_press_edit"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#4fa3a3a3"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <TextView
+                android:id="@+id/job_deliveryRequest_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:textColor="#000"
+                android:text="投递要求"/>
+            <EditText
+                android:id="@+id/job_deliveryRequest_et"
+                android:layout_width="match_parent"
+                android:layout_toRightOf="@id/job_deliveryRequest_tv"
+                android:layout_height="40dp"
+                android:paddingLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@null"
+                android:hint="请输入投递要求"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#4fa3a3a3"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <TextView
+                android:id="@+id/job_salary_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:textColor="#000"
+                android:text="薪资"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#4fa3a3a3"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <TextView
+                android:id="@+id/job_degree_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:textColor="#000"
+                android:text="学历"/>
+            <TextView
+                android:id="@+id/job_degree_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/iv_select_degree"
+                android:layout_marginRight="20dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:text="本科以上"
+                />
+            <ImageView
+                android:id="@+id/iv_select_degree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:layout_centerVertical="true"
+                android:background="@drawable/icon_press_edit"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#4fa3a3a3"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <TextView
+                android:id="@+id/job_workTime_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:textColor="#000"
+                android:text="工作时间"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#4fa3a3a3"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <TextView
+                android:id="@+id/job_industryLabel_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:textColor="#000"
+                android:text="所属行业"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#4fa3a3a3"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <TextView
+                android:id="@+id/job_stationLabel_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:textColor="#000"
+                android:text="岗位类型"/>
+        </RelativeLayout>
     </LinearLayout>
     </ScrollView>
 </LinearLayout>
