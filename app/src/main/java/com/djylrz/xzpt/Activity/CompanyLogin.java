@@ -16,10 +16,7 @@ import com.djylrz.xzpt.bean.PostResult;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.R;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import okhttp3.*;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 
