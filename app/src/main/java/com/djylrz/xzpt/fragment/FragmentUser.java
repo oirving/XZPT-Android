@@ -28,7 +28,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
     private RecyclerView userOption;
     private UserInfoOptionAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
-    private UserSelector myResume,jobInention,focusCompany,help;
+    private UserSelector myResume,jobInention,focusCompany,help,logout;
 
     @Nullable
     @Override
@@ -46,6 +46,10 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
 
         help = new UserSelector(R.drawable.help,"帮 助 与 反 馈 >");
         userSelectorList.add(help);
+
+        logout = new UserSelector(0,"注 销>");
+        userSelectorList.add(logout);
+
 
         View view = inflater.inflate(R.layout.fragment5_user, container, false);
         Button userInfoButton = (Button) view.findViewById(R.id.perfect_info_button);//完善信息按钮
