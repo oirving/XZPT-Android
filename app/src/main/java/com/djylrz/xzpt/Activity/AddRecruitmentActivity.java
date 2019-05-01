@@ -1,17 +1,21 @@
 package com.djylrz.xzpt.Activity;
 
 import android.app.Activity;
-import android.graphics.Color;
+import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.djylrz.xzpt.R;
+import com.lljjcoder.Constant;
 import com.lljjcoder.Interface.OnCityItemClickListener;
 import com.lljjcoder.bean.DistrictBean;
 import com.lljjcoder.bean.ProvinceBean;
@@ -20,20 +24,57 @@ import com.lljjcoder.style.cityjd.JDCityPicker;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.qqtheme.framework.picker.DoublePicker;
 import cn.qqtheme.framework.picker.SinglePicker;
 
 
 public class AddRecruitmentActivity extends AppCompatActivity implements View.OnClickListener{
+    private static final String TAG = "AddRecruitmentActivity";
     private Toolbar toolbar;
-    //城市id
-    private String id;
-    //城市name
-    private String name;
     private Activity activity;
+    private EditText editTextJobName;
+    private EditText editTextDescription;
+    private EditText editTextDeliveryRequest;
+    private EditText editTextContact;
     private RelativeLayout layoutLocation;
     private TextView textViewLocation;
+    private RelativeLayout layoutSalary;
+    private TextView textViewSalary;
     private RelativeLayout layoutDegree;
     private TextView textViewDegree;
+    private RelativeLayout layoutWorkTime;
+    private TextView textViewWorkTime;
+    private RelativeLayout layoutIndustryLabel;
+    private TextView textViewIndustryLabel;
+    private RelativeLayout layoutStationLabel;
+    private TextView textViewStationLabel;
+    private RelativeLayout layoutType;
+    private TextView textViewType;
+
+    //职位名称
+    private String jobName;
+    //岗位描述
+    private String description;
+    //联系人及联系方式
+    private String contact;
+    //工作地点
+    private String location;
+    //投递要求
+    private String deliveryRequest;
+    //薪资
+    private String salary;
+    //学历要求
+    private String degree;
+    //工作时间
+    private String workTime;
+    //行业标签
+    private String industryLabel;
+    //岗位标签
+    private String stationLabel;
+    //招聘、实习或者兼职
+    private String jobType;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +84,23 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
         toolbar = (Toolbar)findViewById(R.id.asa_toolbar);
         layoutLocation = findViewById(R.id.job_location_layout);
         textViewLocation = findViewById(R.id.job_location_result);
+        layoutSalary = findViewById(R.id.job_salary_layout);
+        textViewSalary = findViewById(R.id.job_salary_result);
         layoutDegree = findViewById(R.id.job_degree_layout);
         textViewDegree = findViewById(R.id.job_degree_result);
+        layoutWorkTime = findViewById(R.id.job_workTime_layout);
+        textViewWorkTime = findViewById(R.id.job_workTime_result);
+        layoutIndustryLabel = findViewById(R.id.job_industryLabel_layout);
+        textViewIndustryLabel = findViewById(R.id.job_industryLabel_result);
+        layoutStationLabel = findViewById(R.id.job_stationLabel_layout);
+        textViewStationLabel = findViewById(R.id.job_stationLabel_result);
+        layoutType = findViewById(R.id.job_type_layout);
+        textViewType = findViewById(R.id.job_type_result);
+
+        editTextJobName = findViewById(R.id.job_name_et);
+        editTextDescription = findViewById(R.id.job_description_et);
+        editTextDeliveryRequest = findViewById(R.id.job_deliveryRequest_et);
+        editTextContact = findViewById(R.id.job_contact_et);
         //设置标题栏
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setTitle("发布岗位");
@@ -62,6 +118,10 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                 switch (item.getItemId()){
                     case R.id.add_menu_done:
                         //发布岗位
+                        //检查是否填写完整
+                        if(checkData()){
+                            //提交数据至服务器
+                        }
                         break;
                     default:
                         break;
@@ -72,8 +132,11 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
         //添加监听
         layoutLocation.setOnClickListener(this);
         layoutDegree.setOnClickListener(this);
-
-
+        layoutSalary.setOnClickListener(this);
+        layoutWorkTime.setOnClickListener(this);
+        layoutIndustryLabel.setOnClickListener(this);
+        layoutStationLabel.setOnClickListener(this);
+        layoutType.setOnClickListener(this);
     }
 
     @Override
@@ -88,6 +151,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                     @Override
                     public void onSelected(ProvinceBean province, com.lljjcoder.bean.CityBean city, DistrictBean district) {
                         textViewLocation.setText(province.getName() + city.getName() + district.getName());
+                        location = province.getName() + city.getName() + district.getName();
                     }
 
                     @Override
@@ -97,31 +161,226 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                 cityPicker.showCityPicker();
                 break;
             case R.id.job_degree_layout:
-                List<String> data = new ArrayList<>();
-                data.add("无要求");
-                data.add("初中及以上");
-                data.add("中专/中技及以上");
-                data.add("高中及以上");
-                data.add("大专及以上");
-                data.add("本科及以上");
-                data.add("硕士及以上");
-                data.add("博士及以上");
-                SinglePicker<String> picker = new SinglePicker<>(this, data);
-                picker.setCanceledOnTouchOutside(false);
-                picker.setSelectedIndex(1);
-                picker.setCycleDisable(true);
-                picker.setCanceledOnTouchOutside(true);
-                picker.setTextSizeAutoFit(true);
-                picker.setLabelTextColor(R.color.colorPrimary);
-                picker.setOnItemPickListener(new SinglePicker.OnItemPickListener<String>() {
-                    @Override
-                    public void onItemPicked(int index, String item) {
-                        textViewDegree.setText(item);
-                        Toast.makeText(activity, item, Toast.LENGTH_SHORT).show();
-                    }
-                });
-                picker.show();
+                onDegreePicker(this.getWindow().getDecorView());
                 break;
+            case R.id.job_salary_layout:
+                onSalaryPicker(this.getWindow().getDecorView());
+                break;
+            case R.id.job_workTime_layout:
+                onWorkTimePicker(this.getWindow().getDecorView());
+                break;
+            case R.id.job_industryLabel_layout:
+                onIndustryLabelPicker(this.getWindow().getDecorView());
+                break;
+            case R.id.job_stationLabel_layout:
+                Intent intent = new Intent(AddRecruitmentActivity.this, SelectTagActivity.class);
+                startActivityForResult(intent,0);
+                break;
+            case R.id.job_type_layout:
+                onTypePicker(this.getWindow().getDecorView());
+                break;
+        }
+    }
+
+    /**
+     *
+     * @param view
+     */
+    public void onDegreePicker(View view) {
+        List<String> data = new ArrayList<>();
+        data.add("无要求");
+        data.add("初中及以上");
+        data.add("中专/中技及以上");
+        data.add("高中及以上");
+        data.add("大专及以上");
+        data.add("本科及以上");
+        data.add("硕士及以上");
+        data.add("博士及以上");
+        SinglePicker<String> picker = new SinglePicker<>(this, data);
+        picker.setSelectedIndex(1);
+        picker.setCycleDisable(true);
+        picker.setCanceledOnTouchOutside(true);
+        picker.setTextSizeAutoFit(true);
+        picker.setLabelTextColor(R.color.colorPrimary);
+        picker.setOnItemPickListener(new SinglePicker.OnItemPickListener<String>() {
+            @Override
+            public void onItemPicked(int index, String item) {
+                textViewDegree.setText(item);
+                Toast.makeText(activity, item, Toast.LENGTH_SHORT).show();
+                degree = item;
+            }
+        });
+        picker.show();
+    }
+    /**
+     *
+     * @param view
+     */
+    public void onSalaryPicker(View view) {
+        final ArrayList<String> firstData = new ArrayList<>();
+        for(int i = 0; i <= 100; i++){
+            firstData.add(i+"");
+        }
+
+        final ArrayList<String> secondData = new ArrayList<>();
+        for(int i = 0; i <= 100; i++){
+            secondData.add(i+"");
+        }
+        final DoublePicker picker = new DoublePicker(this, firstData, secondData);
+        picker.setDividerVisible(true);
+        picker.setCycleDisable(true);
+        picker.setSelectedIndex(0, 0);
+        picker.setCanceledOnTouchOutside(true);
+        picker.setFirstLabel(null, "K");
+        picker.setSecondLabel("-", "K");
+        picker.setTextSizeAutoFit(true);
+        picker.setContentPadding(15, 10);
+        picker.setLabelTextColor(R.color.colorPrimary);
+        picker.setOnPickListener(new DoublePicker.OnPickListener() {
+            @Override
+            public void onPicked(int selectedFirstIndex, int selectedSecondIndex) {
+                if(selectedFirstIndex <= selectedSecondIndex){
+                    textViewSalary.setText(firstData.get(selectedFirstIndex) + "K - " + secondData.get(selectedSecondIndex)+"K");
+                    salary = firstData.get(selectedFirstIndex) + "K - " + secondData.get(selectedSecondIndex)+"K";
+                    Toast.makeText(activity, firstData.get(selectedFirstIndex) + "K - " + secondData.get(selectedSecondIndex)+"K", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(activity, "薪资区间应该从小到大，请重新设置", Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
+        picker.show();
+    }
+
+    /**
+     *
+     * @param view
+     */
+    public void onWorkTimePicker(View view) {
+        List<String> data = new ArrayList<>();
+        data.add("面议");
+        data.add("955");
+        data.add("965");
+        data.add("956");
+        data.add("996");
+        SinglePicker<String> picker = new SinglePicker<>(this, data);
+        picker.setSelectedIndex(1);
+        picker.setCycleDisable(true);
+        picker.setCanceledOnTouchOutside(true);
+        picker.setTextSizeAutoFit(true);
+        picker.setLabelTextColor(R.color.colorPrimary);
+        picker.setOnItemPickListener(new SinglePicker.OnItemPickListener<String>() {
+            @Override
+            public void onItemPicked(int index, String item) {
+                textViewWorkTime.setText(item);
+                workTime = item;
+                Toast.makeText(activity, item, Toast.LENGTH_SHORT).show();
+            }
+        });
+        picker.show();
+    }
+
+    /**
+     *
+     * @param view
+     */
+    public void onIndustryLabelPicker(View view) {
+        List<String> data = new ArrayList<>();
+        data.add("开发|测试|运维类");
+        data.add("产品|需求|项目类");
+        data.add("运营|编辑|客服类");
+        data.add("市场|商务类");
+        data.add("销售类");
+        data.add("综合职能|高级管理类");
+        data.add("金融类");
+        data.add("文娱|传媒|艺术|体育类");
+        data.add("教育|培训类");
+        data.add("商业服务|专业服务类");
+        data.add("贸易|批发|零售|租赁业类");
+        data.add("交通|运输|物流|仓储类");
+        data.add("房地产|建筑|物业类");
+        data.add("生产|加工|制造类");
+        data.add("能源矿产|农林牧渔类");
+        data.add("化工|生物|制药|医护类");
+        data.add("公务员|其他类");
+        SinglePicker<String> picker = new SinglePicker<>(this, data);
+        picker.setSelectedIndex(1);
+        picker.setCycleDisable(true);
+        picker.setCanceledOnTouchOutside(true);
+        picker.setTextSizeAutoFit(true);
+        picker.setLabelTextColor(R.color.colorPrimary);
+        picker.setOnItemPickListener(new SinglePicker.OnItemPickListener<String>() {
+            @Override
+            public void onItemPicked(int index, String item) {
+                textViewIndustryLabel.setText(item);
+                industryLabel = item;
+                Toast.makeText(activity, index+" "+item, Toast.LENGTH_SHORT).show();
+            }
+        });
+        picker.show();
+    }
+    /**
+     *
+     * @param view
+     */
+    public void onTypePicker(View view) {
+        List<String> data = new ArrayList<>();
+        data.add("招聘");
+        data.add("实习");
+        data.add("兼职");
+
+        SinglePicker<String> picker = new SinglePicker<>(this, data);
+        picker.setSelectedIndex(1);
+        picker.setCycleDisable(true);
+        picker.setCanceledOnTouchOutside(true);
+        picker.setTextSizeAutoFit(true);
+        picker.setLabelTextColor(R.color.colorPrimary);
+        picker.setOnItemPickListener(new SinglePicker.OnItemPickListener<String>() {
+            @Override
+            public void onItemPicked(int index, String item) {
+                textViewType.setText(item);
+                jobType = (index+1)+"";
+                Toast.makeText(activity, index + " " + item, Toast.LENGTH_SHORT).show();
+            }
+        });
+        picker.show();
+    }
+
+    /**
+     * 重复次数、提醒时间、提醒方式的回调函数
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == 0){//识别码
+            textViewStationLabel.setText(data.getStringExtra("names"));
+            stationLabel = data.getStringExtra("number");
+
+        }
+
+    }
+
+    /**
+     *
+     * @return
+     */
+    private boolean checkData(){
+        //获取用户填写的数据
+        jobName = editTextJobName.getText().toString();
+        description = editTextDescription.getText().toString();
+        deliveryRequest = editTextDeliveryRequest.getText().toString();
+        contact = editTextContact.getText().toString();
+        Log.d(TAG, "checkData: "+ jobName + "," + description + "," + deliveryRequest + "," + contact);
+        if(jobName.equals("") ||jobName == null || description == null || description.equals("") || contact == null || contact.equals("") ||
+                location == null || deliveryRequest == null || deliveryRequest.equals("") || degree == null
+                || workTime == null || industryLabel == null || stationLabel == null || jobType == null){
+            Toast.makeText(activity, "除薪资外，其他项请完整填写", Toast.LENGTH_SHORT).show();
+            return false;
+        }else{
+            return true;
         }
     }
 }
