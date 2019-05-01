@@ -12,19 +12,27 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PostResult;
+import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
+import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 
+import com.google.gson.reflect.TypeToken;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class StudentLogin extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "StudentLogin";
@@ -33,7 +41,6 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
     private ImageView headPortrait;//头像
 
     private String responseData;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,9 +130,8 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
         @Override
         protected void onPostExecute(String responseData) {
             super.onPostExecute(responseData);
-            PostResult result = new Gson().fromJson(responseData, PostResult.class);
-
-            if (result != null){
+            if (responseData != null){
+                PostResult result = new Gson().fromJson(responseData, PostResult.class);
                 switch (result.getResultCode()){
                     case "200":{
                         //获取学生用户token，并保存到SharedPreferences
@@ -133,12 +139,13 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
                         user.setToken(result.getResultObject());
                         SharedPreferences companyToken = getSharedPreferences("token", 0);
                         SharedPreferences.Editor editor = companyToken.edit();
-                        editor.putString(PostParameterName.TOKEN,user.getToken());
+                        editor.putString(PostParameterName.STUDENT_TOKEN,user.getToken());
                         editor.commit();
                         //跳转到用户主界面
                         Intent intent = new Intent(StudentLogin.this,MainActivity.class);
                         Log.d(TAG, "postLogin: 学生用户登录成功！");
                         startActivity(intent);
+                        finish();
                     }break;
                     case "2008":{
                         //用户名密码有误
