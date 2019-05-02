@@ -2,11 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorHead"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="简历模板选择"
+            android:gravity="center"
+            android:textSize="30dp"
+            android:textColor="@color/white"
+            />
+    </LinearLayout>
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/myresume_list"
+        android:id="@+id/resume_model_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
         >
 
     </android.support.v7.widget.RecyclerView>

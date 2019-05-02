@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Recruitment;
-import com.djylrz.xzpt.utils.RecruitmentAdapter;
+import com.djylrz.xzpt.utils.StudentRecruitmentAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class RecommendCardFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
         recyclerView.setLayoutManager(layoutManager);
-        RecruitmentAdapter adapter = new RecruitmentAdapter(recruitmentList,0);
+        StudentRecruitmentAdapter adapter = new StudentRecruitmentAdapter(recruitmentList,0);
         recyclerView.setAdapter(adapter);
 
         return v;
