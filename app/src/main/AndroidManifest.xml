@@ -13,11 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Activity.SelectTagActivity"></activity>
-
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-
+        <activity android:name=".Activity.ResumeModelDetailsActivity" />
         <activity android:name=".Activity.AddRecruitmentActivity" />
         <activity android:name=".Activity.ResetPasswordActivity" />
         <activity android:name=".Activity.ForgetPasswordActivity" />
