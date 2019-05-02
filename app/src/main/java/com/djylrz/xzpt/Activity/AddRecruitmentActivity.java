@@ -31,6 +31,7 @@ import com.lljjcoder.Interface.OnCityItemClickListener;
 import com.lljjcoder.bean.DistrictBean;
 import com.lljjcoder.bean.ProvinceBean;
 import com.lljjcoder.style.cityjd.JDCityPicker;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,6 +67,8 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
     private RelativeLayout layoutType;
     private TextView textViewType;
 
+    //动画控件
+    private AVLoadingIndicatorView avi;
     private SubData subData;
     private RequestQueue requestQueue;
 
@@ -96,6 +99,8 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
         editTextDescription = findViewById(R.id.job_description_et);
         editTextDeliveryRequest = findViewById(R.id.job_deliveryRequest_et);
         editTextContact = findViewById(R.id.job_contact_et);
+
+        avi = findViewById(R.id.avi);
         //设置标题栏
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setTitle("发布岗位");
@@ -113,6 +118,8 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                 switch (item.getItemId()){
                     case R.id.add_menu_done:
                         //发布岗位
+                        //开始加载动画
+                        startAnim();
                         //检查是否填写完整
                         if(checkData()){
                             //提交数据至服务器
@@ -377,13 +384,15 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                 subData.getLocation() == null || subData.getDeliveryRequest() == null || subData.getDeliveryRequest().equals("") || subData.getDegree() == null
                 || subData.getWorkTime() == null || subData.getIndustryLabel() == null || subData.getStationLabel() == null || subData.getJobType() == null){
             Toast.makeText(activity, "除薪资外，其他项请完整填写", Toast.LENGTH_SHORT).show();
+            //结束加载动画
+            stopAnim();
             return false;
         }else{
             return true;
         }
     }
     private void submitData(){
-        //验证是否已经登录
+        //获取token
         SharedPreferences preferences = getSharedPreferences("token",0);
         String token = preferences.getString(PostParameterName.TOKEN,null);
         //组装URL
@@ -396,19 +405,18 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                         @Override
                         public void onResponse(JSONObject response) {
                             Log.d(TAG, "onResponse: 返回"+response.toString());
-                            Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
-                            final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), jsonType);
-                            Log.d(TAG, "onResponse: "+postResult.getResultCode());
+//                            Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
+//                            final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), jsonType);
+//                            Log.d(TAG, "onResponse: "+postResult.getResultCode());
 //                            user = postResult.getResultObject();
 //                            user.setToken(token);
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    //todo:获取信息显示在编辑框上
-//                                    initpage(user);
-//                                    Log.d(TAG, "run: ------");
-//                                }
-//                            });
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //结束加载动画
+                                    stopAnim();
+                                }
+                            });
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -420,6 +428,22 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             e.printStackTrace();
         }
         Log.d(TAG, "onCreate: ");
+    }
+
+    /**
+     *
+     */
+    public void startAnim(){
+        avi.show();
+        // or avi.smoothToShow();
+    }
+
+    /**
+     *
+     */
+    public void stopAnim(){
+        avi.hide();
+        // or avi.smoothToHide();
     }
 }
 
