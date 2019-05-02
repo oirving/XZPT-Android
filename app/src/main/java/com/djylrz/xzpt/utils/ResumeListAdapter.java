@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +25,7 @@ public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.Vi
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         View resumeListView;
-        Button resumeState;
+        TextView resumeState;
         ImageView resumeEdit;
         TextView resumePosition;
         TextView resumeUserName;
@@ -35,7 +34,7 @@ public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.Vi
         public ViewHolder(View v) {
             super(v);
             resumeListView = v;
-            resumeState = (Button) v.findViewById(R.id.resume_state_button);
+            resumeState = (TextView) v.findViewById(R.id.resume_state_textview);
             resumeEdit = (ImageView) v.findViewById(R.id.resume_edit_imageview);
             resumePosition = (TextView) v.findViewById(R.id.resume_position_textview);
             resumeUserName = (TextView) v.findViewById(R.id.resume_username_textview);
