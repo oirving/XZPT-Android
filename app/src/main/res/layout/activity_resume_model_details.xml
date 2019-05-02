@@ -11,7 +11,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="荣誉证书"
+            android:text="简历信息"
             android:gravity="center"
             android:textSize="30dp"
             android:textColor="@color/white"
@@ -101,6 +101,7 @@
             android:layout_height="200dp"
             android:background="@drawable/rectangle_style"
             android:layout_margin="10dp"
+            android:orientation="vertical"
             >
             <TextView
                 android:layout_width="match_parent"
@@ -108,18 +109,31 @@
                 android:text="荣誉证书"
                 android:textSize="25dp"
                 />
+            <TextView
+                android:id="@+id/awards"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="xxxxxxxx"
+                />
         </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:background="@drawable/rectangle_style"
                 android:layout_margin="10dp"
+                android:orientation="vertical"
                 >
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="项目经历"
                     android:textSize="25dp"
+                    />
+                <TextView
+                    android:id="@+id/project_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="xxxxxxxx"
                     />
             </LinearLayout>
             <LinearLayout
@@ -132,9 +146,42 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="项目经历"
+                    android:text="实践经历"
                     android:textSize="25dp"
                     />
+                <TextView
+                    android:id="@+id/practice_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="xxxxxxxxx"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                >
+                <Button
+                    android:id="@+id/export"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="导出"
+                    android:textSize="25dp"
+                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+                    <Button
+                        android:id="@+id/edit"
+                        android:layout_gravity="right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="25dp"
+                        android:text="编辑"
+                        />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
