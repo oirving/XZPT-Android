@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.utils;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.djylrz.xzpt.Activity.ResumeModelDetailsActivity;
 import com.djylrz.xzpt.R;
 
 import java.util.List;
@@ -45,8 +47,8 @@ public class ResumeModelListAdapter extends RecyclerView.Adapter<ResumeModelList
                 int position = holder.getAdapterPosition();
                 ResumeModelItem resumeModelItem = mResumeModelList.get(position);
                 Toast.makeText(v.getContext(),"clicked" ,Toast.LENGTH_SHORT).show();
-                switch (position) {
-                }
+                Intent intent = new Intent(v.getContext(), ResumeModelDetailsActivity.class);
+                v.getContext().startActivity(intent);
             }
         });
         return holder;
