@@ -8,14 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp">
-        <com.wang.avi.AVLoadingIndicatorView
-            android:id="@+id/avi_com_home"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            style="@style/AVLoadingIndicatorView"
-            android:visibility="gone"
-            app:indicatorName="BallPulseIndicator"
-            app:indicatorColor="@color/colorPrimary" />
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"

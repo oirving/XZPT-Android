@@ -26,6 +26,11 @@ import com.djylrz.xzpt.utils.LoadMoreWrapper;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.RecruitmentAdapter;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -34,9 +39,8 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 @SuppressLint("ValidFragment")
@@ -48,11 +52,11 @@ public class RecruitmentCardFragment extends Fragment {
     private LoadMoreWrapper loadMoreWrapper;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private AVLoadingIndicatorView avi;
     private static final String TAG = "RecruitmentCardFragment";
     private int currentPage = 1;
     private final int PAGE_SIZE = 20;
     private RequestQueue requestQueue;
+    private long limitNum = 9999;
 
     public static RecruitmentCardFragment getInstance(String title) {
         RecruitmentCardFragment sf = new RecruitmentCardFragment();
@@ -76,11 +80,7 @@ public class RecruitmentCardFragment extends Fragment {
         View v = inflater.inflate(R.layout.fr_recruitment_card, null);
 
         recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-        avi = v.findViewById(R.id.avi_com_home);
         requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext()); //把上下文context作为参数传递进去
-
-        //开始加载动画
-        startAnim();
 
         //加载数据
         initRecruitments();
@@ -96,6 +96,7 @@ public class RecruitmentCardFragment extends Fragment {
             public void onRefresh() {
                 // 刷新数据
                 recruitmentList.clear();
+                currentPage = 1;
                 initRecruitments();
                 loadMoreWrapper.notifyDataSetChanged();
 
@@ -116,21 +117,9 @@ public class RecruitmentCardFragment extends Fragment {
             @Override
             public void onLoadMore() {
                 loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING);
+                initRecruitments();
+                if (recruitmentList.size() <= limitNum) {
 
-                if (recruitmentList.size() < 52) {
-                    // 模拟获取网络数据，延时1s
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    initRecruitments();
-                                    loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_COMPLETE);
-                                }
-                            });
-                        }
-                    }, 1000);
                 } else {
                     // 显示加载到底的提示
                     loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
@@ -158,20 +147,32 @@ public class RecruitmentCardFragment extends Fragment {
                         @Override
                         public void onResponse(JSONObject response) {
                             Log.d(TAG, "onResponse: 返回"+response.toString());
-                            Type jsonType = new TypeToken<TempResponseData<List<Recruitment>>>() {}.getType();
-                            final TempResponseData<List<Recruitment>> postResult = new Gson().fromJson(response.toString(), jsonType);
+                            GsonBuilder builder = new GsonBuilder();
+                            builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+                                @Override
+                                public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                                    return new Date(json.getAsJsonPrimitive().getAsLong());
+                                }
+                            });
+                            Gson gson =builder.create();
+                            Type jsonType = new TypeToken<TempResponseData<TempResponseRecruitmentData<List<Recruitment>> >>() {}.getType();
+                            final TempResponseData<TempResponseRecruitmentData<List<Recruitment>> > postResult = gson.fromJson(response.toString(), jsonType);
                             Log.d(TAG, "onResponse: "+postResult.getResultCode());
-                            List<Recruitment> recruitments= postResult.getResultObject();
-                            for (Recruitment r:recruitments) {
-                                if(r.getValidate()==type){
-                                    recruitmentList.add(r);
+                            TempResponseRecruitmentData<List<Recruitment>>  resultObject = postResult.getResultObject();
+                            List<Recruitment> recruitments = resultObject.getContentList();
+                            for (int i = 0; i < recruitments.size(); ++i) {
+                                if(recruitments.get(i).getValidate()==type){
+                                    recruitmentList.add(recruitments.get(i));
                                 }
                             }
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    //结束加载动画
-                                    stopAnim();
+                                    if(postResult.getResultCode().equals(200)){
+                                        loadMoreWrapper.notifyDataSetChanged();
+                                    }else{
+                                        limitNum = recruitmentList.size();
+                                    }
                                 }
                             });
                         }
@@ -185,20 +186,42 @@ public class RecruitmentCardFragment extends Fragment {
             e.printStackTrace();
         }
     }
+}
+class TempResponseRecruitmentData<T>{
+    private Integer currentPage;
+    private Integer numOfPage;
+    private Integer pageSize;
+    private T contentList;
 
-    /**
-     *
-     */
-    public void startAnim(){
-        avi.show();
-        // or avi.smoothToShow();
+    public Integer getCurrentPage() {
+        return currentPage;
     }
 
-    /**
-     *
-     */
-    public void stopAnim(){
-        avi.hide();
-        // or avi.smoothToHide();
+    public void setCurrentPage(Integer currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public Integer getNumOfPage() {
+        return numOfPage;
+    }
+
+    public void setNumOfPage(Integer numOfPage) {
+        this.numOfPage = numOfPage;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public T getContentList() {
+        return contentList;
+    }
+
+    public void setContentList(T contentList) {
+        this.contentList = contentList;
     }
 }
