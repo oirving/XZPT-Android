@@ -42,4 +42,6 @@ dependencies {
     implementation('com.github.gzu-liyujiang.AndroidPicker:WheelPicker:1.5.6.20181018') {
         exclude group: 'com.android.support'
     }
+    //多选FlowLayout
+    implementation 'com.hyman:flowlayout-lib:1.1.2'
 }
