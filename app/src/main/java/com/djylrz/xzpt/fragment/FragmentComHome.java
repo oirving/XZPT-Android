@@ -8,10 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +20,7 @@ import com.djylrz.xzpt.Activity.AddRecruitmentActivity;
 import com.djylrz.xzpt.R;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.ArrayList;
 
@@ -34,6 +33,7 @@ public class FragmentComHome extends Fragment {
     private Toolbar toolbar;//导航栏
     private TextView textViewAdd;//导航栏发布按钮
     private static final String TAG = "FragmentComHome";
+
 
     @Nullable
     @Override
@@ -62,7 +62,7 @@ public class FragmentComHome extends Fragment {
             }
         });
         for (String title : mTitles) {
-            mFragments.add(SimpleCardFragment.getInstance(title));
+            mFragments.add(RecruitmentCardFragment.getInstance(title));
         }
 
         mTabLayout = mDecorView.findViewById(R.id.tl);
@@ -121,4 +121,5 @@ public class FragmentComHome extends Fragment {
             return mFragments.get(position);
         }
     }
+
 }

@@ -1,6 +1,7 @@
 package com.djylrz.xzpt.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -9,12 +10,18 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.bean.TempResponseData;
+import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.fragment.FragmentAdapter;
 import com.djylrz.xzpt.fragment.FragmentComHome;
 import com.djylrz.xzpt.fragment.FragmentDate;
@@ -22,10 +29,13 @@ import com.djylrz.xzpt.fragment.FragmentFindJob;
 import com.djylrz.xzpt.fragment.FragmentResume;
 import com.djylrz.xzpt.fragment.FragmentTips;
 import com.djylrz.xzpt.fragment.FragmentUser;
-import com.djylrz.xzpt.utils.RecyclerDivider;
-import com.djylrz.xzpt.utils.UserInfoOptionAdapter;
-import com.djylrz.xzpt.utils.UserSelector;
+import com.djylrz.xzpt.utils.*;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +51,9 @@ public class MainActivity extends BaseActivity {
     private List<Fragment> fragmentList;
     private BottomNavigationView navigation;
 
+    private String token;
+    private User user = new User();
+    private FragmentUser fragmentUser;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -94,7 +107,11 @@ public class MainActivity extends BaseActivity {
         fragmentList.add(new FragmentResume());
         fragmentList.add(new FragmentFindJob());
         fragmentList.add(new FragmentTips());
-        fragmentList.add(new FragmentUser());
+
+        fragmentUser = new FragmentUser();
+        fragmentList.add(fragmentUser);
+        getStudenInfo();
+
         FragmentAdapter myAdapter = new FragmentAdapter(getSupportFragmentManager(), this, fragmentList);
         viewPager.setAdapter(myAdapter);
         viewPager.setOffscreenPageLimit(5);
@@ -129,6 +146,47 @@ public class MainActivity extends BaseActivity {
 //                SCROLL_STATE_SETTLING：拖动结束,实际值为2
             }
         });
+    }
+
+    private void getStudenInfo(){
+        //用户已经登录，查询个人信息并显示
+        VolleyNetUtil.getInstance().setRequestQueue(getApplicationContext());//获取requestQueue
+        SharedPreferences userToken = getSharedPreferences("token",0);
+        token = userToken.getString(PostParameterName.STUDENT_TOKEN,null);
+        if (token != null){
+            Log.d(TAG, "onCreate: TOKEN is "+token);
+            user.setToken(token);
+
+            try {
+                Log.d(TAG, "onCreate: 获取个人信息，只填了token"+new Gson().toJson(user));
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_USER_BY_TOKEN+user.getToken(),new JSONObject(new Gson().toJson(user)),
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d(TAG, "onResponse: 返回"+response.toString());
+                                Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
+                                final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), jsonType);
+                                Log.d(TAG, "onResponse: "+postResult.getResultCode());
+                                user = postResult.getResultObject();
+                                user.setToken(token);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        fragmentUser.setUserName(user);
+                                    }
+                                });
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("TAG", error.getMessage(), error);
+                    }});
+                VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
 }
