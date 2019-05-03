@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.utils;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.djylrz.xzpt.Activity.RecruitmentDetailActivity;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Recruitment;
 
@@ -56,6 +58,9 @@ public class StudentRecruitmentAdapter extends RecyclerView.Adapter<StudentRecru
                 int position = holder.getAdapterPosition();
                 Recruitment recruitment = mRecruitments.get(position);
                 Toast.makeText(v.getContext(), "you clicked view " + recruitment.getJobName(), Toast.LENGTH_SHORT).show();
+                //todo 在招聘信息列表里点击后跳转的具体招聘信息页面 ->小榕
+                Intent intent = new Intent(v.getContext(), RecruitmentDetailActivity.class);
+                v.getContext().startActivity(intent);
             }
         });
         return holder;
