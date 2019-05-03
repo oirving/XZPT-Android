@@ -15,6 +15,7 @@ public class PostParameterName {
     public static final String POST_URL_GET_USER_BY_TOKEN = HOST +"/user/getuserbytoken?token=";//查看用户信息
     public static final String POST_URL_UPDATE_USER_INRO = HOST + "/user/updateinfo?token=";//修改用户信息
     public static final String POST_URL_RESET_PASSWORD = HOST +"/user/resetpasswd?";//找回密码URL
+    public static final String POST_URL_USER_GET_RECRUITMENT = HOST + "/user/getrecruitment"; // 查看招聘信息
 
     public static final String POST_URL_COMPANY_LOGIN = HOST + "/company/login/";//企业登录接口
     public static final String POST_URL_COMPANY_LOGIN_WITH_TOKEN = HOST + "/company/vertifytoken?token=";//企业token登录
