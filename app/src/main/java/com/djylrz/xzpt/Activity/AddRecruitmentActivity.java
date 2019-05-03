@@ -31,6 +31,7 @@ import com.lljjcoder.Interface.OnCityItemClickListener;
 import com.lljjcoder.bean.DistrictBean;
 import com.lljjcoder.bean.ProvinceBean;
 import com.lljjcoder.style.cityjd.JDCityPicker;
+import com.vondear.rxui.view.dialog.RxDialogLoading;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
@@ -42,6 +43,8 @@ import java.util.List;
 
 import cn.qqtheme.framework.picker.DoublePicker;
 import cn.qqtheme.framework.picker.SinglePicker;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 
 public class AddRecruitmentActivity extends AppCompatActivity implements View.OnClickListener{
@@ -67,11 +70,11 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
     private RelativeLayout layoutType;
     private TextView textViewType;
 
+
     //动画控件
-    private AVLoadingIndicatorView avi;
     private SubData subData;
     private RequestQueue requestQueue;
-
+    private RxDialogLoading rxDialogLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +103,9 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
         editTextDeliveryRequest = findViewById(R.id.job_deliveryRequest_et);
         editTextContact = findViewById(R.id.job_contact_et);
 
-        avi = findViewById(R.id.avi);
+        rxDialogLoading = new RxDialogLoading(this);
+        rxDialogLoading.setLoadingText("正在发布岗位");
+        rxDialogLoading.setLoadingColor(R.color.colorPrimary);
         //设置标题栏
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setTitle("发布岗位");
@@ -119,7 +124,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                     case R.id.add_menu_done:
                         //发布岗位
                         //开始加载动画
-                        startAnim();
+                        rxDialogLoading.show();
                         //检查是否填写完整
                         if(checkData()){
                             //提交数据至服务器
@@ -385,7 +390,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                 || subData.getWorkTime() == null || subData.getIndustryLabel() == null || subData.getStationLabel() == null || subData.getJobType() == null){
             Toast.makeText(activity, "除薪资外，其他项请完整填写", Toast.LENGTH_SHORT).show();
             //结束加载动画
-            stopAnim();
+            rxDialogLoading.hide();
             return false;
         }else{
             return true;
@@ -412,10 +417,11 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                                 @Override
                                 public void run() {
                                     //结束加载动画
-                                    stopAnim();
+                                    rxDialogLoading.hide();
                                     if(postResult.getResultCode() == 200){
                                         Toast.makeText(activity, "岗位发布成功", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(AddRecruitmentActivity.this,Main2Activity.class);
+                                        intent.setFlags(FLAG_ACTIVITY_NEW_TASK );
                                         startActivity(intent);
                                         finish();
                                     }else{
@@ -436,21 +442,6 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
         Log.d(TAG, "onCreate: ");
     }
 
-    /**
-     *
-     */
-    public void startAnim(){
-        avi.show();
-        // or avi.smoothToShow();
-    }
-
-    /**
-     *
-     */
-    public void stopAnim(){
-        avi.hide();
-        // or avi.smoothToHide();
-    }
 }
 
 class SubData{
