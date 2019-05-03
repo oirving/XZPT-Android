@@ -8,11 +8,24 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:networkSecurityConfig="@xml/network_config"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.AddRecruitmentActivity"></activity>
+        <activity android:name=".Activity.ComRecruitmentDetailActivity"></activity>
+        <activity android:name=".Activity.SelectTagActivity" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <activity android:name=".Activity.ResumeModelDetailsActivity" />
+        <activity android:name=".Activity.AddRecruitmentActivity" />
+        <activity android:name=".Activity.ResetPasswordActivity" />
+        <activity android:name=".Activity.ForgetPasswordActivity" />
+        <activity android:name=".Activity.EditPracticeActivity" />
+        <activity android:name=".Activity.EditProjectActivity" />
+        <activity android:name=".Activity.EditAwardsActivity" />
         <activity android:name=".Activity.Main2Activity" />
         <activity android:name=".Activity.FocusCompanyActivity" />
         <activity android:name=".Activity.NewResumeActivity" />
@@ -33,7 +46,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.MainActivity"></activity>
+        <activity android:name=".Activity.MainActivity" />
     </application>
 
 </manifest>
