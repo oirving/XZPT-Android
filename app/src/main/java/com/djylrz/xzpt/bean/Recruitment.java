@@ -26,6 +26,7 @@ public class Recruitment implements Serializable {
   private long industryLabel;
   private String stationLabel;
   private long jobType;
+  private String companyName;
 
   public Recruitment(long recruitmentId, Timestamp publishTime, long validate, String companyId, String jobName, String description, String contact, String location, String deliveryRequest, String salary, String degree, long workTime, long industryLabel, String stationLabel, long jobType) {
     this.recruitmentId = recruitmentId;
@@ -177,6 +178,13 @@ public class Recruitment implements Serializable {
 
   public void setJobType(long jobType) {
     this.jobType = jobType;
+  }
+  public String getCompanyName() {
+    return companyName;
+  }
+
+  public void setCompanyName(String companyName) {
+    this.companyName = companyName;
   }
 
 }

@@ -157,13 +157,16 @@ public class RecruitmentCardFragment extends Fragment {
                             Type jsonType = new TypeToken<TempResponseData<TempResponseRecruitmentData<List<Recruitment>> >>() {}.getType();
                             final TempResponseData<TempResponseRecruitmentData<List<Recruitment>> > postResult = gson.fromJson(response.toString(), jsonType);
                             Log.d(TAG, "onResponse: "+postResult.getResultCode());
-                            TempResponseRecruitmentData<List<Recruitment>>  resultObject = postResult.getResultObject();
-                            List<Recruitment> recruitments = resultObject.getContentList();
-                            for (int i = 0; i < recruitments.size(); ++i) {
-                                if(recruitments.get(i).getValidate()==type){
-                                    recruitmentList.add(recruitments.get(i));
+                            if(postResult.getResultCode().equals(200)){
+                                TempResponseRecruitmentData<List<Recruitment>>  resultObject = postResult.getResultObject();
+                                List<Recruitment> recruitments = resultObject.getContentList();
+                                for (int i = 0; i < recruitments.size(); ++i) {
+                                    if(recruitments.get(i).getValidate()==type){
+                                        recruitmentList.add(recruitments.get(i));
+                                    }
                                 }
                             }
+
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
