@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Recruitment;
+import com.djylrz.xzpt.vo.ResumeDeliveryRecordVO;
 import com.vondear.rxtool.RxTextTool;
 import com.vondear.rxtool.RxTool;
 import com.vondear.rxtool.view.RxToast;
@@ -28,17 +29,17 @@ public class ResumeDeliveryRecordDetialActivity extends AppCompatActivity {
     private TextView mTvAboutSpannable;
     private ResumeDeliveryRecordDetialActivity mContext;
 
-    private Recruitment recruitment;
+    private ResumeDeliveryRecordVO resumeDeliveryRecordVO;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recruitment_detial);
+        setContentView(R.layout.activity_resume_delivery_record_detial);
         //获取布局控件
         toolbar = (Toolbar)findViewById(R.id.asa_toolbar);
         mTvAboutSpannable = (TextView)findViewById(R.id.tv_about_spannable);
         //设置标题栏
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setTitle("岗位详情");
+        toolbar.setTitle("简历详情");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,7 +55,7 @@ public class ResumeDeliveryRecordDetialActivity extends AppCompatActivity {
 
         //获取传递过来的岗位信息
         Intent intent = getIntent();
-        recruitment = (Recruitment) intent.getSerializableExtra("recruitment");
+        resumeDeliveryRecordVO = (ResumeDeliveryRecordVO) intent.getSerializableExtra("resumeDeliveryRecordVO");
 
 
         // 响应点击事件的话必须设置以下属性
