@@ -79,14 +79,6 @@
             android:textColor="@color/gray_text"
             android:text="TextView" />
 
-        <TextView
-            android:background="@drawable/text_radius"
-            android:id="@+id/recruitment_work_time"
-            android:layout_width="wrap_content"
-            android:textColor="@color/gray_text"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:text="TextView" />
     </LinearLayout>
 
 </LinearLayout>
