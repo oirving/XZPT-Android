@@ -85,7 +85,7 @@ public class RecruitmentCardFragment extends Fragment {
         //加载数据
         initRecruitments();
         LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
-        adapter = new RecruitmentAdapter(recruitmentList,type);
+        adapter = new RecruitmentAdapter(recruitmentList,type,getContext());
         loadMoreWrapper = new LoadMoreWrapper(adapter);
         swipeRefreshLayout = v.findViewById(R.id.swipe_refresh_layout);
         recyclerView.setLayoutManager(layoutManager);
@@ -117,9 +117,8 @@ public class RecruitmentCardFragment extends Fragment {
             @Override
             public void onLoadMore() {
                 loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING);
-                initRecruitments();
-                if (recruitmentList.size() <= limitNum) {
-
+                if (recruitmentList.size() < limitNum) {
+                    initRecruitments();
                 } else {
                     // 显示加载到底的提示
                     loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
@@ -171,6 +170,7 @@ public class RecruitmentCardFragment extends Fragment {
                                     if(postResult.getResultCode().equals(200)){
                                         loadMoreWrapper.notifyDataSetChanged();
                                     }else{
+                                        loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
                                         limitNum = recruitmentList.size();
                                     }
                                 }

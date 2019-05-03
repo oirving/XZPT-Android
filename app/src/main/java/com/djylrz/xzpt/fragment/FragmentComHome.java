@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class FragmentComHome extends Fragment {
     private Context mContext = getContext();
-    private String[] mTitles = {"已发布岗位","已停招岗位"};
+    private String[] mTitles = {"已停招岗位","已发布岗位"};
     private View mDecorView;
     private SegmentTabLayout mTabLayout;
     private ArrayList<Fragment> mFragments;
