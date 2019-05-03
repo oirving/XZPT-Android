@@ -54,8 +54,10 @@ public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.Vi
                 int position = holder.getAdapterPosition();
                 ResumeItem resumeItem = mResumeList.get(position);
                 Toast.makeText(v.getContext(),"clicked" ,Toast.LENGTH_SHORT).show();
+                //todo 我的简历点击后跳转到具体的简历页面 ->小榕
                 switch (position) {
-
+                    case 1:
+                    break;
                 }
             }
         });
