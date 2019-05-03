@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.fragment.FragmentAdapter;
+import com.djylrz.xzpt.fragment.FragmentComChat;
+import com.djylrz.xzpt.fragment.FragmentComCheck;
 import com.djylrz.xzpt.fragment.FragmentComHome;
 import com.djylrz.xzpt.fragment.FragmentComMine;
 
@@ -63,8 +65,8 @@ public class Main2Activity extends AppCompatActivity {
         //向ViewPager添加各页面
         fragmentList = new ArrayList<>();
         fragmentList.add(new FragmentComHome());
-        fragmentList.add(new FragmentComMine());
-        fragmentList.add(new FragmentComMine());
+        fragmentList.add(new FragmentComCheck());
+        fragmentList.add(new FragmentComChat());
         fragmentList.add(new FragmentComMine());
         FragmentAdapter myAdapter = new FragmentAdapter(getSupportFragmentManager(), this, fragmentList);
         viewPager.setAdapter(myAdapter);
