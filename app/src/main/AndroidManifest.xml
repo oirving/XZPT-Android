@@ -12,10 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.SelectTagActivity"></activity>
+        <activity android:name=".Activity.RecruitmentDetialActivity"></activity>
+        <activity android:name=".Activity.SelectTagActivity" />
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
+
         <activity android:name=".Activity.ResumeModelDetailsActivity" />
         <activity android:name=".Activity.AddRecruitmentActivity" />
         <activity android:name=".Activity.ResetPasswordActivity" />

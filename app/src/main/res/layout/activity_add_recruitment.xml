@@ -17,7 +17,14 @@
 
 
 </android.support.v7.widget.Toolbar>
-
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/avi"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/AVLoadingIndicatorView"
+        android:visibility="gone"
+        app:indicatorName="BallPulseIndicator"
+        app:indicatorColor="@color/colorPrimary" />
 <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -372,6 +379,7 @@
                 android:layout_marginRight="20dp"
                 android:textColor="@color/colorPrimaryDark"
                 android:text="请选择岗位标签"
+                android:ellipsize="marquee"
                 />
             <ImageView
                 android:id="@+id/iv_select_stationLabel"
