@@ -31,6 +31,8 @@ import com.lljjcoder.Interface.OnCityItemClickListener;
 import com.lljjcoder.bean.DistrictBean;
 import com.lljjcoder.bean.ProvinceBean;
 import com.lljjcoder.style.cityjd.JDCityPicker;
+import com.vondear.rxui.view.dialog.RxDialogLoading;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +43,8 @@ import java.util.List;
 
 import cn.qqtheme.framework.picker.DoublePicker;
 import cn.qqtheme.framework.picker.SinglePicker;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 
 public class AddRecruitmentActivity extends AppCompatActivity implements View.OnClickListener{
@@ -66,9 +70,11 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
     private RelativeLayout layoutType;
     private TextView textViewType;
 
+
+    //动画控件
     private SubData subData;
     private RequestQueue requestQueue;
-
+    private RxDialogLoading rxDialogLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +102,10 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
         editTextDescription = findViewById(R.id.job_description_et);
         editTextDeliveryRequest = findViewById(R.id.job_deliveryRequest_et);
         editTextContact = findViewById(R.id.job_contact_et);
+
+        rxDialogLoading = new RxDialogLoading(this);
+        rxDialogLoading.setLoadingText("正在发布岗位");
+        rxDialogLoading.setLoadingColor(R.color.colorPrimary);
         //设置标题栏
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setTitle("发布岗位");
@@ -113,6 +123,8 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                 switch (item.getItemId()){
                     case R.id.add_menu_done:
                         //发布岗位
+                        //开始加载动画
+                        rxDialogLoading.show();
                         //检查是否填写完整
                         if(checkData()){
                             //提交数据至服务器
@@ -273,7 +285,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             @Override
             public void onItemPicked(int index, String item) {
                 textViewWorkTime.setText(item);
-                subData.setWorkTime(item);
+                subData.setWorkTime(index+"");
                 Toast.makeText(activity, item, Toast.LENGTH_SHORT).show();
             }
         });
@@ -377,13 +389,15 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                 subData.getLocation() == null || subData.getDeliveryRequest() == null || subData.getDeliveryRequest().equals("") || subData.getDegree() == null
                 || subData.getWorkTime() == null || subData.getIndustryLabel() == null || subData.getStationLabel() == null || subData.getJobType() == null){
             Toast.makeText(activity, "除薪资外，其他项请完整填写", Toast.LENGTH_SHORT).show();
+            //结束加载动画
+            rxDialogLoading.hide();
             return false;
         }else{
             return true;
         }
     }
     private void submitData(){
-        //验证是否已经登录
+        //获取token
         SharedPreferences preferences = getSharedPreferences("token",0);
         String token = preferences.getString(PostParameterName.TOKEN,null);
         //组装URL
@@ -399,16 +413,22 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                             Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
                             final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), jsonType);
                             Log.d(TAG, "onResponse: "+postResult.getResultCode());
-//                            user = postResult.getResultObject();
-//                            user.setToken(token);
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    //todo:获取信息显示在编辑框上
-//                                    initpage(user);
-//                                    Log.d(TAG, "run: ------");
-//                                }
-//                            });
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //结束加载动画
+                                    rxDialogLoading.hide();
+                                    if(postResult.getResultCode() == 200){
+                                        Toast.makeText(activity, "岗位发布成功", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(AddRecruitmentActivity.this,Main2Activity.class);
+                                        intent.setFlags(FLAG_ACTIVITY_NEW_TASK );
+                                        startActivity(intent);
+                                        finish();
+                                    }else{
+                                        Toast.makeText(activity, "岗位发布失败，请重试！", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -421,6 +441,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
         }
         Log.d(TAG, "onCreate: ");
     }
+
 }
 
 class SubData{
