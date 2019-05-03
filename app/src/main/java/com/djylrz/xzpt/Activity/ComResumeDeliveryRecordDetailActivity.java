@@ -2,13 +2,17 @@ package com.djylrz.xzpt.Activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Layout;
+import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +35,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.vondear.rxtool.RxTextTool;
 import com.vondear.rxtool.RxTool;
+import com.vondear.rxtool.view.RxToast;
 import com.vondear.rxui.view.dialog.RxDialogLoading;
 
 import org.json.JSONException;
@@ -48,6 +53,8 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity {
     private ResumeDeliveryRecordVO resumeDeliveryRecordVO;
     private RxDialogLoading rxDialogLoading;
     private Resume resume;
+    private Button btnRefuse;
+    private Button btnNext;
     private static final String TAG = "ComResumeDeliveryRecord";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +64,8 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity {
         toolbar = (Toolbar)findViewById(R.id.asa_toolbar);
         mTvAboutSpannable = (TextView)findViewById(R.id.tv_about_spannable);
         requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
-
+        btnRefuse = (Button)findViewById(R.id.btn_refuse);
+        btnNext = (Button)findViewById(R.id.btn_next);
         //设置标题栏
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setTitle("简历详情");
@@ -72,6 +80,13 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity {
         rxDialogLoading = new RxDialogLoading(this);
         rxDialogLoading.setLoadingText("正在获取简历数据");
         rxDialogLoading.setLoadingColor(R.color.colorPrimary);
+
+        //设置按钮
+        btnRefuse.setText("拒绝");
+        btnRefuse.setTextColor(getResources().getColor(R.color.red));
+        btnNext.setText("下一步");
+        btnNext.setTextColor(getResources().getColor(R.color.colorPrimary));
+        mContext = this;
         RxTool.init(this);
         initView();
     }
@@ -130,11 +145,6 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        // 响应点击事件的话必须设置以下属性
-        mTvAboutSpannable.setMovementMethod(LinkMovementMethod.getInstance());
-
-
     }
     public void setText(){
         String sex;
@@ -174,9 +184,26 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity {
                 highestEducation = "未填写";
                 break;
         }
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                Toast.makeText(mContext, "这里应该跳转到职位详情页，还没写！", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                ds.setColor(Color.BLUE);
+                ds.setUnderlineText(false);
+            }
+        };
+
+        // 响应点击事件的话必须设置以下属性
+        mTvAboutSpannable.setMovementMethod(LinkMovementMethod.getInstance());
+
         RxTextTool.getBuilder("").setBold().setAlign(Layout.Alignment.ALIGN_CENTER)
                 .append(resumeDeliveryRecordVO.getUserName() + "\n").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.colorPrimary))
-                .append("求职意向："+resumeDeliveryRecordVO.getRecruitmentName() + "\n\n").setBold().setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.black)).setProportion((float)0.8)
+                .append("求职意向："+resumeDeliveryRecordVO.getRecruitmentName() + "\n\n").setBold().setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_CENTER)
+                .setForegroundColor(getResources().getColor(R.color.black)).setProportion((float)0.8).setClickSpan(clickableSpan)
 
                 .append("基本信息" + "\n").setBold()
                 .append("性别：" + sex + "\n").setBullet(60, getResources().getColor(R.color.colorPrimary)).setProportion((float)0.8)
