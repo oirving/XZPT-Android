@@ -203,6 +203,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@drawable/shape_round_hot_pink"
+            android:textColor="@color/white"
             android:text="退出登录"/>
 
     </LinearLayout>
