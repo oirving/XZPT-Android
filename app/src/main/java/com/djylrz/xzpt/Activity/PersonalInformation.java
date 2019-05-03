@@ -77,7 +77,6 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(PersonalInformation.this,"性别"+sexArray[position], Toast.LENGTH_SHORT).show();
-                //todo 获得position，映射为性别存入user->小榕
                 user.setSex(position+1);
             }
 
@@ -95,7 +94,6 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(PersonalInformation.this,"性别"+highestEducationArray[position], Toast.LENGTH_SHORT).show();
-                //todo 获得position，映射为学历存入user->小榕
                 user.setHighestEducation(position+1);
             }
 
@@ -132,7 +130,6 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        //todo:获取信息显示在编辑框上
                                         initpage(user);
                                         Log.d(TAG, "run: ------");
                                     }
@@ -211,7 +208,6 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         }
     }
     //初始化页面可用这个函数
-    //todo:初始化界面
     private void initpage(User user) {
         setEditTextSaveEnableFalse();
         name.setText(user.getUserName());

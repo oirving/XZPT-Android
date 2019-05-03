@@ -8,8 +8,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.bean.User;
 
 public class NewResumeActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = "NewResumeActivity";
     private TextView name;//姓名
     private TextView sex;//性别
     private TextView age;//年龄
@@ -33,6 +35,8 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
     private ImageView projectEdit;
     private ImageView practiceEdit;
     private ImageView done;
+
+    private User user = new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
