@@ -136,7 +136,7 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
                 startActivity(intent4);
                 break;
             case R.id.done:
-                //todo 创建一份新的简历
+                //创建一份新的简历
                 createResume();
                 break;
                 default:
@@ -256,7 +256,7 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
                                         case "200":{
                                             //跳转到我的简历界面
                                             Toast.makeText(NewResumeActivity.this, "创建简历成功", Toast.LENGTH_SHORT).show();
-                                            //todo 并打开MyResumeActivity
+                                            //并打开MyResumeActivity
                                             Intent intent5 = new Intent(NewResumeActivity.this,MyResumeActivity.class);
                                             startActivity(intent5);
                                             finish();

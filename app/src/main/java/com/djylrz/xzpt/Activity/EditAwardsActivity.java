@@ -25,7 +25,6 @@ public class EditAwardsActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.save_button:
-                //todo 是否保存成功验证 ->小榕
                 SharedPreferences sharedPreferences = getSharedPreferences("user",0);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("award",awards.getText().toString());

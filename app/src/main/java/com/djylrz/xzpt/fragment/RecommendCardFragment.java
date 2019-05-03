@@ -133,4 +133,9 @@ public class RecommendCardFragment extends Fragment {
             Log.d(TAG, "initRecruitments: 没有获取到token");
         }
     }
+
+    public void updateAdapter(List<Recruitment> list){
+        adapter = new StudentRecruitmentAdapter(list,0);
+        recyclerView.setAdapter(adapter);
+    }
 }
