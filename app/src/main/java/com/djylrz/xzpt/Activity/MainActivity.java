@@ -169,6 +169,18 @@ public class MainActivity extends BaseActivity {
                                 Log.d(TAG, "onResponse: "+postResult.getResultCode());
                                 user = postResult.getResultObject();
                                 user.setToken(token);
+
+                                //获取用户信息，存储到本地。
+                                SharedPreferences sharedPreferences = getSharedPreferences("user", 0);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                try {
+                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：："+response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
+                                    editor.putString("student", new Gson().toJson(user));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                editor.commit();
+
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {

@@ -38,6 +38,7 @@ public class ResumeModelDetailsActivity extends AppCompatActivity implements Vie
             case R.id.edit:
                 Intent intent = new Intent(ResumeModelDetailsActivity.this,NewResumeActivity.class);
                 startActivity(intent);
+                finish();
                 break;
                 default:
                     break;

@@ -27,6 +27,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.sql.Date;
+import java.util.Calendar;
 
 public class PersonalInformation extends BaseActivity implements View.OnClickListener {
 
@@ -45,7 +47,7 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
     private EditText endTime;//教育结束时间
     private ArrayAdapter<String> sexAdapter;
     private ArrayAdapter<String> highestEducationAdapter;
-    private String[] sexArray=new String[]{"男","女"};
+    private String[] sexArray=new String[]{"默认","男","女"};
     private String[] highestEducationArray=new String[]{"学历不限","大专","本科","硕士","博士及以上"};
 
     private User user = new User();//用户实体对象
@@ -77,7 +79,8 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(PersonalInformation.this,"性别"+sexArray[position], Toast.LENGTH_SHORT).show();
-                user.setSex(position+1);
+                Log.d(TAG, "性别："+position);
+                user.setSex(position);
             }
 
             @Override
@@ -93,8 +96,9 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         highestEducation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(PersonalInformation.this,"性别"+highestEducationArray[position], Toast.LENGTH_SHORT).show();
-                user.setHighestEducation(position+1);
+                Toast.makeText(PersonalInformation.this,"最高学历："+highestEducationArray[position], Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "最高学历："+position);
+                user.setHighestEducation(position);
             }
 
             @Override
@@ -162,14 +166,22 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                 user.setEmail(mailAddress.getText().toString());//邮件
                 user.setPresentCity(currentCity.getText().toString());//当前城市
                 user.setSchool(school.getText().toString());//学校
-
-                //todo：格式校验——>欧文
                 user.setTelephone(phoneNum.getText().toString());//电话，没有限定输入格式
-                //user.setStartTime(new Date(startTime.getText().toString()));//教育开始时间 string->Date，没有限定输入格式
-                //user.setEndTime(endTime.getText().toString())//教育结束时间，string->Date,没有限定输入格式                ;
+
+                Calendar calendar = Calendar.getInstance();
+                if (!startTime.getText().toString().equals("")){
+                    calendar.set(Calendar.YEAR,Integer.parseInt(startTime.getText().toString()));
+                    user.setStartTime(new java.sql.Date(calendar.getTime().getTime()));//教育开始时间
+                }
+                if (!endTime.getText().toString().equals("")){
+                    calendar.set(Calendar.YEAR,Integer.parseInt(endTime.getText().toString()));
+                    user.setEndTime(new java.sql.Date(calendar.getTime().getTime()));//教育结束时间，string->Date,没有限定输入格式                ;
+                }
+
                 //发送修改个人信息请求
                 Log.d(TAG, "onClick: "+PostParameterName.POST_URL_UPDATE_USER_INRO+user.getToken());
                 try {
+                    Log.d(TAG, "onClick: "+new Gson().toJson(user));
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_UPDATE_USER_INRO+user.getToken(),new JSONObject(new Gson().toJson(user)),
                             new Response.Listener<JSONObject>() {
                                 @Override
@@ -217,9 +229,22 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         currentCity.setText(user.getPresentCity());
         school.setText(user.getSchool());
         major.setText(user.getSpecialty());
+        highestEducation.setSelection((int)user.getHighestEducation());
+        sex.setSelection((int)user.getSex());
+        Calendar calendar = Calendar.getInstance();
+        if (user.getStartTime()!=null){
+            calendar.setTime(new Date(user.getStartTime().getTime()));
+            startTime.setText(calendar.get(Calendar.YEAR));
+        }else{
+            startTime.setText("");
+        }
+        if (user.getEndTime()!=null){
+            calendar.setTime(new Date(user.getEndTime().getTime()));
+            endTime.setText(user.getEndTime().toString());
+        }else{
+            endTime.setText("");
+        }
         Log.d(TAG, "initpage: -----");
-        //startTime.setText(user.getStartTime().toString());
-        //endTime.setText(user.getEndTime().toString());
 
     }
 

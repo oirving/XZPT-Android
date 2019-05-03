@@ -17,6 +17,8 @@ public class PostParameterName {
     public static final String POST_URL_RESET_PASSWORD = HOST +"/user/resetpasswd?";//找回密码URL
     public static final String POST_URL_GET_RECOMMEND = HOST +"/user/getrecommend?token=";//找回密码URL
 
+    public static final String POST_URL_CREATE_RESUME = HOST + "/user/createresume?token=";//创建简历接口
+
 
     public static final String POST_URL_COMPANY_LOGIN = HOST + "/company/login/";//企业登录接口
     public static final String POST_URL_COMPANY_LOGIN_WITH_TOKEN = HOST + "/company/vertifytoken?token=";//企业token登录

@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.Activity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -25,7 +26,10 @@ public class EditPracticeActivity extends AppCompatActivity implements View.OnCl
         switch (v.getId()) {
             case R.id.save_button:
                 //todo 是否保存成功验证 ->小榕
-
+                SharedPreferences sharedPreferences = getSharedPreferences("user",0);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("practice",practice.getText().toString());
+                editor.commit();
                 finish();
         }
     }
