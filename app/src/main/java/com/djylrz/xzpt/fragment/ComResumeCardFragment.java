@@ -172,13 +172,13 @@ public class ComResumeCardFragment extends Fragment {
                                             resumeRecordType = 0;
                                             break;
                                         case 0:
-                                            resumeRecordType = 3;
+                                            resumeRecordType = -1;
                                             break;
                                         case 1:
                                             resumeRecordType = 3;
                                             break;
                                         case 2:
-                                            resumeRecordType = 2;
+                                            resumeRecordType = 3;
                                             break;
                                         case 3:
                                             resumeRecordType = 2;
@@ -190,10 +190,13 @@ public class ComResumeCardFragment extends Fragment {
                                             resumeRecordType = 2;
                                             break;
                                         case 6:
+                                            resumeRecordType = 2;
+                                            break;
+                                        case 7:
                                             resumeRecordType = 1;
                                             break;
                                         default:
-                                            resumeRecordType = 3;
+                                            resumeRecordType = -1;
                                             break;
                                     }
                                     Log.d(TAG, "onResponse: 当前的type为"+ resumeRecordType);

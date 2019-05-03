@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.djylrz.xzpt.Activity.ComRecruitmentDetailActivity;
+import com.djylrz.xzpt.Activity.ComResumeDeliveryRecordDetailActivity;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.vo.ResumeDeliveryRecordVO;
 
@@ -65,7 +66,7 @@ public class ComResumeDeliveryRecordAdapter extends RecyclerView.Adapter<ComResu
                 int position = holder.getAdapterPosition();
                 ResumeDeliveryRecordVO resumeDeliveryRecordVO = mResumeDeliveryRecordVOList.get(position);
                 //跳转到详情页
-                Intent intent = new Intent(context, ComRecruitmentDetailActivity.class);
+                Intent intent = new Intent(context, ComResumeDeliveryRecordDetailActivity.class);
                 intent.putExtra("resumeDeliveryRecordVO",resumeDeliveryRecordVO);
                 context.startActivity(intent);
                 Toast.makeText(v.getContext(), "you clicked view " + resumeDeliveryRecordVO.getUserName(), Toast.LENGTH_SHORT).show();
@@ -83,25 +84,25 @@ public class ComResumeDeliveryRecordAdapter extends RecyclerView.Adapter<ComResu
             case -1:
                 resumeRecordType = "已拒绝";
                 break;
-            case 0:
+            case 1:
                 resumeRecordType = "未查看";
                 break;
-            case 1:
+            case 2:
                 resumeRecordType = "已查看";
                 break;
-            case 2:
+            case 3:
                 resumeRecordType = "面试待安排";
                 break;
-            case 3:
+            case 4:
                 resumeRecordType = "一面";
                 break;
-            case 4:
+            case 5:
                 resumeRecordType = "二面";
                 break;
-            case 5:
+            case 6:
                 resumeRecordType = "终面";
                 break;
-            case 6:
+            case 7:
                 resumeRecordType = "已录用";
                 break;
             default:
