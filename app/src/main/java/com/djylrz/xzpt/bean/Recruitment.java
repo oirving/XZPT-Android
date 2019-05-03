@@ -12,7 +12,7 @@ public class Recruitment implements Serializable {
   private static final long serialVersionUID = 1;
 
   private long recruitmentId;
-  private Date publishTime;
+  private java.sql.Timestamp publishTime;
   private long validate;
   private String companyId;
   private String jobName;
@@ -58,7 +58,7 @@ public class Recruitment implements Serializable {
   }
 
 
-  public Date getPublishTime() {
+  public java.sql.Timestamp getPublishTime() {
     return publishTime;
   }
 

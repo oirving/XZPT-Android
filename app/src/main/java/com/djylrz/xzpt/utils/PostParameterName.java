@@ -17,6 +17,12 @@ public class PostParameterName {
     public static final String POST_URL_RESET_PASSWORD = HOST +"/user/resetpasswd?";//找回密码URL
     public static final String POST_URL_USER_GET_RECRUITMENT = HOST + "/user/getrecruitment"; // 查看招聘信息
 
+    public static final String POST_URL_GET_RECOMMEND = HOST +"/user/getrecommend?token=";//获取推荐信息URL
+    public static final String POST_URL_SEARCH_RECRUIMENT=HOST +"/user/searchrecruitment?token=";//&keyWord=  搜索招聘信息
+
+    public static final String POST_URL_CREATE_RESUME = HOST + "/user/createresume?token=";//创建简历接口
+
+
     public static final String POST_URL_COMPANY_LOGIN = HOST + "/company/login/";//企业登录接口
     public static final String POST_URL_COMPANY_LOGIN_WITH_TOKEN = HOST + "/company/vertifytoken?token=";//企业token登录
     public static final String POST_URL_COMPANY_RELEASE_RECRUITMENT = HOST + "/company/releaserecruitment?token=";//企业token登录
@@ -29,7 +35,7 @@ public class PostParameterName {
     public static final String REQUEST_EMAIL = "email";
     public static final String REQUEST_PASSWORD = "passwd";
     public static final String REQUEST_USERTYPE = "";
-
+    public static final String REQUEST_KEYWORD = "keyWord";
 
     public static final String RESPOND_RESULTCODE = "resultCode";
     public static final String RESPOND_RESULMSG = "resultMsg";

@@ -50,7 +50,6 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            //todo 重置密码校验和存入-->小榕
             case R.id.find_back_button:
 
                 if (password.getText().toString().equals(password2.getText().toString())){//两次密码相同

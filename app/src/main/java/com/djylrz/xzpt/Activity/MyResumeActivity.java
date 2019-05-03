@@ -41,6 +41,7 @@ public class MyResumeActivity extends AppCompatActivity {
 
     }
 
+   //todo：获取所有的简历信息——》小榕
     private void initResumeList() {
         for(int i=0;i<numOfResume;i++) {
             //信息填入，上面的参数填好就不用管这里了，没填好之前点击会崩
