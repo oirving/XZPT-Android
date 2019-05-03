@@ -1,6 +1,5 @@
 package com.djylrz.xzpt.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.djylrz.xzpt.Activity.RecruitmentDetialActivity;
+import com.djylrz.xzpt.Activity.ComRecruitmentDetailActivity;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Recruitment;
 
@@ -75,7 +74,7 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
                 int position = holder.getAdapterPosition();
                 Recruitment recruitment = mRecruitments.get(position);
                 //跳转到详情页
-                Intent intent = new Intent(context, RecruitmentDetialActivity.class);
+                Intent intent = new Intent(context, ComRecruitmentDetailActivity.class);
                 intent.putExtra("recruitment",recruitment);
                 context.startActivity(intent);
                 Toast.makeText(v.getContext(), "you clicked view " + recruitment.getJobName(), Toast.LENGTH_SHORT).show();
