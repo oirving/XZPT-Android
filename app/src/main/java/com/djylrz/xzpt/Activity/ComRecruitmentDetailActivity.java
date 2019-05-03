@@ -1,9 +1,7 @@
 package com.djylrz.xzpt.Activity;
 
 import android.content.Intent;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Color;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +14,6 @@ import android.widget.TextView;
 
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Recruitment;
-import com.vondear.rxtool.RxActivityTool;
 import com.vondear.rxtool.RxTextTool;
 import com.vondear.rxtool.RxTool;
 import com.vondear.rxtool.view.RxToast;
@@ -26,12 +23,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vondear.rxtool.RxConstants.URL_VONTOOLS;
-
-public class RecruitmentDetialActivity extends AppCompatActivity {
+public class ComRecruitmentDetailActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView mTvAboutSpannable;
-    private RecruitmentDetialActivity mContext;
+    private ComRecruitmentDetailActivity mContext;
 
     private Recruitment recruitment;
     @Override
@@ -116,7 +111,7 @@ public class RecruitmentDetialActivity extends AppCompatActivity {
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                RxToast.showToast(RecruitmentDetialActivity.this, "事件触发了", 500);
+                RxToast.showToast(ComRecruitmentDetailActivity.this, "事件触发了", 500);
             }
 
             @Override

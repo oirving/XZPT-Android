@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.djylrz.xzpt.Activity.RecruitmentDetialActivity;
+import com.djylrz.xzpt.Activity.ComRecruitmentDetailActivity;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.vo.ResumeDeliveryRecordVO;
 
@@ -65,7 +65,7 @@ public class ComResumeDeliveryRecordAdapter extends RecyclerView.Adapter<ComResu
                 int position = holder.getAdapterPosition();
                 ResumeDeliveryRecordVO resumeDeliveryRecordVO = mResumeDeliveryRecordVOList.get(position);
                 //跳转到详情页
-                Intent intent = new Intent(context, RecruitmentDetialActivity.class);
+                Intent intent = new Intent(context, ComRecruitmentDetailActivity.class);
                 intent.putExtra("resumeDeliveryRecordVO",resumeDeliveryRecordVO);
                 context.startActivity(intent);
                 Toast.makeText(v.getContext(), "you clicked view " + resumeDeliveryRecordVO.getUserName(), Toast.LENGTH_SHORT).show();
