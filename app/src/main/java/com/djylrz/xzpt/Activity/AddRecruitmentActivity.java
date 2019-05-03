@@ -280,7 +280,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             @Override
             public void onItemPicked(int index, String item) {
                 textViewWorkTime.setText(item);
-                subData.setWorkTime(item);
+                subData.setWorkTime(index+"");
                 Toast.makeText(activity, item, Toast.LENGTH_SHORT).show();
             }
         });
@@ -405,16 +405,22 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                         @Override
                         public void onResponse(JSONObject response) {
                             Log.d(TAG, "onResponse: 返回"+response.toString());
-//                            Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
-//                            final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), jsonType);
-//                            Log.d(TAG, "onResponse: "+postResult.getResultCode());
-//                            user = postResult.getResultObject();
-//                            user.setToken(token);
+                            Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
+                            final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), jsonType);
+                            Log.d(TAG, "onResponse: "+postResult.getResultCode());
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     //结束加载动画
                                     stopAnim();
+                                    if(postResult.getResultCode() == 200){
+                                        Toast.makeText(activity, "岗位发布成功", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(AddRecruitmentActivity.this,Main2Activity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }else{
+                                        Toast.makeText(activity, "岗位发布失败，请重试！", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             });
                         }
