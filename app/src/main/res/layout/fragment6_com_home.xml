@@ -17,7 +17,6 @@
 
     </android.support.v7.widget.Toolbar>
 
-
 <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -31,6 +30,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         >
+
 
         <com.flyco.tablayout.SegmentTabLayout
             android:id="@+id/tl"
@@ -46,7 +46,7 @@
             tools:tl_indicator_margin_left="2dp"
             tools:tl_indicator_margin_right="2dp"
             tools:tl_indicator_margin_top="2dp"
-            tools:tl_textBold="SELECT" />
+            tools:tl_textBold="SELECT"/>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/vp"

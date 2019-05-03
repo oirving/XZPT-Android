@@ -1,5 +1,8 @@
 package com.djylrz.xzpt.utils;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.djylrz.xzpt.Activity.RecruitmentDetialActivity;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Recruitment;
 
@@ -23,6 +27,9 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
 
     private List<Recruitment> mRecruitments;
     private int type;
+    private Context context;
+
+
     static class ViewHolder extends RecyclerView.ViewHolder{
         View recruitmentView;
         TextView recruitmentName;
@@ -47,7 +54,13 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
         }
     }
 
-    public RecruitmentAdapter(List<Recruitment> recruitmentList,int type) {
+    public RecruitmentAdapter(List<Recruitment> mRecruitments, int type, Context context) {
+        this.mRecruitments = mRecruitments;
+        this.type = type;
+        this.context = context;
+    }
+
+    public RecruitmentAdapter(List<Recruitment> recruitmentList, int type) {
         this.mRecruitments = recruitmentList;
         this.type = type;
     }
@@ -61,6 +74,10 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 Recruitment recruitment = mRecruitments.get(position);
+                //跳转到详情页
+                Intent intent = new Intent(context, RecruitmentDetialActivity.class);
+                intent.putExtra("recruitment",recruitment);
+                context.startActivity(intent);
                 Toast.makeText(v.getContext(), "you clicked view " + recruitment.getJobName(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -95,10 +112,26 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
         Recruitment recruitment = mRecruitments.get(position);
         holder.recruitmentName.setText(recruitment.getJobName());
         holder.recruitmentSalary.setText(recruitment.getSalary());
-        holder.recruitmentCompany.setText(recruitment.getCompanyId());
+        holder.recruitmentCompany.setText(recruitment.getCompanyName());
         holder.recruitmentLocation.setText(recruitment.getLocation());
         holder.recruitmentDegree.setText(recruitment.getDegree());
-        holder.recruitmentWorkTime.setText(recruitment.getWorkTime()+"");
+        switch (Integer.parseInt(recruitment.getWorkTime()+"")){
+            case 1:
+                holder.recruitmentWorkTime.setText("955");
+                break;
+            case 2:
+                holder.recruitmentWorkTime.setText("965");
+                break;
+            case 3:
+                holder.recruitmentWorkTime.setText("956");
+                break;
+            case 4:
+                holder.recruitmentWorkTime.setText("996");
+                break;
+            default:
+                holder.recruitmentWorkTime.setText("955");
+                break;
+        }
 
         if(type == 0){
             holder.editRecruitment.setText("编辑岗位");
