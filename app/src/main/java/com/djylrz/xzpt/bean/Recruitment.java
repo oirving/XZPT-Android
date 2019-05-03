@@ -28,7 +28,10 @@ public class Recruitment implements Serializable {
   private long jobType;
   private String companyName;
 
-  public Recruitment(long recruitmentId, Timestamp publishTime, long validate, String companyId, String jobName, String description, String contact, String location, String deliveryRequest, String salary, String degree, long workTime, long industryLabel, String stationLabel, long jobType) {
+    public Recruitment() {
+    }
+
+    public Recruitment(long recruitmentId, Timestamp publishTime, long validate, String companyId, String jobName, String description, String contact, String location, String deliveryRequest, String salary, String degree, long workTime, long industryLabel, String stationLabel, long jobType) {
     this.recruitmentId = recruitmentId;
     this.publishTime = publishTime;
     this.validate = validate;
