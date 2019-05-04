@@ -206,7 +206,7 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
 
                                             //获取到RecruitmentList
                                             recruitments = recruitmentPageData.getContentList();
-                                            Log.d(TAG, "onResponse: "+recruitments.size());;
+                                            Log.d(TAG, "onResponse: "+recruitments.size());
                                         }break;
                                         default:{
                                             Log.d(TAG, "获取招聘信息失败"+response.getString(PostParameterName.RESPOND_RESULTCODE));

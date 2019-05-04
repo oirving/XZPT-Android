@@ -19,6 +19,7 @@ public class EditPracticeActivity extends AppCompatActivity implements View.OnCl
         practice = (EditText) findViewById(R.id.practice_edittext);
         save = (Button) findViewById(R.id.save_button);
         save.setOnClickListener(this);
+        initPage();
     }
 
     @Override
@@ -31,5 +32,11 @@ public class EditPracticeActivity extends AppCompatActivity implements View.OnCl
                 editor.commit();
                 finish();
         }
+    }
+
+    private void initPage(){
+        SharedPreferences sharedPreferences = getSharedPreferences("user",0);
+        String detail = sharedPreferences.getString("practice",null);
+        practice.setText(detail!=null?detail:"");
     }
 }

@@ -19,6 +19,7 @@ public class EditAwardsActivity extends AppCompatActivity implements View.OnClic
         awards = (EditText) findViewById(R.id.award_edittext);
         save = (Button) findViewById(R.id.save_button);
         save.setOnClickListener(this);
+        initPage();
     }
 
     @Override
@@ -31,5 +32,11 @@ public class EditAwardsActivity extends AppCompatActivity implements View.OnClic
                 editor.commit();
                 finish();
         }
+    }
+
+    private void initPage(){
+        SharedPreferences sharedPreferences = getSharedPreferences("user",0);
+        String detail = sharedPreferences.getString("award",null);
+        awards.setText(detail!=null?detail:"");
     }
 }

@@ -43,6 +43,7 @@ public class MyResumeActivity extends AppCompatActivity {
     private int numOfResume;//简历份数
 
     private RecyclerView recyclerView;
+    private ResumeListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class MyResumeActivity extends AppCompatActivity {
         recyclerView = (RecyclerView)findViewById(R.id.myresume_list);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        ResumeListAdapter adapter = new ResumeListAdapter(mResumeList);
+        adapter = new ResumeListAdapter(mResumeList);
         recyclerView.setAdapter(adapter);
 
     }
@@ -124,7 +125,8 @@ public class MyResumeActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         //todo 处理获得的所有简历
-                                        ResumeListAdapter adapter = new ResumeListAdapter(mResumeList);
+                                        adapter.setmResumeList(mResumeList);
+                                        adapter.setResumeList(resumeList);
                                         recyclerView.setAdapter(adapter);
                                     }
                                 });
