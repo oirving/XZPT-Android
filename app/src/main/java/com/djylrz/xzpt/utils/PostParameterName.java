@@ -24,6 +24,8 @@ public class PostParameterName {
     public static final String POST_URL_GET_LIST_RESUME = HOST + "/user/getlistresume?token=";//获取所有简历接口
     public static final String POST_URL_UPDATE_RESUME = HOST + "/user/updateresume?token=";//修改简历接口
     public static final String POST_URL_DELETE_RESUME = HOST + "/user/deleteresume?token=";//删除简历接口
+    public static final String POST_URL_GET_RESUME = HOST + "/user/getresume?token=";//查看单个简历接口
+
 
 
 
