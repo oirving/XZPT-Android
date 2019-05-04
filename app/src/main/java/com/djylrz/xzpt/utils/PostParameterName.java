@@ -15,7 +15,7 @@ public class PostParameterName {
     public static final String POST_URL_GET_USER_BY_TOKEN = HOST +"/user/getuserbytoken?token=";//查看用户信息
     public static final String POST_URL_UPDATE_USER_INRO = HOST + "/user/updateinfo?token=";//修改用户信息
     public static final String POST_URL_RESET_PASSWORD = HOST +"/user/resetpasswd?";//找回密码URL
-    public static final String POST_URL_USER_GET_RECRUITMENT = HOST + "/user/getrecruitment"; // 查看招聘信息
+    public static final String POST_URL_USER_GET_RECRUITMENT = HOST + "/user/getrecruitment?token="; // 查看招聘信息
 
     public static final String POST_URL_GET_RECOMMEND = HOST +"/user/getrecommend?token=";//获取推荐信息URL
     public static final String POST_URL_SEARCH_RECRUIMENT=HOST +"/user/searchrecruitment?token=";//&keyWord=  搜索招聘信息
@@ -29,6 +29,7 @@ public class PostParameterName {
     public static final String POST_URL_COMPANY_GET_RECRUITMENT_LIST = HOST + "/company/getlistrecruitment?token=";//企业查看所有招聘信息（分页）
     public static final String POST_URL_COMPANY_GET_DELIVERT_RECORD = HOST + "/company/getlistdeliveryrecord?token=";//企业查看所有招聘信息（分页）
     public static final String POST_URL_COMPANY_GET_RESUME_BY_ID = HOST + "/company/getresumebyid?token=";//企业查看用户简历
+    public static final String POST_URL_COMPANY_UPDATE_DELIVERY_RECORD = HOST + "/company/updatedeliveryrecord?token=";//企业修改用户简历投递记录
 
 
     public static final String REQUEST_CODE = "code";

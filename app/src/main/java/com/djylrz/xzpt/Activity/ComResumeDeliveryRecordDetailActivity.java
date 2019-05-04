@@ -3,6 +3,7 @@ package com.djylrz.xzpt.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +12,7 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,6 +25,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Resume;
+import com.djylrz.xzpt.bean.ResumeDelivery;
 import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.vo.ResumeDeliveryRecordVO;
@@ -33,10 +36,18 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.nightonke.boommenu.BoomButtons.BoomButton;
+import com.nightonke.boommenu.BoomButtons.ButtonPlaceEnum;
+import com.nightonke.boommenu.BoomButtons.HamButton;
+import com.nightonke.boommenu.BoomMenuButton;
+import com.nightonke.boommenu.ButtonEnum;
+import com.nightonke.boommenu.OnBoomListener;
+import com.nightonke.boommenu.Piece.PiecePlaceEnum;
 import com.vondear.rxtool.RxTextTool;
 import com.vondear.rxtool.RxTool;
 import com.vondear.rxtool.view.RxToast;
 import com.vondear.rxui.view.dialog.RxDialogLoading;
+import com.vondear.rxui.view.popupwindows.tools.RxPopupView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,19 +56,23 @@ import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.List;
 
-public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity {
-    private Toolbar toolbar;
-    private TextView mTvAboutSpannable;
-    private ComResumeDeliveryRecordDetailActivity mContext;
-    private RequestQueue requestQueue;
-    private ResumeDeliveryRecordVO resumeDeliveryRecordVO;
-    private RxDialogLoading rxDialogLoading;
-    private Resume resume;
-    private Button btnRefuse;
-    private Button btnNext;
+public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity implements View.OnClickListener{
+    private Toolbar toolbar;//标题栏
+    private TextView mTvAboutSpannable;//RXTextView布局
+    private ComResumeDeliveryRecordDetailActivity mContext;//上下文context
+    private RequestQueue requestQueue;//请求队列
+    private ResumeDeliveryRecordVO resumeDeliveryRecordVO;//用于接收intent传过来的记录对象
+    private RxDialogLoading rxDialogLoading;//加载动画对话框
+    private Resume resume;//用于接收json的简历对象
+    private Button btnRefuse;//拒绝按钮
+    private Button btnNext;//下一步按钮
+    private BoomMenuButton bmbNext;//弹出式选择器
+    private String strNext[]={"面试待安排","进入一面","进入二面","进入终面","通过面试"};//弹出式菜单文字
+    private int nextNum = 0;//用户点击哪一个next菜单
     private static final String TAG = "ComResumeDeliveryRecord";
+    private ResumeDelivery resumeDelivery;//用于发送json的简历投递记录对象
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resume_delivery_record_detial);
         //获取布局控件
@@ -84,11 +99,54 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity {
         //设置按钮
         btnRefuse.setText("拒绝");
         btnRefuse.setTextColor(getResources().getColor(R.color.red));
+        btnRefuse.setOnClickListener(this);
         btnNext.setText("下一步");
         btnNext.setTextColor(getResources().getColor(R.color.colorPrimary));
+        btnNext.setOnClickListener(this);
+
+        //设置弹出式选择器
+        bmbNext = (BoomMenuButton) findViewById(R.id.bmb_next);
+        bmbNext.setButtonEnum(ButtonEnum.Ham);//设置弹出样式
+        bmbNext.setPiecePlaceEnum(PiecePlaceEnum.HAM_5);
+        bmbNext.setButtonPlaceEnum(ButtonPlaceEnum.HAM_5);
+        for (int i = 0; i < bmbNext.getButtonPlaceEnum().buttonNumber(); i++) {
+            bmbNext.addBuilder(new HamButton.Builder()
+                    .normalImageRes(R.drawable.fzu_logo).imagePadding(new Rect(10, 10, 10, 10))
+                    .normalText(strNext[i]).textSize(26).textGravity(Gravity.CENTER));
+        }
+        bmbNext.setOnBoomListener(new OnBoomListener() {
+            @Override
+            public void onClicked(int index, BoomButton boomButton) {
+                Toast.makeText(ComResumeDeliveryRecordDetailActivity.this, ""+index, Toast.LENGTH_SHORT).show();
+//                tv_importance.setText(str_importance[index]);
+                nextNum = index + 3;
+                resumeDelivery.setDeliveryStatus(nextNum);
+                //向服务器发起请求，修改简历状态
+                modifyResumeDeliveryRecord();
+            }
+            @Override
+            public void onBackgroundClick() { }
+            @Override
+            public void onBoomWillHide() { }
+            @Override
+            public void onBoomDidHide() { }
+            @Override
+            public void onBoomWillShow() { }
+            @Override
+            public void onBoomDidShow() { }
+        });
+
+        initView();
+        resumeDelivery = new ResumeDelivery();
+        //若简历为未查看状态，点入详情页后修改状态为2已查看
+        if(resumeDeliveryRecordVO.getDeliveryStatus()==1){
+            resumeDelivery.setResumeDeliveryId(resumeDeliveryRecordVO.getResumeDeliveryId());
+            resumeDelivery.setDeliveryStatus(2);
+            modifyResumeDeliveryRecord();
+        }
         mContext = this;
         RxTool.init(this);
-        initView();
+
     }
 
     private void initView() {
@@ -141,14 +199,20 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity {
                     Toast.makeText(mContext, "获取数据失败，请重试", Toast.LENGTH_LONG).show();
                     finish();
                 }});
+
             requestQueue.add(jsonObjectRequest);
         } catch (JSONException e) {
+            rxDialogLoading.hide();
+            Toast.makeText(mContext, "获取数据失败，请重试", Toast.LENGTH_LONG).show();
+            finish();
             e.printStackTrace();
         }
     }
     public void setText(){
-        String sex;
-        String highestEducation;
+        String sex;//性别
+        String highestEducation;//最高学历
+        String resumeRecordType;//简历状态
+
         switch ((int) resume.getSex()){
             case 0:
                 sex = "未填写";
@@ -184,6 +248,35 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity {
                 highestEducation = "未填写";
                 break;
         }
+        switch ((int)resumeDeliveryRecordVO.getDeliveryStatus()){
+            case -1:
+                resumeRecordType = "已拒绝";
+                break;
+            case 1:
+                resumeRecordType = "未查看";
+                break;
+            case 2:
+                resumeRecordType = "已查看";
+                break;
+            case 3:
+                resumeRecordType = "面试待安排";
+                break;
+            case 4:
+                resumeRecordType = "一面";
+                break;
+            case 5:
+                resumeRecordType = "二面";
+                break;
+            case 6:
+                resumeRecordType = "终面";
+                break;
+            case 7:
+                resumeRecordType = "已录用";
+                break;
+            default:
+                resumeRecordType = "未审核";
+                break;
+        }
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
@@ -204,11 +297,16 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity {
                 .append(resumeDeliveryRecordVO.getUserName() + "\n").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.colorPrimary))
                 .append("求职意向："+resumeDeliveryRecordVO.getRecruitmentName() + "\n\n").setBold().setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_CENTER)
                 .setForegroundColor(getResources().getColor(R.color.black)).setProportion((float)0.8).setClickSpan(clickableSpan)
+                .append("状态：" + resumeRecordType +"\n")
+                .setBold().setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_OPPOSITE)
+                .setBackgroundColor(getResources().getColor(R.color.lightblue))
+                .setForegroundColor(getResources().getColor(R.color.black))
+
 
                 .append("基本信息" + "\n").setBold()
-                .append("性别：" + sex + "\n").setBullet(60, getResources().getColor(R.color.colorPrimary)).setProportion((float)0.8)
-                .append("学校：" + resume.getSchool() + "\n").setBullet(60, getResources().getColor(R.color.colorPrimary)).setProportion((float)0.8)
-                .append("专业：" + resume.getSpeciality() + "\n").setBullet(60, getResources().getColor(R.color.colorPrimary)).setProportion((float)0.8)
+                .append("性    别：" + sex + "\n").setBullet(60, getResources().getColor(R.color.colorPrimary)).setProportion((float)0.8)
+                .append("毕业学校：" + resume.getSchool() + "\n").setBullet(60, getResources().getColor(R.color.colorPrimary)).setProportion((float)0.8)
+                .append("专业名称：" + resume.getSpeciality() + "\n").setBullet(60, getResources().getColor(R.color.colorPrimary)).setProportion((float)0.8)
                 .append("电子邮件：" + resume.getEmail() + "\n").setBullet(60, getResources().getColor(R.color.colorPrimary)).setProportion((float)0.8)
                 .append("联系电话：" + resume.getTelephone() + "\n").setBullet(60, getResources().getColor(R.color.colorPrimary)).setProportion((float)0.8)
                 .append("当前城市：" + resume.getPresentCity() + "\n").setBullet(60, getResources().getColor(R.color.colorPrimary)).setProportion((float)0.8)
@@ -224,33 +322,85 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity {
                 .append("实践经历" + "\n").setBold()
                 .append(resume.getPracticalExperience() + "\n").setBullet(60, getResources().getColor(R.color.colorPrimary)).setProportion((float)0.8)
 
-//                .append("发布时间： "+df2.format(recruitment.getPublishTime())+ "\n").setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.black)).setProportion((float)0.8)
-//                .append("发布公司： "+recruitment.getCompanyName()+ "\n\n\n").setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.black)).setProportion((float)0.8)
-//
-//                .append("岗位类型"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-//                .append(jobType + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
-//
-//                .append("岗位描述"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-//                .append(recruitment.getDescription() + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
-//
-//                .append("工作地点"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-//                .append(recruitment.getLocation() + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
-//
-//                .append("投递要求"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-//                .append(recruitment.getDeliveryRequest() + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
-//
-//                .append("月薪资"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-//                .append(recruitment.getSalary() + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
-//
-//                .append("工作时间"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-//                .append(recruitment.getDegree() + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
-//
-//                .append("月薪资"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-//                .append(workTime + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
-//
-//                .append("所属行业"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-//                .append(industryLabel + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
-//
                 .into(mTvAboutSpannable);
+    }
+
+    @Override
+    public void onClick(View v) {
+        resumeDelivery.setResumeDeliveryId(resumeDeliveryRecordVO.getResumeDeliveryId());
+        switch (v.getId()){
+            case R.id.btn_refuse:
+                resumeDelivery.setDeliveryStatus(-1);
+                modifyResumeDeliveryRecord();
+                break;
+            case R.id.btn_next:
+                bmbNext.boom();
+                break;
+        }
+
+    }
+    public  void modifyResumeDeliveryRecord(){
+        //开始加载动画
+        rxDialogLoading.show();
+        //获取token
+        SharedPreferences preferences = getSharedPreferences("token",0);
+        String token = preferences.getString(PostParameterName.TOKEN,null);
+        //组装URL
+        String url = PostParameterName.POST_URL_COMPANY_UPDATE_DELIVERY_RECORD + token;
+        //请求数据
+        try {
+            Log.d(TAG, "onCreate: 开始发送json请求"+ url);
+            rxDialogLoading.show();
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,new JSONObject(new Gson().toJson(resumeDelivery)),
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG, "onResponse: 返回"+response.toString());
+                            GsonBuilder builder = new GsonBuilder();
+                            builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+                                @Override
+                                public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                                    return new Date(json.getAsJsonPrimitive().getAsLong());
+                                }
+                            });
+                            Gson gson =builder.create();
+                            Type jsonType = new TypeToken<TempResponseData<Object>>() {}.getType();
+                            final TempResponseData<Object> postResult = gson.fromJson(response.toString(), jsonType);
+                            Log.d(TAG, "onResponse: "+postResult.getResultCode());
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(postResult.getResultCode()==200){
+                                        Toast.makeText(mContext, "更新状态成功", Toast.LENGTH_SHORT).show();
+                                        resumeDeliveryRecordVO.setDeliveryStatus(resumeDelivery.getDeliveryStatus());
+                                    }else{
+                                        Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
+                                    }
+                                    resumeDeliveryRecordVO.setDeliveryStatus(resumeDelivery.getDeliveryStatus());
+                                    //刷新页面
+                                    finish();
+                                    Intent intent = new Intent(mContext, ComResumeDeliveryRecordDetailActivity.class);
+                                    intent.putExtra("resumeDeliveryRecordVO",resumeDeliveryRecordVO);
+                                    startActivity(intent);
+                                    //关闭加载动画
+                                    rxDialogLoading.hide();
+                                }
+                            });
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("TAG", error.getMessage(), error);
+                    rxDialogLoading.hide();
+                    Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
+                }});
+
+            requestQueue.add(jsonObjectRequest);
+        } catch (Exception e) {
+            rxDialogLoading.hide();
+            Toast.makeText(mContext, "获取数据失败，请重试", Toast.LENGTH_LONG).show();
+            finish();
+            e.printStackTrace();
+        }
     }
 }
