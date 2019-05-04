@@ -19,6 +19,7 @@ import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PostResult;
 import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.bean.User;
+import com.djylrz.xzpt.utils.Constants;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.google.gson.Gson;
@@ -44,9 +45,6 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
     private Button save;
     private ArrayAdapter<String> workTimeAdapter;
     private ArrayAdapter<String> industryLabelAdapter;
-    private String[] workTimes = new String[] {"默认","995","996","955"};
-    private String[] industryLabel = new String[] {"默认", "测试|开发|运维类", "产品|需求|项目类", "运营|编辑|客服类", "市场|商务类", "销售类", "综合职能|高级管理", "金融类", "文娱|传媒|艺术|体育", "教育|培训", "商业服务|专业服务", "贸易|批发|零售|租赁业", "交通|运输|物流|仓储", "房地产|建筑|物业", "生产|加工|制造", "能源矿产|农林牧渔", "化工|生物|制药|医护", "公务员|其他"};
-
     private User user = new User();
     private String token;
 
@@ -64,14 +62,14 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
         save.setOnClickListener(this);
 
         //行业标签
-        industryLabelAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,industryLabel);
+        industryLabelAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,Constants.INDUSTRY_LABEL);
         industryLabelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         industry.setAdapter(industryLabelAdapter);
         //行业标签下拉框点击事件
         industry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(JobIntention.this,"行业标签"+industryLabel[position], Toast.LENGTH_SHORT).show();
+                Toast.makeText(JobIntention.this,"行业标签"+Constants.INDUSTRY_LABEL[position], Toast.LENGTH_SHORT).show();
                 user.setIndustryLabel(position);
             }
             @Override
@@ -81,14 +79,14 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
         });
 
         //工作时间
-        workTimeAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,workTimes);
+        workTimeAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, Constants.WORK_TIME);
         workTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         workTime.setAdapter(workTimeAdapter);
         //工作时间下拉框点击事件
         workTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(JobIntention.this,"工作时间制度"+workTimes[position], Toast.LENGTH_SHORT).show();
+                Toast.makeText(JobIntention.this,"工作时间制度"+Constants.WORK_TIME[position], Toast.LENGTH_SHORT).show();
                 user.setWorkTime(position);
             }
             @Override
