@@ -91,7 +91,7 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
 
         SharedPreferences userToken = getSharedPreferences("token",0);
         String token = userToken.getString(PostParameterName.STUDENT_TOKEN,null);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_USER_GET_RECRUITMENT + token, new JSONObject(new Gson().toJson(user)),
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_USER_GET_RECRUITMENT + token, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(final JSONObject response) {
