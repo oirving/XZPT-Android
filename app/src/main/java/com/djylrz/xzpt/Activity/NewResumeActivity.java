@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.Activity;
 
+import android.arch.core.executor.TaskExecutor;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,20 +11,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import android.widget.Toast;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PostResult;
 import com.djylrz.xzpt.bean.Resume;
+import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.Constants;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.regex.Matcher;
@@ -61,6 +66,10 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
 
     private User user = new User();
     private SharedPreferences sharedPreferences;
+
+    private TextView editOrCreate;
+
+    private Resume resumeToEdit;
 
 
     @Override
@@ -101,10 +110,27 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
         projectTextView=(TextView)findViewById(R.id.project_textview);
         practiceTextView=(TextView)findViewById(R.id.practice_textview);
 
+        editOrCreate=(TextView)findViewById(R.id.edit_or_crete_textview);
+
+
         sharedPreferences = getSharedPreferences("user",0);
-        initPage();
+
+
+        if ((resumeToEdit=(Resume) getIntent().getSerializableExtra("editResume"))!=null){
+            editOrCreate.setText("修改简历");
+            initPage();
+        }else{
+            editOrCreate.setText("创建新简历");
+            getStudenInfo();
+        }
 
         Log.d(TAG, "onCreate: ");
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        getStudenInfo();//获取更新后的user信息
     }
 
     @Override
@@ -136,8 +162,15 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
                 startActivity(intent4);
                 break;
             case R.id.done:
-                //创建一份新的简历
-                createResume();
+                switch (editOrCreate.getText().toString()){
+                    case "修改简历":{
+                        editResume();
+                    }break;
+                    case "创建新简历":{
+                        //创建一份新的简历
+                        createResume();
+                    }break;
+                }
                 break;
                 default:
                     break;
@@ -145,97 +178,72 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
     }
     //初始化页面
     public void initPage() {
+
+        Log.d(TAG, "initPage: 更新本地信息");
+        //获取本地信息，修改简历部分直接修改本地信息
         String userJson = sharedPreferences.getString("student",null);
+        if (userJson != null){user = new Gson().fromJson(userJson,User.class);}
+
+        if (editOrCreate.getText().toString().equals("修改简历")){
+            initEditResume(resumeToEdit);//使用已有简历初始化user，awards,projects,practice
+        }
+
+        //把获取到的信息展示出来
         String awards = sharedPreferences.getString("award",null);
         String project = sharedPreferences.getString("project",null);
         String practice = sharedPreferences.getString("practice",null);
-        if (userJson != null){
-            user = new Gson().fromJson(userJson,User.class);
-            name.setText(user.getUserName()!=null?user.getUserName():"");
-            sex.setText(Constants.SEX[(int)user.getSex()]);
-            age.setText(user.getAge()!=0?String.valueOf(user.getAge()):"");
-            phoneNum.setText(user.getTelephone()!=null ? user.getTelephone():"");
-            mailAddress.setText(user.getEmail()!=null?user.getEmail():"");
-            currentCity.setText(user.getPresentCity()!=null?user.getPresentCity():"");
-            school.setText(user.getSchool()!=null ? user.getSchool():"");
-            highestEducation.setText(Constants.EDUCATION_LEVEL[(int)user.getHighestEducation()]);
-            major.setText(user.getSpecialty()!=null ? user.getSpecialty():"");
+        name.setText(user.getUserName()!=null?user.getUserName():"");
+        sex.setText(Constants.SEX[(int)user.getSex()]);
+        age.setText(user.getAge()!=0?String.valueOf(user.getAge()):"");
+        phoneNum.setText(user.getTelephone()!=null ? user.getTelephone():"");
+        mailAddress.setText(user.getEmail()!=null?user.getEmail():"");
+        currentCity.setText(user.getPresentCity()!=null?user.getPresentCity():"");
+        school.setText(user.getSchool()!=null ? user.getSchool():"");
+        highestEducation.setText(Constants.EDUCATION_LEVEL[(int)user.getHighestEducation()]);
+        major.setText(user.getSpecialty()!=null ? user.getSpecialty():"");
 
+        Calendar calendar = Calendar.getInstance();
+        if (user.getStartTime()!=null){
+            calendar.setTime(new Date(user.getStartTime().getTime()));
+            startTime.setText(calendar.get(Calendar.YEAR));
+        }else{
+            startTime.setText("");
+        }
+        if (user.getEndTime()!=null){
+            calendar.setTime(new Date(user.getEndTime().getTime()));
+            endTime.setText(user.getEndTime().toString());
+        }else{
+            endTime.setText("");
+        }
 
-            Calendar calendar = Calendar.getInstance();
-            if (user.getStartTime()!=null){
-                calendar.setTime(new Date(user.getStartTime().getTime()));
-                startTime.setText(calendar.get(Calendar.YEAR));
-            }else{
-                startTime.setText("");
+        job.setText(user.getStationLabel()!=null ? user.getStationLabel():"");
+        workCity.setText(user.getExpectedCity()!=null ? user.getExpectedCity():"");
+        industry.setText(Constants.INDUSTRY_LABEL[(int)user.getIndustryLabel()]);
+        workTime.setText(Constants.WORK_TIME[(int)user.getWorkTime()]);
+
+        if (user.getExpectSalary() != null){
+            // 按指定模式在字符串查找ak-bk
+            String pattern = "([1-9]\\d*)(k-)([1-9]\\d*)(k)";
+            // 创建 Pattern 对象
+            Pattern r = Pattern.compile(pattern);
+            // 现在创建 matcher 对象
+            Matcher matcher = r.matcher(user.getExpectSalary());
+            if (matcher.find()){
+                basicSalary.setText(matcher.group(1));
+                topSalary.setText(matcher.group(3));
             }
-            if (user.getEndTime()!=null){
-                calendar.setTime(new Date(user.getEndTime().getTime()));
-                endTime.setText(user.getEndTime().toString());
-            }else{
-                endTime.setText("");
-            }
 
-
-
-            job.setText(user.getStationLabel()!=null ? user.getStationLabel():"");
-            workCity.setText(user.getExpectedCity()!=null ? user.getExpectedCity():"");
-            industry.setText(Constants.INDUSTRY_LABEL[(int)user.getIndustryLabel()]);
-            workTime.setText(Constants.WORK_TIME[(int)user.getWorkTime()]);
-
-            if (user.getExpectSalary() != null){
-                // 按指定模式在字符串查找ak-bk
-                String pattern = "([1-9]\\d*)(k-)([1-9]\\d*)(k)";
-                // 创建 Pattern 对象
-                Pattern r = Pattern.compile(pattern);
-                // 现在创建 matcher 对象
-                Matcher matcher = r.matcher(user.getExpectSalary());
-                if (matcher.find()){
-                    basicSalary.setText(matcher.group(1));
-                    topSalary.setText(matcher.group(3));
-                }
-
-            }
         }
         awardsTextView.setText(awards!=null?awards:"");
         projectTextView.setText(project!=null?project:"");
         practiceTextView.setText(practice!=null?practice:"");
-
     }
 
     //创建新简历
     private void createResume(){
         //获取简历所需信息
         Resume newResume = new Resume();
-        //User的信息
-        newResume.setUserId(user.getUserId());
-        newResume.setTelephone(user.getTelephone());
-        newResume.setUserName(user.getUserName());
-        newResume.setHeadUrl(user.getHeadUrl());
-        newResume.setEmail(user.getEmail());
-        newResume.setSex(user.getSex());
-        newResume.setPresentCity(user.getPresentCity());
-        newResume.setExpectedCity(user.getExpectedCity());
-        newResume.setSchool(user.getSchool());
-        newResume.setSpeciality(user.getSpecialty());
-        newResume.setStartTime(user.getStartTime());
-        newResume.setEndTime(user.getEndTime());
-        newResume.setHighestEducation(user.getHighestEducation());
-        //奖项的信息
-        String awards = sharedPreferences.getString("award",null);
-        if (awards!=null){
-            newResume.setCertificate(awards);
-        }
-        //项目经历
-        String project = sharedPreferences.getString("project",null);
-        if (project!=null){
-            newResume.setProjectExperience(project);
-        }
-        //实践经历
-        String practice = sharedPreferences.getString("practice",null);
-        if (practice!=null){
-            newResume.setPracticalExperience(practice);
-        }
+        getCurrentDataForEditOrCreateResume(newResume);
 
         //网络处理
         VolleyNetUtil.getInstance().setRequestQueue(getApplicationContext());
@@ -281,17 +289,172 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        Log.d(TAG, "onPostResume: ");
-        initPage();
+    //初始化编辑简历页面，根据已有简历初始化
+    private void initEditResume(Resume resume){
+        //初始化用户信息
+        user.setUserId(resume.getUserId());
+        user.setTelephone(resume.getTelephone());
+        user.setUserName(resume.getUserName());
+        user.setHeadUrl(resume.getHeadUrl());
+        user.setEmail(resume.getEmail());
+        user.setSex(resume.getSex());
+        user.setPresentCity(resume.getPresentCity());
+        user.setExpectedCity(resume.getExpectedCity());
+        user.setSchool(resume.getSchool());
+        user.setSpecialty(resume.getSpeciality());
+        user.setStartTime(resume.getStartTime());
+        user.setEndTime(resume.getEndTime());
+        user.setHighestEducation(resume.getHighestEducation());
+        user.setStationLabel(resume.getExpectWork());
+
+        //初始化奖项信息，项目信息，实践信息
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("award",resume.getCertificate());
+        editor.putString("project",resume.getProjectExperience());
+        editor.putString("practice",resume.getPracticalExperience());
+        editor.commit();
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d(TAG, "onRestart: ");
-        initPage();
+    private void editResume(){
+        Log.d(TAG, "editResume: RESUME ID is "+resumeToEdit.getResumeId());
+        //获取用户token
+        String token = getSharedPreferences("token",0).getString(PostParameterName.STUDENT_TOKEN,null);
+
+        //获取修改后的信息
+        getCurrentDataForEditOrCreateResume(resumeToEdit);
+
+        //网络处理
+        try {
+            Log.d(TAG, "createResume: edit Resume "+new Gson().toJson(resumeToEdit));
+            Log.d(TAG, "createResume: edit Resume URL is "+PostParameterName.POST_URL_UPDATE_RESUME+token+
+                    "&"+PostParameterName.REQUEST_RESUME_ID+"="+resumeToEdit.getResumeId());
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_CREATE_RESUME+token+
+                    "&"+PostParameterName.REQUEST_RESUME_ID+"="+resumeToEdit.getResumeId(),
+                    new JSONObject(new Gson().toJson(resumeToEdit)),
+                    new com.android.volley.Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG, "onResponse: 返回"+response.toString());
+                            final PostResult postResult = new Gson().fromJson(response.toString(), PostResult.class);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    switch (postResult.getResultCode()){
+                                        case "200":{
+                                            //跳转到我的简历界面，打开MyResumeActivity
+                                            Toast.makeText(NewResumeActivity.this, "更新简历成功", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(NewResumeActivity.this,MyResumeActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }break;
+                                        default:{
+                                            Toast.makeText(NewResumeActivity.this, "更新简历失败", Toast.LENGTH_SHORT).show();
+                                            Log.d(TAG, "更新简历失败"+postResult.getResultCode());
+                                        }
+
+                                    }
+                                }
+                            });
+                        }
+                    }, new com.android.volley.Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("TAG", error.getMessage(), error);
+                }});
+            VolleyNetUtil.getInstance().setRequestQueue(getApplicationContext());
+            VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
+
+    private void getCurrentDataForEditOrCreateResume(Resume targetResume){
+        //个人信息&求职意向
+        targetResume.setUserId(user.getUserId());
+        targetResume.setTelephone(user.getTelephone());
+        targetResume.setUserName(user.getUserName());
+        targetResume.setHeadUrl(user.getHeadUrl());
+        targetResume.setEmail(user.getEmail());
+        targetResume.setSex(user.getSex());
+        targetResume.setPresentCity(user.getPresentCity());
+        targetResume.setExpectedCity(user.getExpectedCity());
+        targetResume.setSchool(user.getSchool());
+        targetResume.setSpeciality(user.getSpecialty());
+        targetResume.setStartTime(user.getStartTime());
+        targetResume.setEndTime(user.getEndTime());
+        targetResume.setHighestEducation(user.getHighestEducation());
+        targetResume.setExpectWork(user.getStationLabel());
+
+        //奖项
+        String awards = sharedPreferences.getString("award",null);
+        if (awards!=null){
+            targetResume.setCertificate(awards);
+        }
+        //项目经历
+        String project = sharedPreferences.getString("project",null);
+        if (project!=null){
+            targetResume.setProjectExperience(project);
+        }
+        //实践经历
+        String practice = sharedPreferences.getString("practice",null);
+        if (practice!=null){
+            targetResume.setPracticalExperience(practice);
+        }
+    }
+
+    private void getStudenInfo(){
+        //用户已经登录，查询个人信息并显示
+        VolleyNetUtil.getInstance().setRequestQueue(getApplicationContext());//获取requestQueue
+        SharedPreferences userToken = getSharedPreferences("token",0);
+        final String token = userToken.getString(PostParameterName.STUDENT_TOKEN,null);
+        if (token != null){
+            Log.d(TAG, "onCreate: TOKEN is "+token);
+            user.setToken(token);
+
+            try {
+                Log.d(TAG, "onCreate: 获取个人信息，只填了token"+new Gson().toJson(user));
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_USER_BY_TOKEN+user.getToken(),new JSONObject(new Gson().toJson(user)),
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d(TAG, "onResponse: 返回"+response.toString());
+                                Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
+                                final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), jsonType);
+                                Log.d(TAG, "onResponse: "+postResult.getResultCode());
+                                user = postResult.getResultObject();
+                                user.setToken(token);
+
+                                //获取用户信息，存储到本地。
+                                SharedPreferences sharedPreferences = getSharedPreferences("user", 0);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                try {
+                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：："+response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
+                                    editor.putString("student", new Gson().toJson(user));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                editor.commit();
+
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        initPage();//初始化页面信息
+                                    }
+                                });
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("TAG", error.getMessage(), error);
+                    }});
+                VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
 }

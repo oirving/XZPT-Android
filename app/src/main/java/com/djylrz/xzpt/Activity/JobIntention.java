@@ -71,7 +71,7 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
         industry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(JobIntention.this,"行业标签"+workTimes[position], Toast.LENGTH_SHORT).show();
+                Toast.makeText(JobIntention.this,"行业标签"+industryLabel[position], Toast.LENGTH_SHORT).show();
                 user.setIndustryLabel(position);
             }
             @Override
@@ -89,7 +89,7 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(JobIntention.this,"工作时间制度"+workTimes[position], Toast.LENGTH_SHORT).show();
-                user.setWorkTime(position+1);
+                user.setWorkTime(position);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -126,6 +126,7 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
                                             switch(postResult.getResultCode()){
                                                 case "200":{
                                                     Toast.makeText(JobIntention.this, "修改个人信息成功", Toast.LENGTH_SHORT).show();
+                                                    getStudenInfo();
                                                     finish();//保存成功，结束当前页面
                                                 }break;
                                                 default:{
@@ -172,6 +173,19 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
                                 Log.d(TAG, "onResponse: "+postResult.getResultCode());
                                 user = postResult.getResultObject();
                                 user.setToken(token);
+
+                                //获取用户信息，存储到本地。
+                                SharedPreferences sharedPreferences = getSharedPreferences("user", 0);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                try {
+                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：："+response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
+                                    editor.putString("student", new Gson().toJson(user));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                editor.commit();
+
+
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
