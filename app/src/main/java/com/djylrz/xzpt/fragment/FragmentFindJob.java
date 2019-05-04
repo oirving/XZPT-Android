@@ -205,7 +205,6 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
                                             //获取到RecruitmentList
                                             recruitments = recruitmentPageData.getContentList();
                                             Log.d(TAG, "onResponse: "+recruitments.size());;
-                                            //todo:获取到数据之后的处理
                                         }break;
                                         default:{
                                             Log.d(TAG, "获取招聘信息失败"+response.getString(PostParameterName.RESPOND_RESULTCODE));
@@ -221,7 +220,7 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
                                     @Override
                                     public void run() {
                                         Toast.makeText(getContext(), "获取招聘信息成功", Toast.LENGTH_SHORT).show();
-                                        //todo 更新页面
+                                        //todo 更新页面——尚未实现下拉刷新
                                         finalRecruitments.size();
                                         for(RecommendCardFragment recommendCardFragment:recommendCardFragmentList){
                                             recommendCardFragment.updateAdapter(finalRecruitments);
