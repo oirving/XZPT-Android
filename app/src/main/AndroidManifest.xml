@@ -40,6 +40,7 @@
         <activity android:name=".Activity.PersonalInformation" />
         <activity android:name=".Activity.JobIntention" />
         <activity android:name=".Activity.CompanyLogin" />
+        <activity android:name=".Activity.RecruitmentDetailActivity"/>
         <activity android:name=".Activity.ActorChoose">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

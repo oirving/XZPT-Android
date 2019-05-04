@@ -52,4 +52,6 @@ dependencies {
     implementation "com.github.vondear.RxTool:RxKit:2.3.9"
     //UI库
     implementation "com.github.vondear.RxTool:RxUI:2.3.9"
+    //BoomMenu
+    implementation "com.nightonke:boommenu:2.1.1"
 }
