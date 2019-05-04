@@ -14,6 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -38,10 +41,13 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentFindJob extends Fragment {
+public class FragmentFindJob extends Fragment implements View.OnClickListener{
     private Context mContext = getContext();
     private String[] mTitles = {"推荐","热门","联系"};
     private View mDecorView;
+    private ImageView search;
+    private EditText searchEditText;
+    private Button searchButton;
     private SegmentTabLayout mTabLayout;
     private List<RecommendCardFragment> mFragments;
     private static final String TAG = "FragmentFindJob";
@@ -199,7 +205,6 @@ public class FragmentFindJob extends Fragment {
                                             //获取到RecruitmentList
                                             recruitments = recruitmentPageData.getContentList();
                                             Log.d(TAG, "onResponse: "+recruitments.size());;
-                                            //todo:获取到数据之后的处理
                                         }break;
                                         default:{
                                             Log.d(TAG, "获取招聘信息失败"+response.getString(PostParameterName.RESPOND_RESULTCODE));
@@ -215,7 +220,7 @@ public class FragmentFindJob extends Fragment {
                                     @Override
                                     public void run() {
                                         Toast.makeText(getContext(), "获取招聘信息成功", Toast.LENGTH_SHORT).show();
-                                        //todo 更新页面
+                                        //todo 更新页面——尚未实现下拉刷新
                                         finalRecruitments.size();
                                         for(RecommendCardFragment recommendCardFragment:recommendCardFragmentList){
                                             recommendCardFragment.updateAdapter(finalRecruitments);
