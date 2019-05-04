@@ -45,16 +45,13 @@ import com.nightonke.boommenu.OnBoomListener;
 import com.nightonke.boommenu.Piece.PiecePlaceEnum;
 import com.vondear.rxtool.RxTextTool;
 import com.vondear.rxtool.RxTool;
-import com.vondear.rxtool.view.RxToast;
 import com.vondear.rxui.view.dialog.RxDialogLoading;
-import com.vondear.rxui.view.popupwindows.tools.RxPopupView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.Date;
-import java.util.List;
 
 public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity implements View.OnClickListener{
     private Toolbar toolbar;//标题栏
@@ -93,7 +90,7 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
         });
         //设置加载动画
         rxDialogLoading = new RxDialogLoading(this);
-        rxDialogLoading.setLoadingText("正在获取简历数据");
+        rxDialogLoading.setLoadingText("数据加载中");
         rxDialogLoading.setLoadingColor(R.color.colorPrimary);
 
         //设置按钮
@@ -163,7 +160,6 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
         //请求数据
         try {
             Log.d(TAG, "onCreate: 开始发送json请求"+ url);
-            rxDialogLoading.show();
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,new JSONObject(new Gson().toJson(resumeDeliveryRecordVO)),
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -187,7 +183,6 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                                     //设置文本数据
                                     setText();
                                     //关闭加载动画
-                                    rxDialogLoading.hide();
                                 }
                             });
                         }
@@ -195,14 +190,12 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("TAG", error.getMessage(), error);
-                    rxDialogLoading.hide();
                     Toast.makeText(mContext, "获取数据失败，请重试", Toast.LENGTH_LONG).show();
                     finish();
                 }});
 
             requestQueue.add(jsonObjectRequest);
         } catch (JSONException e) {
-            rxDialogLoading.hide();
             Toast.makeText(mContext, "获取数据失败，请重试", Toast.LENGTH_LONG).show();
             finish();
             e.printStackTrace();
@@ -339,9 +332,11 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
         }
 
     }
+
+    /**
+     * 发起修改投递记录请求
+     */
     public  void modifyResumeDeliveryRecord(){
-        //开始加载动画
-        rxDialogLoading.show();
         //获取token
         SharedPreferences preferences = getSharedPreferences("token",0);
         String token = preferences.getString(PostParameterName.TOKEN,null);
@@ -350,7 +345,6 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
         //请求数据
         try {
             Log.d(TAG, "onCreate: 开始发送json请求"+ url);
-            rxDialogLoading.show();
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,new JSONObject(new Gson().toJson(resumeDelivery)),
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -382,8 +376,6 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                                     Intent intent = new Intent(mContext, ComResumeDeliveryRecordDetailActivity.class);
                                     intent.putExtra("resumeDeliveryRecordVO",resumeDeliveryRecordVO);
                                     startActivity(intent);
-                                    //关闭加载动画
-                                    rxDialogLoading.hide();
                                 }
                             });
                         }
@@ -391,13 +383,11 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("TAG", error.getMessage(), error);
-                    rxDialogLoading.hide();
                     Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
                 }});
 
             requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
-            rxDialogLoading.hide();
             Toast.makeText(mContext, "获取数据失败，请重试", Toast.LENGTH_LONG).show();
             finish();
             e.printStackTrace();

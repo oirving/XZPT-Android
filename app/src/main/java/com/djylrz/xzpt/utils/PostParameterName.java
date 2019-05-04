@@ -36,6 +36,9 @@ public class PostParameterName {
     public static final String POST_URL_COMPANY_GET_DELIVER_RECORD = HOST + "/company/getlistdeliveryrecord?token=";//企业查看所有招聘信息（分页）
     public static final String POST_URL_COMPANY_GET_RESUME_BY_ID = HOST + "/company/getresumebyid?token=";//企业查看用户简历
     public static final String POST_URL_COMPANY_UPDATE_DELIVERY_RECORD = HOST + "/company/updatedeliveryrecord?token=";//企业修改用户简历投递记录
+    public static final String POST_URL_COMPANY_UPDATE_RESRUITMENT = HOST + "/company/updaterecruitment?token=";//企业修改招聘信息
+    public static final String POST_URL_COMPANY_GET_RESRUITMENT = HOST + "/company/getrecruitment?token=";//企业获取单条招聘信息
+    public static final String POST_URL_COMPANY_DELETE_RECRUITMENT = HOST + "/company/deleterecruitment?token=";//企业删除单条招聘信息
 
 
     public static final String REQUEST_CODE = "code";
