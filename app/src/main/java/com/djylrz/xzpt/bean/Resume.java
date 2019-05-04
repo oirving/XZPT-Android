@@ -28,6 +28,16 @@ public class Resume implements Serializable {
     private String certificate;
     private String projectExperience;
     private String practicalExperience;
+    private String expectWork;
+
+    public String getExpectWork() {
+        return expectWork;
+    }
+
+    public void setExpectWork(String expectWork) {
+        this.expectWork = expectWork;
+    }
+
     private long resumeStatus;
 
 

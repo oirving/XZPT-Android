@@ -46,7 +46,7 @@ public class ResumeModelListAdapter extends RecyclerView.Adapter<ResumeModelList
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 ResumeModelItem resumeModelItem = mResumeModelList.get(position);
-                Toast.makeText(v.getContext(),"clicked" ,Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(),"clicked 简历" ,Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(v.getContext(), ResumeModelDetailsActivity.class);
                 v.getContext().startActivity(intent);
             }

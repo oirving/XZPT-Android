@@ -109,47 +109,10 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         Button next = (Button)findViewById(R.id.info_next_button);//保存按钮
         next.setOnClickListener(this);
 
+        getStudentInfo();
 
-        //用户已经登录，查询个人信息并显示
-        requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
-        SharedPreferences userToken = getSharedPreferences("token",0);
-        token = userToken.getString(PostParameterName.STUDENT_TOKEN,null);
-        if (token != null){
-            Log.d(TAG, "onCreate: TOKEN is "+token);
 
-            user.setToken(token);
 
-            try {
-                Log.d(TAG, "onCreate: 获取个人信息，只填了token"+new Gson().toJson(user));
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_USER_BY_TOKEN+user.getToken(),new JSONObject(new Gson().toJson(user)),
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                Log.d(TAG, "onResponse: 返回"+response.toString());
-                                Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
-                                final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), jsonType);
-                                Log.d(TAG, "onResponse: "+postResult.getResultCode());
-                                user = postResult.getResultObject();
-                                user.setToken(token);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        initpage(user);
-                                        Log.d(TAG, "run: ------");
-                                    }
-                                });
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("TAG", error.getMessage(), error);
-                    }});
-                requestQueue.add(jsonObjectRequest);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        }
         Log.d(TAG, "onCreate: ");
     }
 
@@ -194,6 +157,7 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                                             switch(postResult.getResultCode()){
                                                 case "200":{
                                                     Toast.makeText(PersonalInformation.this, "修改个人信息成功", Toast.LENGTH_SHORT).show();
+                                                    getStudentInfo();
                                                     finish();//保存成功，结束当前页面
                                                 }break;
                                                 default:{
@@ -258,5 +222,60 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         major.setSaveEnabled(false);
     }
 
+
+    private void getStudentInfo(){
+        //用户已经登录，查询个人信息并显示
+        requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
+        SharedPreferences userToken = getSharedPreferences("token",0);
+        token = userToken.getString(PostParameterName.STUDENT_TOKEN,null);
+        if (token != null){
+            Log.d(TAG, "onCreate: TOKEN is "+token);
+
+            user.setToken(token);
+
+            try {
+                Log.d(TAG, "onCreate: 获取个人信息，只填了token"+new Gson().toJson(user));
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_USER_BY_TOKEN+user.getToken(),new JSONObject(new Gson().toJson(user)),
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d(TAG, "onResponse: 返回"+response.toString());
+                                Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
+                                final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), jsonType);
+                                Log.d(TAG, "onResponse: "+postResult.getResultCode());
+                                user = postResult.getResultObject();
+                                user.setToken(token);
+
+                                //获取用户信息，存储到本地。
+                                SharedPreferences sharedPreferences = getSharedPreferences("user", 0);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                try {
+                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：："+response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
+                                    editor.putString("student", new Gson().toJson(user));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                editor.commit();
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        initpage(user);
+                                        Log.d(TAG, "run: ------");
+                                    }
+                                });
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("TAG", error.getMessage(), error);
+                    }});
+                requestQueue.add(jsonObjectRequest);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
 }
 

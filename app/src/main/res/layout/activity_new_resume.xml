@@ -9,6 +9,7 @@
         android:background="@color/colorHead"
         >
         <TextView
+            android:id="@+id/edit_or_crete_textview"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:text="创建新简历"

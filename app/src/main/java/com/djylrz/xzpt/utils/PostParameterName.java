@@ -21,6 +21,10 @@ public class PostParameterName {
     public static final String POST_URL_SEARCH_RECRUIMENT=HOST +"/user/searchrecruitment?token=";//&keyWord=  搜索招聘信息
 
     public static final String POST_URL_CREATE_RESUME = HOST + "/user/createresume?token=";//创建简历接口
+    public static final String POST_URL_GET_LIST_RESUME = HOST + "/user/getlistresume?token=";//获取所有简历接口
+    public static final String POST_URL_UPDATE_RESUME = HOST + "/user/updateresume?token=";//修改简历接口
+    public static final String POST_URL_DELETE_RESUME = HOST + "/user/deleteresume?token=";//删除简历接口
+
 
 
     public static final String POST_URL_COMPANY_LOGIN = HOST + "/company/login/";//企业登录接口
@@ -30,6 +34,9 @@ public class PostParameterName {
     public static final String POST_URL_COMPANY_GET_DELIVERT_RECORD = HOST + "/company/getlistdeliveryrecord?token=";//企业查看所有招聘信息（分页）
     public static final String POST_URL_COMPANY_GET_RESUME_BY_ID = HOST + "/company/getresumebyid?token=";//企业查看用户简历
     public static final String POST_URL_COMPANY_UPDATE_DELIVERY_RECORD = HOST + "/company/updatedeliveryrecord?token=";//企业修改用户简历投递记录
+    public static final String POST_URL_COMPANY_UPDATE_RESRUITMENT = HOST + "/company/updaterecruitment?token=";//企业修改招聘信息
+    public static final String POST_URL_COMPANY_GET_RESRUITMENT = HOST + "/company/getrecruitment?token=";//企业获取单条招聘信息
+    public static final String POST_URL_COMPANY_DELETE_RECRUITMENT = HOST + "/company/deleterecruitment?token=";//企业删除单条招聘信息
 
 
     public static final String REQUEST_CODE = "code";
@@ -37,6 +44,7 @@ public class PostParameterName {
     public static final String REQUEST_PASSWORD = "passwd";
     public static final String REQUEST_USERTYPE = "";
     public static final String REQUEST_KEYWORD = "keyWord";
+    public static final String REQUEST_RESUME_ID = "resumeId";
 
     public static final String RESPOND_RESULTCODE = "resultCode";
     public static final String RESPOND_RESULMSG = "resultMsg";
