@@ -21,6 +21,10 @@ public class PostParameterName {
     public static final String POST_URL_SEARCH_RECRUIMENT=HOST +"/user/searchrecruitment?token=";//&keyWord=  搜索招聘信息
 
     public static final String POST_URL_CREATE_RESUME = HOST + "/user/createresume?token=";//创建简历接口
+    public static final String POST_URL_GET_LIST_RESUME = HOST + "/user/getlistresume?token=";//获取所有简历接口
+    public static final String POST_URL_UPDATE_RESUME = HOST + "/user/updateresume?token=";//修改简历接口
+    public static final String POST_URL_DELETE_RESUME = HOST + "/user/deleteresume?token=";//删除简历接口
+
 
 
     public static final String POST_URL_COMPANY_LOGIN = HOST + "/company/login/";//企业登录接口
@@ -40,6 +44,7 @@ public class PostParameterName {
     public static final String REQUEST_PASSWORD = "passwd";
     public static final String REQUEST_USERTYPE = "";
     public static final String REQUEST_KEYWORD = "keyWord";
+    public static final String REQUEST_RESUME_ID = "resumeId";
 
     public static final String RESPOND_RESULTCODE = "resultCode";
     public static final String RESPOND_RESULMSG = "resultMsg";

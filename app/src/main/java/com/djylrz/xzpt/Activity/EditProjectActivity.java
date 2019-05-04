@@ -19,6 +19,7 @@ public class EditProjectActivity extends AppCompatActivity implements View.OnCli
         project = (EditText) findViewById(R.id.project_edittext);
         save = (Button) findViewById(R.id.save_button);
         save.setOnClickListener(this);
+        initPage();
     }
 
     @Override
@@ -31,5 +32,11 @@ public class EditProjectActivity extends AppCompatActivity implements View.OnCli
                 editor.commit();
                 finish();
         }
+    }
+
+    private void initPage(){
+        SharedPreferences sharedPreferences = getSharedPreferences("user",0);
+        String detail = sharedPreferences.getString("project",null);
+        project.setText(detail!=null?detail:"");
     }
 }
