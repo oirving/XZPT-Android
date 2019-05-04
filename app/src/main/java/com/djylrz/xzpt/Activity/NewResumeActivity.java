@@ -221,6 +221,7 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
         newResume.setStartTime(user.getStartTime());
         newResume.setEndTime(user.getEndTime());
         newResume.setHighestEducation(user.getHighestEducation());
+        newResume.setExpectWork(user.getStationLabel());
         //奖项的信息
         String awards = sharedPreferences.getString("award",null);
         if (awards!=null){
