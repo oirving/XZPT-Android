@@ -31,20 +31,21 @@ public class MyResumeActivity extends AppCompatActivity {
         position = new String[]{};//申请职位
         userName = new String();//用户名
         time = new String[]{};//申请时间
-        numOfResume=4;//简历份数！！！
+        numOfResume=10;//简历份数！！！
         initResumeList();
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.myresume_list);
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         ResumeListAdapter adapter = new ResumeListAdapter(mResumeList);
         recyclerView.setAdapter(adapter);
 
     }
 
+   //todo：获取所有的简历信息——》小榕
     private void initResumeList() {
         for(int i=0;i<numOfResume;i++) {
             //信息填入，上面的参数填好就不用管这里了，没填好之前点击会崩
-            ResumeItem resumeItem = new ResumeItem(state[i],position[i],userName,time[i]);
+            ResumeItem resumeItem = new ResumeItem("通过","董事局主席","小李","2019-4-21");
             mResumeList.add(resumeItem);
         }
     }

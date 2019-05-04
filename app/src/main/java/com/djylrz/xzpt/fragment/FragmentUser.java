@@ -11,11 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.djylrz.xzpt.Activity.MainActivity;
 import com.djylrz.xzpt.Activity.PersonalInformation;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.RecyclerDivider;
 import com.djylrz.xzpt.utils.UserInfoOptionAdapter;
 import com.djylrz.xzpt.utils.UserSelector;
@@ -28,7 +30,8 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
     private RecyclerView userOption;
     private UserInfoOptionAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
-    private UserSelector myResume,jobInention,focusCompany,help;
+    private UserSelector myResume,jobInention,focusCompany,help,logout;
+    private View view;
 
     @Nullable
     @Override
@@ -47,7 +50,11 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
         help = new UserSelector(R.drawable.help,"帮 助 与 反 馈 >");
         userSelectorList.add(help);
 
-        View view = inflater.inflate(R.layout.fragment5_user, container, false);
+        logout = new UserSelector(0,"注 销>");
+        userSelectorList.add(logout);
+
+
+        view = inflater.inflate(R.layout.fragment5_user, container, false);
         Button userInfoButton = (Button) view.findViewById(R.id.perfect_info_button);//完善信息按钮
         userInfoButton.setOnClickListener(this);
 
@@ -71,4 +78,9 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
                 break;
         }
     }
+
+    public void setUserName(User user){
+        ((TextView)view.findViewById(R.id.user_name_textview)).setText(user.getUserName());
+    }
+
 }
