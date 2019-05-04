@@ -129,7 +129,7 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
         });
         requestQueue.add(jsonObjectRequest);
     }
-    //todo 初始化本界面，把相应的信息填入 ->小榕
+
     public void initPage(Recruitment recruitment) {
         jobName.setText(recruitment.getJobName());
         salary.setText(recruitment.getSalary());
@@ -139,8 +139,8 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
         companyName.setText(recruitment.getCompanyName());
         description.setText(recruitment.getDescription());
         deliveryRequest.setText(recruitment.getDeliveryRequest());
-        industryLabel.setText(recruitment.getIndustryLabel()+" ");
-        stationLabel.setText(recruitment.getStationLabel());
+        industryLabel.setText(recruitment.getIndustry());
+        stationLabel.setText(recruitment.getStation());
         contact.setText(recruitment.getContact());
     }
 }
