@@ -136,7 +136,7 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
             holder.editRecruitment.setText("编辑岗位");
             holder.opRecruitment.setText("结束招聘");
         }else if(type == 1){
-            holder.editRecruitment.setText("编辑岗位");
+            holder.editRecruitment.setText("重新招聘");
             holder.opRecruitment.setText("删除岗位");
         }
     }

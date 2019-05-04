@@ -18,13 +18,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PageData;
-import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.ComResumeDeliveryRecordAdapter;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
 import com.djylrz.xzpt.utils.PostParameterName;
-import com.djylrz.xzpt.utils.RecruitmentAdapter;
 import com.djylrz.xzpt.vo.ResumeDeliveryRecordVO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,7 +31,6 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
-import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -138,7 +135,7 @@ public class ComResumeCardFragment extends Fragment {
         SharedPreferences preferences = getActivity().getSharedPreferences("token",0);
         String token = preferences.getString(PostParameterName.TOKEN,null);
         //组装URL
-        String url = PostParameterName.POST_URL_COMPANY_GET_DELIVERT_RECORD + token ;
+        String url = PostParameterName.POST_URL_COMPANY_GET_DELIVER_RECORD + token ;
         //
         PageData pageData = new PageData();
         pageData.setCurrentPage(currentPage++);
