@@ -60,6 +60,7 @@ public class StudentRecruitmentAdapter extends RecyclerView.Adapter<StudentRecru
                 Toast.makeText(v.getContext(), "you clicked view " + recruitment.getJobName(), Toast.LENGTH_SHORT).show();
                 //todo 在招聘信息列表里点击后跳转的具体招聘信息页面 ->小榕
                 Intent intent = new Intent(v.getContext(), RecruitmentDetailActivity.class);
+                intent.putExtra("recruitmentID",recruitment.getRecruitmentId());
                 v.getContext().startActivity(intent);
             }
         });

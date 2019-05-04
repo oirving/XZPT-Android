@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.djylrz.xzpt.utils.PostParameterName.CHOOSE_RESUME_TO_DELIVER;
+
 
 public class MyResumeActivity extends AppCompatActivity {
 
@@ -127,6 +129,9 @@ public class MyResumeActivity extends AppCompatActivity {
                                         //todo 处理获得的所有简历
                                         adapter.setmResumeList(mResumeList);
                                         adapter.setResumeList(resumeList);
+                                        if (getIntent().getIntExtra("selectResume",0)==CHOOSE_RESUME_TO_DELIVER){//选择简历用于投体
+                                            adapter.setForDeliver(true);
+                                        }
                                         recyclerView.setAdapter(adapter);
                                     }
                                 });
