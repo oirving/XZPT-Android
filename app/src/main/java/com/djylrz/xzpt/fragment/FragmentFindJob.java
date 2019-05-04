@@ -36,7 +36,9 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -172,10 +174,10 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
             try {
                 Log.d(TAG, "searchRecruitment: "+new Gson().toJson(pageData));
                 Log.d(TAG, "searchRecruitment: URL is "+ PostParameterName.POST_URL_SEARCH_RECRUIMENT+user.getToken()+"&"+
-                        PostParameterName.REQUEST_KEYWORD+"="+keyword);
+                        PostParameterName.REQUEST_KEYWORD+"="+ URLEncoder.encode(keyword,"utf-8"));
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                         PostParameterName.POST_URL_SEARCH_RECRUIMENT+user.getToken()+"&"+
-                        PostParameterName.REQUEST_KEYWORD+"="+keyword,
+                        PostParameterName.REQUEST_KEYWORD+"="+URLEncoder.encode(keyword,"utf-8"),
                         new JSONObject(new Gson().toJson(pageData)),
                         new com.android.volley.Response.Listener<JSONObject>() {
                             @Override
@@ -234,7 +236,7 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
                         Log.e("TAG", error.getMessage(), error);
                     }});
                 VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
-            } catch (JSONException e) {
+            } catch (JSONException | UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
 
