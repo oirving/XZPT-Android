@@ -167,7 +167,7 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
         salary.setText(recruitment.getSalary());
         location.setText(recruitment.getLocation());
         degree.setText(recruitment.getDegree());
-        workTime.setText(recruitment.getWorkTime()+"");
+        workTime.setText(Constants.WORK_TIME[(int) recruitment.getWorkTime()]);
         companyName.setText(recruitment.getCompanyName());
         description.setText(recruitment.getDescription());
         deliveryRequest.setText(recruitment.getDeliveryRequest());
