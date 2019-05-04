@@ -16,20 +16,22 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.djylrz.xzpt.R;
-import com.djylrz.xzpt.bean.PostResult;
-import com.djylrz.xzpt.bean.Resume;
-import com.djylrz.xzpt.bean.TempResponseData;
-import com.djylrz.xzpt.bean.User;
+import com.djylrz.xzpt.bean.*;
 import com.djylrz.xzpt.utils.Constants;
 import com.djylrz.xzpt.utils.PostParameterName;
+import com.djylrz.xzpt.utils.ResumeItem;
 import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -70,6 +72,8 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
     private TextView editOrCreate;
 
     private Resume resumeToEdit;
+
+    private boolean alreadyEdited=false;
 
 
     @Override
@@ -118,7 +122,7 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
 
         if ((resumeToEdit=(Resume) getIntent().getSerializableExtra("editResume"))!=null){
             editOrCreate.setText("修改简历");
-            initPage();
+            getResume(resumeToEdit.getResumeId());
         }else{
             editOrCreate.setText("创建新简历");
             getStudenInfo();
@@ -130,7 +134,12 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        getStudenInfo();//获取更新后的user信息
+        if (alreadyEdited){//更改过了
+            getStudenInfo();//获取更新后的user信息，并更新页面
+        }else{
+            alreadyEdited=true;
+        }
+
     }
 
     @Override
@@ -178,15 +187,7 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
     }
     //初始化页面
     public void initPage() {
-
-        Log.d(TAG, "initPage: 更新本地信息");
-        //获取本地信息，修改简历部分直接修改本地信息
-        String userJson = sharedPreferences.getString("student",null);
-        if (userJson != null){user = new Gson().fromJson(userJson,User.class);}
-
-        if (editOrCreate.getText().toString().equals("修改简历")){
-            initEditResume(resumeToEdit);//使用已有简历初始化user，awards,projects,practice
-        }
+        //本地信息user，awards，project，practice
 
         //把获取到的信息展示出来
         String awards = sharedPreferences.getString("award",null);
@@ -320,7 +321,7 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
         //获取用户token
         String token = getSharedPreferences("token",0).getString(PostParameterName.STUDENT_TOKEN,null);
 
-        //获取修改后的信息
+        //todo 获取修改后的信息
         getCurrentDataForEditOrCreateResume(resumeToEdit);
 
         //网络处理
@@ -328,7 +329,7 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
             Log.d(TAG, "createResume: edit Resume "+new Gson().toJson(resumeToEdit));
             Log.d(TAG, "createResume: edit Resume URL is "+PostParameterName.POST_URL_UPDATE_RESUME+token+
                     "&"+PostParameterName.REQUEST_RESUME_ID+"="+resumeToEdit.getResumeId());
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_CREATE_RESUME+token+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_UPDATE_RESUME+token+
                     "&"+PostParameterName.REQUEST_RESUME_ID+"="+resumeToEdit.getResumeId(),
                     new JSONObject(new Gson().toJson(resumeToEdit)),
                     new com.android.volley.Response.Listener<JSONObject>() {
@@ -343,8 +344,6 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
                                         case "200":{
                                             //跳转到我的简历界面，打开MyResumeActivity
                                             Toast.makeText(NewResumeActivity.this, "更新简历成功", Toast.LENGTH_SHORT).show();
-                                            Intent intent = new Intent(NewResumeActivity.this,MyResumeActivity.class);
-                                            startActivity(intent);
                                             finish();
                                         }break;
                                         default:{
@@ -425,18 +424,6 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
                                 user = postResult.getResultObject();
                                 user.setToken(token);
 
-                                //获取用户信息，存储到本地。
-                                SharedPreferences sharedPreferences = getSharedPreferences("user", 0);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                try {
-                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：："+response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
-                                    editor.putString("student", new Gson().toJson(user));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                editor.commit();
-
-
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -455,6 +442,80 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
             }
 
         }
+    }
+
+
+    //获取单个简历信息
+
+    //展示单个简历信息
+
+    //简历信息填充到几个编辑模块中
+
+    //重新生成简历
+
+    //提交简历更新
+
+
+    /*获取单个简历信息*/
+    private void getResume(long resumeID){
+        String token = getSharedPreferences("token",0).getString(PostParameterName.STUDENT_TOKEN,null);
+
+        //网络处理
+        Log.d(TAG, "createResume: edit Resume URL is "+PostParameterName.POST_URL_GET_RESUME+token+
+                "&"+PostParameterName.REQUEST_RESUME_ID+"="+resumeToEdit.getResumeId());
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_RESUME+token+
+                "&"+PostParameterName.REQUEST_RESUME_ID+"="+resumeToEdit.getResumeId(),
+                new JSONObject(),
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(final JSONObject response) {
+                        Log.d(TAG, "onResponse: 返回"+response.toString());
+                        try {
+                            switch (response.getString(PostParameterName.RESPOND_RESULTCODE)){
+                                case "200":{
+                                    JSONObject resumeObject = response.getJSONObject("resultObject");
+
+                                    GsonBuilder builder = new GsonBuilder();
+                                    builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
+                                        public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
+                                            return new Timestamp(json.getAsJsonPrimitive().getAsLong());
+                                        }
+                                    });
+                                    Gson gson = builder.create();
+
+                                    //解析resume
+                                    Type jsonType = new TypeToken<Resume>() {}.getType();
+                                    final Resume resume = gson.fromJson(resumeObject.toString(),jsonType);
+
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            resumeToEdit=resume;
+                                            initEditResume(resume);
+                                            initPage();
+                                        }
+                                    });
+
+                                }break;
+                                default:{
+                                    Toast.makeText(NewResumeActivity.this, "更新简历失败", Toast.LENGTH_SHORT).show();
+                                    Log.d(TAG, "更新简历失败"+response.getString(PostParameterName.RESPOND_RESULTCODE));
+                                }
+
+                            }
+                        }catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("TAG", error.getMessage(), error);
+            }});
+        VolleyNetUtil.getInstance().setRequestQueue(getApplicationContext());
+        VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
+
     }
 
 }
