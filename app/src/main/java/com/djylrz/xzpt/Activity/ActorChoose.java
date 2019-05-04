@@ -2,10 +2,13 @@ package com.djylrz.xzpt.Activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -23,50 +26,92 @@ import org.json.JSONObject;
 public class ActorChoose extends BaseActivity implements View.OnClickListener{
     private static final String TAG = "ActorChoose";
 
+    LinearLayout layoutStu;
+    LinearLayout layoutCompany;
+    ImageView imageViewStu;
+    ImageView imageViewCompany;
+    Button btnStart;
+    private static final int GREY = Color.rgb(245,245,245);
+    private static final int CHOOSE_NONE = -1;
+    private static final int CHOOSE_STU = 1;
+    private static final int CHOOSE_COMPANY = 2;
+    private int chooseFlag=CHOOSE_NONE;
+
+    private String userToken;
+    private String companyToken;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //验证是否已经登录
+        SharedPreferences preferences = getSharedPreferences(PostParameterName.TOKEN,0);
+        userToken = preferences.getString(PostParameterName.STUDENT_TOKEN,null);
+        companyToken = preferences.getString(PostParameterName.TOKEN,null);
+
         setContentView(R.layout.activity_actor_choose);
 
-        Button studentButton=(Button) findViewById(R.id.choose_student);//学生登陆按钮
 
-        Button companyButton=(Button) findViewById(R.id.choose_company);//企业登陆按钮
+        layoutCompany = findViewById(R.id.linearLayoutCompany);//学生登陆按钮
+        layoutStu = findViewById(R.id.linearLayoutStu);//企业登陆按钮
+        imageViewStu = findViewById(R.id.imgViewStu);
+        imageViewCompany = findViewById(R.id.imgViewCompany);
+        btnStart = findViewById(R.id.btnStart);
 
-        studentButton.setOnClickListener(this);
-        companyButton.setOnClickListener(this);
+        layoutCompany.setOnClickListener(this);
+        layoutStu.setOnClickListener(this);
+        btnStart.setOnClickListener(this);
     }
 
     //按钮响应事件
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.choose_student:
-                //查询student_token，若student_token存在，使用student_token登录
-                SharedPreferences userToken = getSharedPreferences("token",0);
-                if (userToken.getString(PostParameterName.STUDENT_TOKEN,null) != null){
-                    User user = new User();
-                    user.setToken(userToken.getString(PostParameterName.STUDENT_TOKEN,null));
-                    studentLoginWithToken(user);
-                }else{
-                    studentLogin();
-                }
 
+
+        imageViewStu.setBackgroundColor(Color.TRANSPARENT);
+        imageViewCompany.setBackgroundColor(Color.TRANSPARENT);
+
+        switch (v.getId()) {
+            case R.id.linearLayoutStu:
+
+                chooseFlag = CHOOSE_STU;
+                imageViewStu.setBackgroundColor(GREY);
+                btnStart.setEnabled(true);
                 break;
-            case R.id.choose_company:
-                //验证是否已经登录
-                SharedPreferences preferences = getSharedPreferences("token",0);
-                String token = preferences.getString(PostParameterName.TOKEN,null);
-                if(token != null){
-                    Log.d(TAG, "已存在企业用户token");
-                    Company company = new Company();
-                    company.setToken(token);
-                    companyLoginWithToken(company);
-                }else{
-                    companyLogin();
+
+            case R.id.linearLayoutCompany:
+
+                chooseFlag = CHOOSE_COMPANY;
+                imageViewCompany.setBackgroundColor(GREY);
+                btnStart.setEnabled(true);
+                break;
+
+            case R.id.btnStart:
+
+                if(chooseFlag==CHOOSE_STU) {
+
+                    if (userToken != null) {
+                        User user = new User();
+                        user.setToken(userToken);
+                        studentLoginWithToken(user);
+                    } else {
+                        studentLogin();
+                    }
+                }else if(chooseFlag==CHOOSE_COMPANY){
+
+                    if(companyToken != null){
+                        Company company = new Company();
+                        company.setToken(companyToken);
+                        companyLoginWithToken(company);
+                    }else{
+                        companyLogin();
+                    }
                 }
+                break;
+            default:
                 break;
         }
     }
+
 
     private void studentLoginWithToken(User user){
         VolleyNetUtil.getInstance().setRequestQueue(getApplicationContext());//获取requestQueue
