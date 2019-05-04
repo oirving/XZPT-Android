@@ -28,6 +28,10 @@ public class Recruitment implements Serializable {
   private long jobType;
   private String companyName;
 
+  //这两个仅仅用于在客户端显示标签为字符串，无其他用处
+   private String station;
+  private String industry;
+
     public Recruitment() {
     }
 
@@ -190,4 +194,19 @@ public class Recruitment implements Serializable {
     this.companyName = companyName;
   }
 
+    public String getStation() {
+        return station;
+    }
+
+    public void setStation(String station) {
+        this.station = station;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
 }
