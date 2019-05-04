@@ -20,25 +20,31 @@ import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.sql.Timestamp;
 
 public class RecruitmentDetailActivity extends AppCompatActivity implements View.OnClickListener {
-    private TextView job;
-    private TextView workCity;
-    private TextView highestEducation;
-    private TextView basicSalary;
-    private TextView topSalary;
+    private TextView jobName;
+    private TextView salary;
+    private TextView location;
+    private TextView degree;
     private TextView workTime;
     private TextView companyName;
-    private TextView majorResponsebility;
-    private TextView jobRecommand;
-    private TextView workPlace;
-    private TextView skills;
-    private Button deliveryResume;
+    private TextView description;
+    private TextView deliveryRequest;
+    private TextView industryLabel;
+    private TextView stationLabel;
+    private TextView contact;
+    private Button delivery;
     private Button chat;
 
     private Recruitment recruitment;
@@ -49,20 +55,21 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recruitment_detail);
-        job = (TextView) findViewById(R.id.job);
-        workCity = (TextView) findViewById(R.id.work_city);
-        highestEducation = (TextView) findViewById(R.id.highestEducation);
-        basicSalary = (TextView) findViewById(R.id.basic_salary);
-        topSalary = (TextView) findViewById(R.id.top_salary);
-        workTime = (TextView) findViewById(R.id.work_time);
-        companyName = (TextView) findViewById(R.id.company_name);
-        majorResponsebility = (TextView) findViewById(R.id.major_responsebility);
-        jobRecommand = (TextView) findViewById(R.id.job_recommend);
-        workPlace = (TextView) findViewById(R.id.city_detail);
-        skills = (TextView) findViewById(R.id.job);
-        deliveryResume = (Button) findViewById(R.id.delivery);
-        deliveryResume.setOnClickListener(this);
-        chat = (Button) findViewById(R.id.chat);
+        jobName = findViewById(R.id.jobName);
+        salary = findViewById(R.id.salary);
+        location = findViewById(R.id.location);
+        degree = findViewById(R.id.degree);
+        workTime = findViewById(R.id.workTime);
+        companyName = findViewById(R.id.companyName);
+        description = findViewById(R.id.description);
+        deliveryRequest = findViewById(R.id.deliveryRequest);
+        industryLabel = findViewById(R.id.industryLabel);
+        stationLabel = findViewById(R.id.stationLabel);
+        delivery = findViewById(R.id.delivery);
+        chat = findViewById(R.id.chat);
+        contact = findViewById(R.id.contact);
+
+        delivery.setOnClickListener(this);
         chat.setOnClickListener(this);
 
         /** 初始化请求队列 */
@@ -88,15 +95,24 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
     @Override
     protected void onStart() {
         super.onStart();
-
+        //TODO  通过Intent获取招聘信息的id
+        int recruitmentId = 400;
         SharedPreferences userToken = getSharedPreferences("token",0);
         String token = userToken.getString(PostParameterName.STUDENT_TOKEN,null);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_USER_GET_RECRUITMENT + token, new JSONObject(new Gson().toJson(user)),
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_USER_GET_RECRUITMENT +token+"&recruitmentId="+recruitmentId, new JSONObject(),
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(final JSONObject response) {
                         Type jsonType = new TypeToken<TempResponseData<Recruitment>>() {}.getType();
-                        recruitment = new Gson().fromJson(response.toString(),jsonType);
+                        GsonBuilder builder = new GsonBuilder();
+                        builder.registerTypeAdapter(Timestamp.class, new JsonDeserializer<Timestamp>() {
+                            public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                                return new Timestamp(json.getAsJsonPrimitive().getAsLong());
+                            }
+                        });
+                        Gson gson = builder.create();
+                        TempResponseData<Recruitment> tempResponseData = gson.fromJson(response.toString(),jsonType);
+                        recruitment = tempResponseData.getResultObject();
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -114,16 +130,16 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
     }
     //todo 初始化本界面，把相应的信息填入 ->小榕
     public void initPage(Recruitment recruitment) {
-        job.setText(recruitment.getJobName());
-        workCity.setText(recruitment.getLocation());
-        highestEducation.setText(recruitment.getDegree());
-        basicSalary.setText(recruitment.getSalary());
-        topSalary.setText(recruitment.getSalary());
+        jobName.setText(recruitment.getJobName());
+        salary.setText(recruitment.getSalary());
+        location.setText(recruitment.getLocation());
+        degree.setText(recruitment.getDegree());
         workTime.setText(recruitment.getWorkTime()+"");
         companyName.setText(recruitment.getCompanyName());
-//        majorResponsebility.setText(recruitment.get);
-//        jobRecommand.setText();
-//        workPlace.setText();
-//        skills.setText();
+        description.setText(recruitment.getDescription());
+        deliveryRequest.setText(recruitment.getDeliveryRequest());
+        industryLabel.setText(recruitment.getIndustryLabel()+" ");
+        stationLabel.setText(recruitment.getStationLabel());
+        contact.setText(recruitment.getContact());
     }
 }
