@@ -99,11 +99,8 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
         int recruitmentId = 400;
         SharedPreferences userToken = getSharedPreferences("token",0);
         String token = userToken.getString(PostParameterName.STUDENT_TOKEN,null);
-<<<<<<< HEAD
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_USER_GET_RECRUITMENT + token, null,
-=======
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_USER_GET_RECRUITMENT +token+"&recruitmentId="+recruitmentId, new JSONObject(),
->>>>>>> c3dbd9f38b7dacae32118b86cc9341b5f3891ce8
+
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(final JSONObject response) {
