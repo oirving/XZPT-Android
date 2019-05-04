@@ -27,6 +27,8 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import static com.djylrz.xzpt.utils.PostParameterName.CHOOSE_RESUME_TO_DELIVER;
+
 public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.ViewHolder> {
     private static final String TAG = "ResumeListAdapter";
 
@@ -50,6 +52,15 @@ public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.Vi
 
     private List<Resume> resumeList;//完整的简历信息
 
+    private boolean forDeliver = false;
+
+    public boolean isForDeliver() {
+        return forDeliver;
+    }
+
+    public void setForDeliver(boolean forDeliver) {
+        this.forDeliver = forDeliver;
+    }
 
     public ResumeListAdapter(List<ResumeItem> resumeList) {
         mResumeList = resumeList;
@@ -92,7 +103,16 @@ public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.Vi
                 //todo 我的简历点击后跳转到具体的简历页面 ->小榕
                 Intent intent = new Intent(v.getContext(), ResumeModelDetailsActivity.class);
                 intent.putExtra("resume",resumeList.get(position));//传递简历信息
-                v.getContext().startActivity(intent);
+                intent.putExtra("resumeID",resumeList.get(position).getResumeId());
+                if (forDeliver){
+                    ((Activity)v.getContext()).setResult(CHOOSE_RESUME_TO_DELIVER,intent);//选择简历用于投递
+                    ((Activity)v.getContext()).finish();//选择并投递
+
+                }else{
+                    v.getContext().startActivity(intent);
+                }
+
+
             }
         });
         holder.deleteResume.setOnClickListener(new View.OnClickListener() {

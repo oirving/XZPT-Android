@@ -22,7 +22,9 @@ import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -144,8 +146,11 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                 //发送修改个人信息请求
                 Log.d(TAG, "onClick: "+PostParameterName.POST_URL_UPDATE_USER_INRO+user.getToken());
                 try {
+                    Gson gson = new GsonBuilder()
+                            .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                            .create();
                     Log.d(TAG, "onClick: "+new Gson().toJson(user));
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_UPDATE_USER_INRO+user.getToken(),new JSONObject(new Gson().toJson(user)),
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_UPDATE_USER_INRO + user.getToken(), new JSONObject(gson.toJson(user)),
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
@@ -198,13 +203,13 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         Calendar calendar = Calendar.getInstance();
         if (user.getStartTime()!=null){
             calendar.setTime(new Date(user.getStartTime().getTime()));
-            startTime.setText(calendar.get(Calendar.YEAR));
+            startTime.setText(calendar.get(Calendar.YEAR) + "");
         }else{
             startTime.setText("");
         }
         if (user.getEndTime()!=null){
             calendar.setTime(new Date(user.getEndTime().getTime()));
-            endTime.setText(user.getEndTime().toString());
+            endTime.setText(calendar.get(Calendar.YEAR) + "");
         }else{
             endTime.setText("");
         }
@@ -241,7 +246,11 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                             public void onResponse(JSONObject response) {
                                 Log.d(TAG, "onResponse: 返回"+response.toString());
                                 Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
-                                final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), jsonType);
+
+                                Gson gson = new GsonBuilder()
+                                        .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                                        .create();
+                                final TempResponseData<User> postResult = gson.fromJson(response.toString(), jsonType);
                                 Log.d(TAG, "onResponse: "+postResult.getResultCode());
                                 user = postResult.getResultObject();
                                 user.setToken(token);
