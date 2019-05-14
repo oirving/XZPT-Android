@@ -13,7 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.djylrz.xzpt.Activity.*;
+import com.djylrz.xzpt.activity.ActorChoose;
+import com.djylrz.xzpt.activityStudent.*;
 import com.djylrz.xzpt.R;
 
 import java.util.List;

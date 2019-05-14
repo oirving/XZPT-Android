@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-<ScrollView
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    >
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/pernoal_information_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ToolbarTheme"
+        android:titleTextColor="@color/white"
+        app:title="个人信息"
+        app:titleTextColor="@color/white">
+
+    </android.support.v7.widget.Toolbar>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,8 +44,8 @@
                     android:id="@+id/info_name"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
-                    android:maxLines="2"
-                    android:inputType="textPersonName"/>
+                    android:inputType="textPersonName"
+                    android:maxLines="2" />
             </LinearLayout>
 
             <LinearLayout
@@ -46,12 +60,11 @@
                     android:layout_height="wrap_content"
                     android:text="性 别"
                     android:textSize="20dp" />
+
                 <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
                     android:id="@+id/sex_spinner"
-                    >
-                </Spinner>
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"></Spinner>
             </LinearLayout>
 
             <LinearLayout
@@ -71,9 +84,9 @@
                     android:id="@+id/info_age"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
+                    android:inputType="number"
                     android:maxLines="2"
-                    android:minLines="1"
-                    android:inputType="number"/>
+                    android:minLines="1" />
 
             </LinearLayout>
 
@@ -94,8 +107,8 @@
                     android:id="@+id/info_phonenum"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
-                    android:maxLines="2"
-                    android:inputType="phone"  />
+                    android:inputType="phone"
+                    android:maxLines="2" />
 
             </LinearLayout>
 
@@ -116,8 +129,8 @@
                     android:id="@+id/info_mail"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
-                    android:maxLines="2"
-                    android:inputType="textEmailAddress"/>
+                    android:inputType="textEmailAddress"
+                    android:maxLines="2" />
 
             </LinearLayout>
 
@@ -133,6 +146,7 @@
                     android:layout_height="wrap_content"
                     android:text="居住城市"
                     android:textSize="20dp" />
+
                 <EditText
                     android:id="@+id/info_currentcity"
                     android:layout_width="300dp"
@@ -153,6 +167,7 @@
                     android:layout_height="wrap_content"
                     android:text="毕业院校"
                     android:textSize="20dp" />
+
                 <EditText
                     android:id="@+id/info_school"
                     android:layout_width="300dp"
@@ -173,6 +188,7 @@
                     android:layout_height="wrap_content"
                     android:text="主修专业"
                     android:textSize="20dp" />
+
                 <EditText
                     android:id="@+id/info_major"
                     android:layout_width="300dp"
@@ -193,11 +209,11 @@
                     android:layout_height="wrap_content"
                     android:text="最高学历"
                     android:textSize="20dp" />
+
                 <Spinner
                     android:id="@+id/highestEducation"
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp">
-                </Spinner>
+                    android:layout_height="50dp"></Spinner>
 
             </LinearLayout>
 
@@ -213,29 +229,32 @@
                     android:layout_height="wrap_content"
                     android:text="最高学历教育时间"
                     android:textSize="20dp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
+
                     <EditText
                         android:id="@+id/info_start_time"
                         android:layout_width="100dp"
                         android:layout_height="50dp"
                         android:hint="开始时间"
-                        android:maxLines="2"
-                        android:inputType="datetime"/>
+                        android:inputType="datetime"
+                        android:maxLines="2" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="-"
-                        android:textSize="40dp"
-                        />
+                        android:textSize="40dp" />
+
                     <EditText
                         android:id="@+id/info_end_time"
                         android:layout_width="100dp"
                         android:layout_height="50dp"
                         android:hint="结束时间"
-                        android:maxLines="2"
-                        android:inputType="datetime"/>
+                        android:inputType="datetime"
+                        android:maxLines="2" />
 
                 </LinearLayout>
 
@@ -246,8 +265,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:gravity="center"
-                >
+                android:gravity="center">
 
                 <Button
                     android:id="@+id/info_next_button"
@@ -255,12 +273,10 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:background="@color/colorButton"
-                    android:textColor="@color/white"
                     android:text="保 存"
-                    android:textSize="20dp"/>
-
+                    android:textColor="@color/white"
+                    android:textSize="20dp" />
             </LinearLayout>
-
         </LinearLayout>
-
     </ScrollView>
+</LinearLayout>

@@ -14,14 +14,10 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
-import com.djylrz.xzpt.Activity.MyResumeActivity;
-import com.djylrz.xzpt.Activity.NewResumeActivity;
-import com.djylrz.xzpt.Activity.ResumeModelDetailsActivity;
+import com.djylrz.xzpt.activityStudent.ResumeModelDetailsActivity;
 import com.djylrz.xzpt.R;
-import com.djylrz.xzpt.bean.PostResult;
 import com.djylrz.xzpt.bean.Resume;
-import com.google.gson.Gson;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
