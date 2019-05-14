@@ -80,7 +80,20 @@
                             <ImageView style="@style/img_arrow" />
 
                         </LinearLayout>
+                        <View style="@style/bg_line" />
 
+                        <LinearLayout
+                            android:id="@+id/me_layout_delivery"
+                            style="@style/mid_layout">
+
+                            <TextView
+                                android:id="@+id/me_tv_delivery"
+                                style="@style/usertext"
+                                android:text="投递记录" />
+
+                            <ImageView style="@style/img_arrow" />
+
+                        </LinearLayout>
                         <View style="@style/bg_line" />
 
                         <LinearLayout
