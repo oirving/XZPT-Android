@@ -37,7 +37,7 @@ public class UserInfoOptionAdapter extends RecyclerView.Adapter<UserInfoOptionAd
         public ViewHolder(View v) {
             super(v);
             userOptionView = v;
-            userOptionImage = (ImageView) v.findViewById(R.id.user_option_image);
+            //userOptionImage = (ImageView) v.findViewById(R.id.user_option_image);
             userOptindescript = (TextView) v.findViewById(R.id.user_option_descript);
         }
     }
@@ -48,7 +48,7 @@ public class UserInfoOptionAdapter extends RecyclerView.Adapter<UserInfoOptionAd
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.user_selector,parent,false);
         final ViewHolder holder = new ViewHolder(v);
-        holder.userOptionView.setOnClickListener(new View.OnClickListener() {
+        holder.userOptindescript.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
@@ -91,7 +91,7 @@ public class UserInfoOptionAdapter extends RecyclerView.Adapter<UserInfoOptionAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         UserSelector userSelector = mUserOptionList.get(position);
-        holder.userOptionImage.setImageResource(userSelector.getImageId());
+        //holder.userOptionImage.setImageResource(userSelector.getImageId());
         holder.userOptindescript.setText(userSelector.getOption());
     }
 

@@ -113,7 +113,7 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
         projectEdit.setOnClickListener(this);
         practiceEdit = (ImageView) findViewById(R.id.edit_practice);
         practiceEdit.setOnClickListener(this);
-        done.setOnClickListener(this);
+//        done.setOnClickListener(this);
 
         awardsTextView = (TextView) findViewById(R.id.awards_textview);
         projectTextView = (TextView) findViewById(R.id.project_textview);

@@ -5,60 +5,28 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#eeeeee">
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/home_toolbar"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:theme="@style/ToolbarTheme"
-        android:titleTextColor="@color/white"
-        app:titleTextColor="@color/white"
-        app:title="招聘日历" />
+        android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:paddingBottom="50dp"
-        android:background="@drawable/primary_rectangle"
-        >
-        <ImageView
-            android:id="@+id/recruitment_search_imageview"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:src="@drawable/search"
-            android:layout_gravity="left"
-            />
-        <EditText
-            android:id="@+id/recruitment_search_input_edittext"
-            android:layout_weight="9"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:maxLines="1"
-            android:visibility="invisible"
-            />
-        <Button
-            android:id="@+id/recruitment_search_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="查询"
-            android:textSize="20dp"
-            android:background="@drawable/rectangle_style"
-            android:visibility="invisible"
-            />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/date_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/colorPrimary"
+            app:titleTextColor="@color/white">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/date_toolbar_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="招聘日历"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recruitment_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="10dp"
-        android:background="@color/white"
-        >
-
-    </android.support.v7.widget.RecyclerView>
 </LinearLayout>

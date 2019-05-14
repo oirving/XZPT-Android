@@ -184,7 +184,7 @@ public class MainActivity extends BaseActivity {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        fragmentUser.setUserName(user);
+//                                        fragmentUser.setUserName(user);
                                     }
                                 });
                             }
