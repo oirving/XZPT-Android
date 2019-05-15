@@ -71,4 +71,5 @@
 
     <color name="widgetBg">#Afffffff</color>
     <color name="widgetBg2">#Dfffffff</color>
+    <color name="content_background">#f2f2f2</color>
 </resources>

@@ -89,7 +89,8 @@
                             <TextView
                                 android:id="@+id/me_tv_delivery"
                                 style="@style/usertext"
-                                android:text="投递记录" />
+                                android:text="投递记录
+" />
 
                             <ImageView style="@style/img_arrow" />
 
