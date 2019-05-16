@@ -5,7 +5,8 @@
     <string name="title_job">找工作</string>
     <string name="title_dashboard">面试指导</string>
     <string name="title_notifications">我的</string>
-
+    <string name="register_success">Register push success.</string>
+    <string name="register_fail">Register push fail.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

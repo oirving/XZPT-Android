@@ -4,14 +4,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activityCompany.CompanyLogin;
 import com.djylrz.xzpt.activityCompany.Main2Activity;
@@ -19,12 +25,18 @@ import com.djylrz.xzpt.activityStudent.MainActivity;
 import com.djylrz.xzpt.activityStudent.StudentLogin;
 import com.djylrz.xzpt.bean.Company;
 import com.djylrz.xzpt.bean.PostResult;
+import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 
 
 public class ActorChoose extends BaseActivity implements View.OnClickListener{
@@ -43,6 +55,9 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
 
     private String userToken;
     private String companyToken;
+    private User user = new User();//用户实体对象
+    private String token;
+    private RequestQueue requestQueue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,6 +151,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                                     switch (postResult.getResultCode()){
                                         case "200":{
                                             //跳转到用户主界面
+                                            getStudentInfo();
                                             Intent intent = new Intent(ActorChoose.this, MainActivity.class);
                                             Log.d(TAG, "postLogin: 学生用户登录成功！");
                                             startActivity(intent);
@@ -209,7 +225,69 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
         }
 
     }
+    private void getStudentInfo(){
+        //用户已经登录，查询个人信息并显示
+        requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
+        SharedPreferences userToken = getSharedPreferences("token",0);
+        token = userToken.getString(PostParameterName.STUDENT_TOKEN,null);
+        if (token != null){
+            Log.d(TAG, "onCreate: TOKEN is "+token);
 
+            user.setToken(token);
+
+            try {
+                Log.d(TAG, "onCreate: 获取个人信息，只填了token"+new Gson().toJson(user));
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_USER_BY_TOKEN+user.getToken(),new JSONObject(new Gson().toJson(user)),
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d(TAG, "onResponse: 返回"+response.toString());
+                                Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
+
+                                Gson gson = new GsonBuilder()
+                                        .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                                        .create();
+                                final TempResponseData<User> postResult = gson.fromJson(response.toString(), jsonType);
+                                Log.d(TAG, "onResponse: "+postResult.getResultCode());
+                                user = postResult.getResultObject();
+                                user.setToken(token);
+
+                                //获取用户信息，存储到本地。
+                                SharedPreferences sharedPreferences = getSharedPreferences("user", 0);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                try {
+                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：："+response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
+                                    editor.putString("student", new Gson().toJson(user));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                editor.commit();
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //设置全局userid
+                                        MyApplication.userId = user.getUserId();
+                                        //发消息给DemoHandler，设置mipush别名为userid
+                                        Message msg = Message.obtain();
+                                        msg.what = MyApplication.GET_USER_ID_SUCCESS;
+                                        MyApplication.getHandler().sendMessage(msg);
+                                        Log.d(TAG, "获取userid成功");
+                                    }
+                                });
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("TAG", error.getMessage(), error);
+                    }});
+                requestQueue.add(jsonObjectRequest);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
     //学生端使用用户名密码登录
     private void studentLogin(){
         Intent student = new Intent(ActorChoose.this, StudentLogin.class);
