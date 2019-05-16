@@ -54,4 +54,13 @@ dependencies {
     implementation "com.github.vondear.RxTool:RxUI:2.3.9"
     //BoomMenu
     implementation "com.nightonke:boommenu:2.1.1"
+
+    //日历库
+    implementation 'com.haibin:calendarview:3.4.8'
+
+    //TimeLine
+    implementation "com.github.vipulasri:timelineview:1.0.6"
+    implementation "com.jakewharton:butterknife:8.8.1"
+    implementation 'com.android.support:support-v4:28.0.0'
+    annotationProcessor "com.jakewharton:butterknife-compiler:8.8.1"
 }

@@ -12,43 +12,43 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.ComResumeDeliveryRecordDetailActivity"></activity>
-        <activity android:name=".Activity.ComRecruitmentDetailActivity"></activity>
-        <activity android:name=".Activity.SelectTagActivity" />
+        <activity android:name=".activityCompany.ComResumeDeliveryRecordDetailActivity"></activity>
+        <activity android:name=".activityCompany.ComRecruitmentDetailActivity"></activity>
+        <activity android:name=".activityStudent.SelectTagActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".Activity.ResumeModelDetailsActivity" />
-        <activity android:name=".Activity.AddRecruitmentActivity" />
-        <activity android:name=".Activity.ResetPasswordActivity" />
-        <activity android:name=".Activity.ForgetPasswordActivity" />
-        <activity android:name=".Activity.EditPracticeActivity" />
-        <activity android:name=".Activity.EditProjectActivity" />
-        <activity android:name=".Activity.EditAwardsActivity" />
-        <activity android:name=".Activity.Main2Activity" />
-        <activity android:name=".Activity.FocusCompanyActivity" />
-        <activity android:name=".Activity.NewResumeActivity" />
-        <activity android:name=".Activity.MyResumeActivity" />
-        <activity android:name=".Activity.FeedbackAndSuggestion" />
-        <activity android:name=".Activity.MyFeedback" />
-        <activity android:name=".Activity.HelpAndFeedbackActivity" />
-        <activity android:name=".Activity.UserInfoOptionActivity" />
-        <activity android:name=".Activity.StudentLogin" />
-        <activity android:name=".Activity.Register" />
-        <activity android:name=".Activity.PersonalInformation" />
-        <activity android:name=".Activity.JobIntention" />
-        <activity android:name=".Activity.CompanyLogin" />
-        <activity android:name=".Activity.RecruitmentDetailActivity"/>
-        <activity android:name=".Activity.ActorChoose">
+        <activity android:name=".activityStudent.ResumeModelDetailsActivity" />
+        <activity android:name=".activityCompany.AddRecruitmentActivity" />
+        <activity android:name=".activityStudent.ResetPasswordActivity" />
+        <activity android:name=".activityStudent.ForgetPasswordActivity" />
+        <activity android:name=".activityStudent.EditPracticeActivity" />
+        <activity android:name=".activityStudent.EditProjectActivity" />
+        <activity android:name=".activityStudent.EditAwardsActivity" />
+        <activity android:name=".activityCompany.Main2Activity" />
+        <activity android:name=".activityStudent.FocusCompanyActivity" />
+        <activity android:name=".activityStudent.NewResumeActivity" />
+        <activity android:name=".activityStudent.MyResumeActivity" />
+        <activity android:name=".activityStudent.FeedbackAndSuggestion" />
+        <activity android:name=".activityStudent.MyFeedback" />
+        <activity android:name=".activityStudent.HelpAndFeedbackActivity" />
+        <activity android:name=".activityStudent.UserInfoOptionActivity" />
+        <activity android:name=".activityStudent.StudentLogin" />
+        <activity android:name=".activityStudent.Register" />
+        <activity android:name=".activityStudent.PersonalInformation" />
+        <activity android:name=".activityStudent.JobIntention" />
+        <activity android:name=".activityCompany.CompanyLogin" />
+        <activity android:name=".activityStudent.RecruitmentDetailActivity"/>
+        <activity android:name=".activity.ActorChoose">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.MainActivity" />
+        <activity android:name=".activityStudent.MainActivity" />
     </application>
 
 </manifest>

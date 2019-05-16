@@ -12,8 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.djylrz.xzpt.fragment.FragmentUser;
-
 /**
  * @author oirving
  *
