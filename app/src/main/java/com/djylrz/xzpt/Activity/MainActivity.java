@@ -1,20 +1,13 @@
 package com.djylrz.xzpt.Activity;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -23,15 +16,17 @@ import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.fragment.FragmentAdapter;
-import com.djylrz.xzpt.fragment.FragmentComHome;
 import com.djylrz.xzpt.fragment.FragmentDate;
 import com.djylrz.xzpt.fragment.FragmentFindJob;
 import com.djylrz.xzpt.fragment.FragmentResume;
 import com.djylrz.xzpt.fragment.FragmentTips;
 import com.djylrz.xzpt.fragment.FragmentUser;
-import com.djylrz.xzpt.utils.*;
+import com.djylrz.xzpt.utils.PostParameterName;
+import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -165,10 +160,26 @@ public class MainActivity extends BaseActivity {
                             public void onResponse(JSONObject response) {
                                 Log.d(TAG, "onResponse: 返回"+response.toString());
                                 Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
-                                final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), jsonType);
+
+                                Gson gson = new GsonBuilder()
+                                        .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                                        .create();
+                                final TempResponseData<User> postResult = gson.fromJson(response.toString(), jsonType);
                                 Log.d(TAG, "onResponse: "+postResult.getResultCode());
                                 user = postResult.getResultObject();
                                 user.setToken(token);
+
+                                //获取用户信息，存储到本地。
+                                SharedPreferences sharedPreferences = getSharedPreferences("user", 0);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                try {
+                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：："+response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
+                                    editor.putString("student", new Gson().toJson(user));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                editor.commit();
+
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {

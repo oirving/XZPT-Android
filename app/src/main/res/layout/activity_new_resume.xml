@@ -9,6 +9,7 @@
         android:background="@color/colorHead"
         >
         <TextView
+            android:id="@+id/edit_or_crete_textview"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:text="创建新简历"
@@ -291,7 +292,7 @@
                         android:text="期望职业位： "
                         />
                     <TextView
-                        android:id="@+id/posotion"
+                        android:id="@+id/position"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="福州大学"
@@ -362,8 +363,12 @@
                         android:id="@+id/basic_salary"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="5k"
+                        android:text="5"
                         />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="k"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -373,8 +378,12 @@
                         android:id="@+id/top_salary"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="8k"
+                        android:text="8"
                         />
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="k"/>
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -408,6 +417,13 @@
                             />
                     </LinearLayout>
                 </LinearLayout>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/awards_textview"
+                        android:text="XXX比赛XX等奖"
+                />
+
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -439,7 +455,12 @@
                             android:src="@drawable/edit"
                             />
                     </LinearLayout>
-                </LinearLayout>
+                </LinearLayout><TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/project_textview"
+                    android:text="XXX比赛XX等奖"
+            />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -471,7 +492,12 @@
                             android:src="@drawable/edit"
                             />
                     </LinearLayout>
-                </LinearLayout>
+                </LinearLayout><TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/practice_textview"
+                    android:text="XXX比赛XX等奖"
+            />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

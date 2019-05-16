@@ -12,7 +12,7 @@ public class Recruitment implements Serializable {
   private static final long serialVersionUID = 1;
 
   private long recruitmentId;
-  private Date publishTime;
+  private java.sql.Timestamp publishTime;
   private long validate;
   private String companyId;
   private String jobName;
@@ -28,7 +28,14 @@ public class Recruitment implements Serializable {
   private long jobType;
   private String companyName;
 
-  public Recruitment(long recruitmentId, Timestamp publishTime, long validate, String companyId, String jobName, String description, String contact, String location, String deliveryRequest, String salary, String degree, long workTime, long industryLabel, String stationLabel, long jobType) {
+  //这两个仅仅用于在客户端显示标签为字符串，无其他用处
+   private String station;
+  private String industry;
+
+    public Recruitment() {
+    }
+
+    public Recruitment(long recruitmentId, Timestamp publishTime, long validate, String companyId, String jobName, String description, String contact, String location, String deliveryRequest, String salary, String degree, long workTime, long industryLabel, String stationLabel, long jobType) {
     this.recruitmentId = recruitmentId;
     this.publishTime = publishTime;
     this.validate = validate;
@@ -55,7 +62,7 @@ public class Recruitment implements Serializable {
   }
 
 
-  public Date getPublishTime() {
+  public java.sql.Timestamp getPublishTime() {
     return publishTime;
   }
 
@@ -187,4 +194,19 @@ public class Recruitment implements Serializable {
     this.companyName = companyName;
   }
 
+    public String getStation() {
+        return station;
+    }
+
+    public void setStation(String station) {
+        this.station = station;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
 }

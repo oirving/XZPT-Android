@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class FragmentComCheck extends Fragment {
     private View mDecorView;
-    private String[] mTitles = {"已审核","待审核"};
+    private String[] mTitles = {"已通过","已拒绝","面试中","待审核"};
     private ArrayList<Fragment> mFragments;
     private SegmentTabLayout mTabLayout;
     private Toolbar toolbar;//导航栏

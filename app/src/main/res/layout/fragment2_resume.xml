@@ -1,30 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
-    <LinearLayout
+    android:orientation="vertical">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/home_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/colorHead"
-        >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="简历模板选择"
-            android:gravity="center"
-            android:textSize="30dp"
-            android:textColor="@color/white"
-            />
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:theme="@style/ToolbarTheme"
+        app:titleTextColor="@color/white"
+        app:title="简历模板" />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/resume_model_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         >
-
     </android.support.v7.widget.RecyclerView>
 </LinearLayout>
