@@ -47,7 +47,6 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            //todo 发送邮件-->小榕
             case R.id.find_back_button:
                 try {
                     user.setEmail(mailAddress.getText().toString());//从输入中获得邮箱

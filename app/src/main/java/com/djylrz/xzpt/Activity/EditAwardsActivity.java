@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.Activity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,15 +19,24 @@ public class EditAwardsActivity extends AppCompatActivity implements View.OnClic
         awards = (EditText) findViewById(R.id.award_edittext);
         save = (Button) findViewById(R.id.save_button);
         save.setOnClickListener(this);
+        initPage();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.save_button:
-                //todo 是否保存成功验证 ->小榕
-
+                SharedPreferences sharedPreferences = getSharedPreferences("user",0);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("award",awards.getText().toString());
+                editor.commit();
                 finish();
         }
+    }
+
+    private void initPage(){
+        SharedPreferences sharedPreferences = getSharedPreferences("user",0);
+        String detail = sharedPreferences.getString("award",null);
+        awards.setText(detail!=null?detail:"");
     }
 }

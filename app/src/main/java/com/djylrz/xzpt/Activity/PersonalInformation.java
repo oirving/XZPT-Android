@@ -22,11 +22,15 @@ import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.sql.Date;
+import java.util.Calendar;
 
 public class PersonalInformation extends BaseActivity implements View.OnClickListener {
 
@@ -45,7 +49,7 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
     private EditText endTime;//教育结束时间
     private ArrayAdapter<String> sexAdapter;
     private ArrayAdapter<String> highestEducationAdapter;
-    private String[] sexArray=new String[]{"男","女"};
+    private String[] sexArray=new String[]{"默认","男","女"};
     private String[] highestEducationArray=new String[]{"学历不限","大专","本科","硕士","博士及以上"};
 
     private User user = new User();//用户实体对象
@@ -77,8 +81,8 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(PersonalInformation.this,"性别"+sexArray[position], Toast.LENGTH_SHORT).show();
-                //todo 获得position，映射为性别存入user->小榕
-                user.setSex(position+1);
+                Log.d(TAG, "性别："+position);
+                user.setSex(position);
             }
 
             @Override
@@ -94,9 +98,9 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         highestEducation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(PersonalInformation.this,"性别"+highestEducationArray[position], Toast.LENGTH_SHORT).show();
-                //todo 获得position，映射为学历存入user->小榕
-                user.setHighestEducation(position+1);
+                Toast.makeText(PersonalInformation.this,"最高学历："+highestEducationArray[position], Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "最高学历："+position);
+                user.setHighestEducation(position);
             }
 
             @Override
@@ -107,48 +111,10 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         Button next = (Button)findViewById(R.id.info_next_button);//保存按钮
         next.setOnClickListener(this);
 
+        getStudentInfo();
 
-        //用户已经登录，查询个人信息并显示
-        requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
-        SharedPreferences userToken = getSharedPreferences("token",0);
-        token = userToken.getString(PostParameterName.STUDENT_TOKEN,null);
-        if (token != null){
-            Log.d(TAG, "onCreate: TOKEN is "+token);
 
-            user.setToken(token);
 
-            try {
-                Log.d(TAG, "onCreate: 获取个人信息，只填了token"+new Gson().toJson(user));
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_USER_BY_TOKEN+user.getToken(),new JSONObject(new Gson().toJson(user)),
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                Log.d(TAG, "onResponse: 返回"+response.toString());
-                                Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
-                                final TempResponseData<User> postResult = new Gson().fromJson(response.toString(), jsonType);
-                                Log.d(TAG, "onResponse: "+postResult.getResultCode());
-                                user = postResult.getResultObject();
-                                user.setToken(token);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        //todo:获取信息显示在编辑框上
-                                        initpage(user);
-                                        Log.d(TAG, "run: ------");
-                                    }
-                                });
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("TAG", error.getMessage(), error);
-                    }});
-                requestQueue.add(jsonObjectRequest);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        }
         Log.d(TAG, "onCreate: ");
     }
 
@@ -165,15 +131,26 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                 user.setEmail(mailAddress.getText().toString());//邮件
                 user.setPresentCity(currentCity.getText().toString());//当前城市
                 user.setSchool(school.getText().toString());//学校
-
-                //todo：格式校验——>欧文
                 user.setTelephone(phoneNum.getText().toString());//电话，没有限定输入格式
-                //user.setStartTime(new Date(startTime.getText().toString()));//教育开始时间 string->Date，没有限定输入格式
-                //user.setEndTime(endTime.getText().toString())//教育结束时间，string->Date,没有限定输入格式                ;
+
+                Calendar calendar = Calendar.getInstance();
+                if (!startTime.getText().toString().equals("")){
+                    calendar.set(Calendar.YEAR,Integer.parseInt(startTime.getText().toString()));
+                    user.setStartTime(new java.sql.Date(calendar.getTime().getTime()));//教育开始时间
+                }
+                if (!endTime.getText().toString().equals("")){
+                    calendar.set(Calendar.YEAR,Integer.parseInt(endTime.getText().toString()));
+                    user.setEndTime(new java.sql.Date(calendar.getTime().getTime()));//教育结束时间，string->Date,没有限定输入格式                ;
+                }
+
                 //发送修改个人信息请求
                 Log.d(TAG, "onClick: "+PostParameterName.POST_URL_UPDATE_USER_INRO+user.getToken());
                 try {
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_UPDATE_USER_INRO+user.getToken(),new JSONObject(new Gson().toJson(user)),
+                    Gson gson = new GsonBuilder()
+                            .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                            .create();
+                    Log.d(TAG, "onClick: "+new Gson().toJson(user));
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_UPDATE_USER_INRO + user.getToken(), new JSONObject(gson.toJson(user)),
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
@@ -185,6 +162,7 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                                             switch(postResult.getResultCode()){
                                                 case "200":{
                                                     Toast.makeText(PersonalInformation.this, "修改个人信息成功", Toast.LENGTH_SHORT).show();
+                                                    getStudentInfo();
                                                     finish();//保存成功，结束当前页面
                                                 }break;
                                                 default:{
@@ -211,7 +189,6 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         }
     }
     //初始化页面可用这个函数
-    //todo:初始化界面
     private void initpage(User user) {
         setEditTextSaveEnableFalse();
         name.setText(user.getUserName());
@@ -221,9 +198,22 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         currentCity.setText(user.getPresentCity());
         school.setText(user.getSchool());
         major.setText(user.getSpecialty());
+        highestEducation.setSelection((int)user.getHighestEducation());
+        sex.setSelection((int)user.getSex());
+        Calendar calendar = Calendar.getInstance();
+        if (user.getStartTime()!=null){
+            calendar.setTime(new Date(user.getStartTime().getTime()));
+            startTime.setText(calendar.get(Calendar.YEAR) + "");
+        }else{
+            startTime.setText("");
+        }
+        if (user.getEndTime()!=null){
+            calendar.setTime(new Date(user.getEndTime().getTime()));
+            endTime.setText(calendar.get(Calendar.YEAR) + "");
+        }else{
+            endTime.setText("");
+        }
         Log.d(TAG, "initpage: -----");
-        //startTime.setText(user.getStartTime().toString());
-        //endTime.setText(user.getEndTime().toString());
 
     }
 
@@ -237,5 +227,64 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         major.setSaveEnabled(false);
     }
 
+
+    private void getStudentInfo(){
+        //用户已经登录，查询个人信息并显示
+        requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
+        SharedPreferences userToken = getSharedPreferences("token",0);
+        token = userToken.getString(PostParameterName.STUDENT_TOKEN,null);
+        if (token != null){
+            Log.d(TAG, "onCreate: TOKEN is "+token);
+
+            user.setToken(token);
+
+            try {
+                Log.d(TAG, "onCreate: 获取个人信息，只填了token"+new Gson().toJson(user));
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_USER_BY_TOKEN+user.getToken(),new JSONObject(new Gson().toJson(user)),
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d(TAG, "onResponse: 返回"+response.toString());
+                                Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
+
+                                Gson gson = new GsonBuilder()
+                                        .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                                        .create();
+                                final TempResponseData<User> postResult = gson.fromJson(response.toString(), jsonType);
+                                Log.d(TAG, "onResponse: "+postResult.getResultCode());
+                                user = postResult.getResultObject();
+                                user.setToken(token);
+
+                                //获取用户信息，存储到本地。
+                                SharedPreferences sharedPreferences = getSharedPreferences("user", 0);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                try {
+                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：："+response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
+                                    editor.putString("student", new Gson().toJson(user));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                editor.commit();
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        initpage(user);
+                                        Log.d(TAG, "run: ------");
+                                    }
+                                });
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("TAG", error.getMessage(), error);
+                    }});
+                requestQueue.add(jsonObjectRequest);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
 }
 

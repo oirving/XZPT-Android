@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.RecruitmentDetialActivity"></activity>
+        <activity android:name=".Activity.ComResumeDeliveryRecordDetailActivity"></activity>
+        <activity android:name=".Activity.ComRecruitmentDetailActivity"></activity>
         <activity android:name=".Activity.SelectTagActivity" />
 
         <uses-library
@@ -39,6 +40,7 @@
         <activity android:name=".Activity.PersonalInformation" />
         <activity android:name=".Activity.JobIntention" />
         <activity android:name=".Activity.CompanyLogin" />
+        <activity android:name=".Activity.RecruitmentDetailActivity"/>
         <activity android:name=".Activity.ActorChoose">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
