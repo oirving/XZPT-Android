@@ -14,7 +14,6 @@ public class UserSelector {
 
     private String option;
 
-
     /**
      *
      * @param imageId 图标
