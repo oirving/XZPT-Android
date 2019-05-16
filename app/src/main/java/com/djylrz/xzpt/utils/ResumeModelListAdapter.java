@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.djylrz.xzpt.Activity.ResumeModelDetailsActivity;
+import com.djylrz.xzpt.activityStudent.ResumeModelDetailsActivity;
 import com.djylrz.xzpt.R;
 
 import java.util.List;

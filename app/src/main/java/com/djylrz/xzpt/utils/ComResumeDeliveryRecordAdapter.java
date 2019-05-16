@@ -11,8 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.djylrz.xzpt.Activity.ComRecruitmentDetailActivity;
-import com.djylrz.xzpt.Activity.ComResumeDeliveryRecordDetailActivity;
+import com.djylrz.xzpt.activityCompany.ComResumeDeliveryRecordDetailActivity;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.vo.ResumeDeliveryRecordVO;
 
