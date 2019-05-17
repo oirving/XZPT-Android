@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 
 import com.djylrz.xzpt.R;
@@ -15,12 +16,16 @@ import com.djylrz.xzpt.model.TimeLineModel;
 import com.djylrz.xzpt.utils.DateTimeUtils;
 import com.djylrz.xzpt.utils.VectorDrawableUtils;
 import com.github.vipulasri.timelineview.TimelineView;
+import com.vondear.rxtool.RxTool;
+import com.vondear.rxtool.view.RxToast;
 
 import java.util.List;
 
 /**
- * Created by HP-HP on 05-12-2015.
- */
+  *@Description: TODO
+  *@Author: mingjun
+  *@Date: 2019/5/18 上午 1:39
+  */
 public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
 
     private List<TimeLineModel> mFeedList;
@@ -28,6 +33,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
     private Orientation mOrientation;
     private boolean mWithLinePadding;
     private LayoutInflater mLayoutInflater;
+    private TimeLineModel timeLineModel;
 
     public TimeLineAdapter(List<TimeLineModel> feedList, Orientation orientation, boolean withLinePadding) {
         mFeedList = feedList;
@@ -54,7 +60,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
     @Override
     public void onBindViewHolder(TimeLineViewHolder holder, int position) {
 
-        TimeLineModel timeLineModel = mFeedList.get(position);
+        timeLineModel = mFeedList.get(position);
 
         if(timeLineModel.getStatus() == OrderStatus.INACTIVE) {
             holder.mTimelineView.setMarker(VectorDrawableUtils.getDrawable(mContext, R.drawable.ic_marker_inactive, android.R.color.darker_gray));
@@ -70,8 +76,21 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
         }
         else
             holder.mDate.setVisibility(View.GONE);
-
+        holder.mLocation.setText(timeLineModel.getmLocation());
         holder.mMessage.setText(timeLineModel.getMessage());
+        holder.mCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "你点击了" + timeLineModel.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        holder.mCard.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(mContext, "你长按了" + timeLineModel.getMessage(), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     @Override

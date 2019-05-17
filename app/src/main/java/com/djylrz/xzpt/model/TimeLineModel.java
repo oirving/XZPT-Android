@@ -3,13 +3,19 @@ package com.djylrz.xzpt.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.djylrz.xzpt.bean.RecruitmentDate;
+
 /**
- * Created by mingjun on 21/10/18.
- */
+  *@Description: TODO
+  *@Author: mingjun
+  *@Date: 2019/5/18 上午 1:40
+  */
 public class TimeLineModel implements Parcelable {
 
+    private RecruitmentDate recruitmentDate;
     private String mMessage;
     private String mDate;
+    private String mLocation;
     private OrderStatus mStatus;
 
     public TimeLineModel() {
@@ -18,6 +24,19 @@ public class TimeLineModel implements Parcelable {
     public TimeLineModel(String mMessage, String mDate, OrderStatus mStatus) {
         this.mMessage = mMessage;
         this.mDate = mDate;
+        this.mStatus = mStatus;
+    }
+
+    public TimeLineModel(RecruitmentDate recruitmentDate, OrderStatus mStatus) {
+        this.recruitmentDate = recruitmentDate;
+        this.mMessage = recruitmentDate.getTitle();
+        //"2017-02-12 08:00";
+        this.mDate = recruitmentDate.getYear()+"-"+
+                recruitmentDate.getMonth()+"-"+
+                recruitmentDate.getDay()+" "+
+                recruitmentDate.getHour()+":"+
+                recruitmentDate.getMinutes();
+        this.mLocation = recruitmentDate.getLocation();
         this.mStatus = mStatus;
     }
 
@@ -37,6 +56,14 @@ public class TimeLineModel implements Parcelable {
         this.mDate = date;
     }
 
+    public String getmLocation() {
+        return mLocation;
+    }
+
+    public void setmLocation(String mLocation) {
+        this.mLocation = mLocation;
+    }
+
     public OrderStatus getStatus() {
         return mStatus;
     }
@@ -54,12 +81,14 @@ public class TimeLineModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.mMessage);
         dest.writeString(this.mDate);
+        dest.writeString(this.mLocation);
         dest.writeInt(this.mStatus == null ? -1 : this.mStatus.ordinal());
     }
 
     protected TimeLineModel(Parcel in) {
         this.mMessage = in.readString();
         this.mDate = in.readString();
+        this.mLocation = in.readString();
         int tmpMStatus = in.readInt();
         this.mStatus = tmpMStatus == -1 ? null : OrderStatus.values()[tmpMStatus];
     }

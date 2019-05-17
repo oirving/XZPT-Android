@@ -2,36 +2,56 @@ package com.djylrz.xzpt.fragmentStudent;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activityStudent.TimeLineAdapter;
+import com.djylrz.xzpt.bean.RecruitmentDate;
 import com.djylrz.xzpt.model.OrderStatus;
 import com.djylrz.xzpt.model.Orientation;
 import com.djylrz.xzpt.model.TimeLineModel;
+import com.djylrz.xzpt.utils.HttpUtil;
 import com.haibin.calendarview.CalendarLayout;
 import com.haibin.calendarview.CalendarView;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import cz.msebera.android.httpclient.Header;
+
+import static com.djylrz.xzpt.utils.HttpUtil.FZU_RECRUITMENT_DATE_URL;
 
 public class FragmentDate extends Fragment implements
         CalendarView.OnCalendarSelectListener,
         CalendarView.OnYearChangeListener,
         View.OnClickListener {
     private static final String TAG = "FragmentDate";
+    private static final int GET_REVRUITMENT_DATE_DATA_SUCCESS = 1;
     //日历部分
     private TextView mTextMonthDay;
     private TextView mTextYear;
@@ -51,15 +71,30 @@ public class FragmentDate extends Fragment implements
     public final static String EXTRA_ORIENTATION = "EXTRA_ORIENTATION";
     public final static String EXTRA_WITH_LINE_PADDING = "EXTRA_WITH_LINE_PADDING";
 
+    //招聘会数据list
+    private List<RecruitmentDate> recruitmentDateList = new ArrayList<>();
+
     //全局View 用于获取控件
     private View globalView;
-
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case GET_REVRUITMENT_DATE_DATA_SUCCESS:
+                    initViewTimeLine();
+                    break;
+            }
+        }
+    };
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment1_date, container, false);
         globalView = view;
 
+        //开始加载动画
+//        MyApplication.rxDialogShapeLoading.show();
         //初始化日历
         initView();
         initData();
@@ -72,7 +107,8 @@ public class FragmentDate extends Fragment implements
         mRecyclerView.setLayoutManager(getLinearLayoutManager());
         mRecyclerView.setHasFixedSize(true);
 
-        initViewTimeLine();
+        //先异步获取数据，获取数据成功再通过handler初始化时间轴
+        getRecruitmentDateData();
         return view;
     }
 
@@ -88,24 +124,34 @@ public class FragmentDate extends Fragment implements
     //时间轴视图初始化
     private void initViewTimeLine() {
 
-        setDataListItems(0);
+        setDataListItems(0,0,0);
         mTimeLineAdapter = new TimeLineAdapter(mDataList, mOrientation, mWithLinePadding);
         mRecyclerView.setAdapter(mTimeLineAdapter);
     }
 
     //时间轴数据初始化
-    private void setDataListItems(int day) {
+    private void setDataListItems(int year, int month, int day) {
         mDataList.clear();
 
-        mDataList.add(new TimeLineModel("" + day, "", OrderStatus.INACTIVE));
-        mDataList.add(new TimeLineModel("Courier is out to delivery your order", "2017-02-12 08:00", OrderStatus.ACTIVE));
-        mDataList.add(new TimeLineModel("Item has reached courier facility at New Delhi", "2017-02-11 21:00", OrderStatus.COMPLETED));
-        mDataList.add(new TimeLineModel("Item has been given to the courier", "2017-02-11 18:00", OrderStatus.COMPLETED));
-        mDataList.add(new TimeLineModel("Item is packed and will dispatch soon", "2017-02-11 09:30", OrderStatus.COMPLETED));
-        mDataList.add(new TimeLineModel("Order is being readied for dispatch", "2017-02-11 08:00", OrderStatus.COMPLETED));
-        mDataList.add(new TimeLineModel("Order processing initiated", "2017-02-10 15:00", OrderStatus.COMPLETED));
-        mDataList.add(new TimeLineModel("Order confirmed by seller", "2017-02-10 14:30", OrderStatus.COMPLETED));
-        mDataList.add(new TimeLineModel("Order placed successfully", "2017-02-10 14:00", OrderStatus.COMPLETED));
+//        mDataList.add(new TimeLineModel("" + day, "", OrderStatus.INACTIVE));
+//        mDataList.add(new TimeLineModel("Courier is out to delivery your order", "2017-02-12 08:00", OrderStatus.ACTIVE));
+//        mDataList.add(new TimeLineModel("Item has reached courier facility at New Delhi", "2017-02-11 21:00", OrderStatus.COMPLETED));
+//        mDataList.add(new TimeLineModel("Item has been given to the courier", "2017-02-11 18:00", OrderStatus.COMPLETED));
+//        mDataList.add(new TimeLineModel("Item is packed and will dispatch soon", "2017-02-11 09:30", OrderStatus.COMPLETED));
+//        mDataList.add(new TimeLineModel("Order is being readied for dispatch", "2017-02-11 08:00", OrderStatus.COMPLETED));
+//        mDataList.add(new TimeLineModel("Order processing initiated", "2017-02-10 15:00", OrderStatus.COMPLETED));
+//        mDataList.add(new TimeLineModel("Order confirmed by seller", "2017-02-10 14:30", OrderStatus.COMPLETED));
+//        mDataList.add(new TimeLineModel("Order placed successfully", "2017-02-10 14:00", OrderStatus.COMPLETED));
+
+        for (RecruitmentDate redate:recruitmentDateList) {
+            Log.d(TAG, redate.getYear()+"-"+year);
+            Log.d(TAG, redate.getMonth()+"-"+month);
+            Log.d(TAG, redate.getDay()+"-"+day);
+            if (redate.getYear().equals(year+"")&&redate.getMonth().equals(month+"")&&redate.getDay().equals(day+"")){
+                Log.d(TAG, "setDataListItems: "+redate.getTitle());
+                mDataList.add(new TimeLineModel(redate, OrderStatus.ACTIVE));
+            }
+        }
         /*适配器不为空，通知适配器刷新*/
         if (mTimeLineAdapter != null) {
             mTimeLineAdapter.notifyDataSetChanged();
@@ -165,7 +211,7 @@ public class FragmentDate extends Fragment implements
                 realTime.set(Calendar.MONTH, calendar.getMonth() - 1);
                 realTime.set(Calendar.DAY_OF_MONTH, calendar.getDay());
 //                Log.i(LOG_TAG+" onCalendarSelect:",realTime.get(Calendar.YEAR)+" "+realTime.get(Calendar.MONTH)+" "+realTime.get(Calendar.DAY_OF_MONTH));
-                setDataListItems(calendar.getDay());
+                setDataListItems(calendar.getYear(),calendar.getMonth(),calendar.getDay());
             }
         });
 
@@ -268,6 +314,57 @@ public class FragmentDate extends Fragment implements
 
     @Override
     public void onCalendarOutOfRange(com.haibin.calendarview.Calendar calendar) {
+    }
+
+    private void getRecruitmentDateData(){
+        HttpUtil.get(FZU_RECRUITMENT_DATE_URL, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                String content = "";
+                try {
+                    content = new String(bytes, "GBK");
+/*
+                    {
+                        id: 5978,
+                        title: '建发房产2020届实习生宣讲会 地点:福州大学旗山校区学生活动中心学术报告厅',
+                        start: new Date(2019, 4, 23, 19, 0),
+                        allDay: false,
+                        url: '../meeting/showMeeting.asp?id=5978'
+                    }
+*/
+                    String newRegExp = "\\s*?id: ([0-9]{2,6}),\\s*?title: '(.*?) 地点:(.*?)',\\s*?start: new Date\\(([0-9]*?), ([0-9]*?), ([0-9]*?), ([0-9]*?), ([0-9]*?)\\),\\s*?allDay: .*?,\\s*?url: '..(.*?)'";
+                    Pattern pattern;
+                    Matcher matcher;
+                    pattern = Pattern.compile(newRegExp, Pattern.CASE_INSENSITIVE);
+                    matcher = pattern.matcher(content);
+
+                    while (matcher.find ()) {
+                        recruitmentDateList.add(new RecruitmentDate(matcher.group(1),matcher.group(2),
+                                matcher.group(3),matcher.group(4),(Integer.parseInt(matcher.group(5))+1)+"",matcher.group(6),
+                                matcher.group(7),matcher.group(8),matcher.group(9)));
+//                        Log.d(TAG, "id: " + matcher.group(1));
+//                        Log.d(TAG, "title: " + matcher.group(2));
+//                        Log.d(TAG, "地点: " + matcher.group(3));
+//                        Log.d(TAG, "年: " + matcher.group(4));
+//                        Log.d(TAG, "月: " + matcher.group(5));
+//                        Log.d(TAG, "日: " + matcher.group(6));
+//                        Log.d(TAG, "时: " + matcher.group(7));
+//                        Log.d(TAG, "分: " + matcher.group(8));
+//                        Log.d(TAG, "url: " + matcher.group(9));
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+            }
+
+            @Override
+            public void onFinish() {
+                handler.sendEmptyMessage(GET_REVRUITMENT_DATE_DATA_SUCCESS);
+            }
+        });
     }
 
 }

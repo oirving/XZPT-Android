@@ -3,7 +3,7 @@
     package="com.djylrz.xzpt">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-sdk  android:minSdkVersion="8"/>
+    <!--<uses-sdk  android:minSdkVersion="8"/>-->
     <!-- xmpush -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />

@@ -1,6 +1,7 @@
 package com.djylrz.xzpt.activityStudent;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -12,8 +13,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by HP-HP on 05-12-2015.
- */
+  *@Description: TODO
+  *@Author: mingjun
+  *@Date: 2019/5/18 上午 1:44
+  */
 public class TimeLineViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.text_timeline_date)
@@ -22,6 +25,10 @@ public class TimeLineViewHolder extends RecyclerView.ViewHolder {
     TextView mMessage;
     @BindView(R.id.time_marker)
     TimelineView mTimelineView;
+    @BindView(R.id.text_timeline_location)
+    TextView mLocation;
+    @BindView(R.id.card_timeline)
+    CardView mCard;
     Context context;
 
     public TimeLineViewHolder(View itemView, int viewType) {
