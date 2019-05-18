@@ -6,16 +6,18 @@ import android.os.Parcelable;
 import com.djylrz.xzpt.bean.RecruitmentDate;
 
 /**
-  *@Description: TODO
+  *@Description: TimeLineModel
   *@Author: mingjun
   *@Date: 2019/5/18 上午 1:40
   */
-public class TimeLineModel implements Parcelable {
+public class TimeLineModel implements Parcelable,Comparable<TimeLineModel>{
 
     private RecruitmentDate recruitmentDate;
     private String mMessage;
     private String mDate;
     private String mLocation;
+    private String mHour;
+    private String mMinutes;
     private OrderStatus mStatus;
 
     public TimeLineModel() {
@@ -38,6 +40,8 @@ public class TimeLineModel implements Parcelable {
                 recruitmentDate.getMinutes();
         this.mLocation = recruitmentDate.getLocation();
         this.mStatus = mStatus;
+        this.mHour = recruitmentDate.getHour();
+        this.mMinutes = recruitmentDate.getMinutes();
     }
 
     public String getMessage() {
@@ -72,6 +76,22 @@ public class TimeLineModel implements Parcelable {
         this.mStatus = mStatus;
     }
 
+    public String getmHour() {
+        return mHour;
+    }
+
+    public void setmHour(String mHour) {
+        this.mHour = mHour;
+    }
+
+    public String getmMinutes() {
+        return mMinutes;
+    }
+
+    public void setmMinutes(String mMinutes) {
+        this.mMinutes = mMinutes;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -104,4 +124,19 @@ public class TimeLineModel implements Parcelable {
             return new TimeLineModel[size];
         }
     };
+
+    @Override
+    public int compareTo(TimeLineModel o) {
+        if(Integer.parseInt(this.getmHour())>Integer.parseInt(o.getmHour())){
+            return 1;
+        }else if(Integer.parseInt(this.getmHour())<Integer.parseInt(o.getmHour())){
+            return -1;
+        }else{
+            if(Integer.parseInt(this.getmMinutes())>Integer.parseInt(o.getmMinutes())){
+                return 1;
+            }else{
+                return -1;
+            }
+        }
+    }
 }

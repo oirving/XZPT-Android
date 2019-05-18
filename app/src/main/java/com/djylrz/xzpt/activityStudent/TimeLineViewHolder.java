@@ -13,7 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
-  *@Description: TODO
+  *@Description: TimeLineViewHolder
   *@Author: mingjun
   *@Date: 2019/5/18 上午 1:44
   */

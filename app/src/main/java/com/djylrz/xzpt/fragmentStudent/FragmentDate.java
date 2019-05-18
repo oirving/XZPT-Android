@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
@@ -28,24 +27,25 @@ import com.djylrz.xzpt.utils.HttpUtil;
 import com.haibin.calendarview.CalendarLayout;
 import com.haibin.calendarview.CalendarView;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.vondear.rxui.view.dialog.RxDialogShapeLoading;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
 
 import static com.djylrz.xzpt.utils.HttpUtil.FZU_RECRUITMENT_DATE_URL;
-
+/**
+  *@Description: FragmentDate
+  *@Author: mingjun
+  *@Date: 2019/5/18 下午 1:39
+  */
 public class FragmentDate extends Fragment implements
         CalendarView.OnCalendarSelectListener,
         CalendarView.OnYearChangeListener,
@@ -82,6 +82,8 @@ public class FragmentDate extends Fragment implements
             super.handleMessage(msg);
             switch (msg.what){
                 case GET_REVRUITMENT_DATE_DATA_SUCCESS:
+                    //结束加载动画
+                    MyApplication.rxDialogShapeLoading.hide();
                     initViewTimeLine();
                     break;
             }
@@ -94,7 +96,9 @@ public class FragmentDate extends Fragment implements
         globalView = view;
 
         //开始加载动画
-//        MyApplication.rxDialogShapeLoading.show();
+        MyApplication.rxDialogShapeLoading = new RxDialogShapeLoading(getContext());
+        MyApplication.rxDialogShapeLoading.setLoadingText("加载数据中...");
+        MyApplication.rxDialogShapeLoading.show();
         //初始化日历
         initView();
         initData();
@@ -152,21 +156,21 @@ public class FragmentDate extends Fragment implements
                 mDataList.add(new TimeLineModel(redate, OrderStatus.ACTIVE));
             }
         }
+        //对招聘会按照时间从小到大排序
+        Collections.sort(mDataList);
         /*适配器不为空，通知适配器刷新*/
         if (mTimeLineAdapter != null) {
             mTimeLineAdapter.notifyDataSetChanged();
         }
     }
-
-    @SuppressLint("SetTextI18n")
     /**
      *@Description: 初始化日历视图
-     *@Created in: 18-10-20 下午19:29
-     *@Author: mingjun
-     *@Method_Name: initView
      *@Param: []
      *@Return: void
+     *@Author: mingjun
+     *@Date: 2019/5/18 下午 1:41
      */
+    @SuppressLint("SetTextI18n")
     protected void initView() {
         //setStatusBarDarkMode();
         mTextMonthDay = (TextView) globalView.findViewById(R.id.tv_month_day);
@@ -178,14 +182,14 @@ public class FragmentDate extends Fragment implements
         mTextMonthDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mCalendarLayout.isExpand()) {
-                    mCalendarView.showYearSelectLayout(mYear);
-                    return;
-                }
-                mCalendarView.showYearSelectLayout(mYear);
-                mTextLunar.setVisibility(View.GONE);
-                mTextYear.setVisibility(View.GONE);
-                mTextMonthDay.setText(String.valueOf(mYear));
+//                if (!mCalendarLayout.isExpand()) {
+//                    mCalendarView.showYearSelectLayout(mYear);
+//                    return;
+//                }
+//                mCalendarView.showYearSelectLayout(mYear);
+//                mTextLunar.setVisibility(View.GONE);
+//                mTextYear.setVisibility(View.GONE);
+//                mTextMonthDay.setText(String.valueOf(mYear));
             }
         });
         globalView.findViewById(R.id.fl_current).setOnClickListener(new View.OnClickListener() {
@@ -212,6 +216,10 @@ public class FragmentDate extends Fragment implements
                 realTime.set(Calendar.DAY_OF_MONTH, calendar.getDay());
 //                Log.i(LOG_TAG+" onCalendarSelect:",realTime.get(Calendar.YEAR)+" "+realTime.get(Calendar.MONTH)+" "+realTime.get(Calendar.DAY_OF_MONTH));
                 setDataListItems(calendar.getYear(),calendar.getMonth(),calendar.getDay());
+                //设置toolbar日期
+                mTextMonthDay.setText(calendar.getMonth() + "月" + calendar.getDay() + "日");
+                mTextYear.setText(String.valueOf(calendar.getYear()));
+                mTextLunar.setText(calendar.getLunar());
             }
         });
 
@@ -224,13 +232,12 @@ public class FragmentDate extends Fragment implements
     }
 
     /**
-     * @Description: 初始化日历视图数据
-     * @Created in: 18-10-20 下午19:29
-     * @Author: mingjun
-     * @Method_Name: initData
-     * @Param: []
-     * @Return: void
-     */
+      *@Description: 初始化日历视图数据
+      *@Param: []
+      *@Return: void
+      *@Author: mingjun
+      *@Date: 2019/5/18 下午 1:42
+      */
     protected void initData() {
         int year = mCalendarView.getCurYear();
         int month = mCalendarView.getCurMonth();
@@ -247,30 +254,25 @@ public class FragmentDate extends Fragment implements
     }
 
     /**
-     * @Description: 设置点击事件
-     * @Created in: 18-10-20 下午19:29
-     * @Author: mingjun
-     * @Method_Name: onClick
-     * @Param: v
-     * @Return: void
-     */
+      *@Description: 设置点击事件
+      *@Param: [v]
+      *@Return: void
+      *@Author: mingjun
+      *@Date: 2019/5/18 下午 1:42
+      */
     @Override
     public void onClick(View v) {
 
     }
 
+
     /**
-     * @Description: 在日历中添加标记
-     * @Created in: 18-10-20 下午19:29
-     * @Author: mingjun
-     * @Method_Name: getSchemeCalendar
-     * @Param year
-     * @Param month
-     * @Param day
-     * @Param color
-     * @Param text
-     * @Return: com.haibin.calendarview.Calendar
-     */
+      *@Description: 在日历中添加标记
+      *@Param: [year, month, day, color, text]
+      *@Return: com.haibin.calendarview.Calendar
+      *@Author: mingjun
+      *@Date: 2019/5/18 下午 1:42
+      */
     private com.haibin.calendarview.Calendar getSchemeCalendar(int year, int month, int day, int color, String text) {
         com.haibin.calendarview.Calendar calendar = new com.haibin.calendarview.Calendar();
         calendar.setYear(year);
@@ -285,14 +287,12 @@ public class FragmentDate extends Fragment implements
     }
 
     /**
-     * @Description: 修改Toolbar上的月日信息
-     * @Created in: 18-10-20 下午19:29
-     * @Author: mingjun
-     * @Method_Name: onCalendarSelect
-     * @Param calendar
-     * @Param isClick
-     * @Return: com.haibin.calendarview.Calendar
-     */
+      *@Description: 修改Toolbar上的月日信息
+      *@Param: [calendar, isClick]
+      *@Return: void
+      *@Author: mingjun
+      *@Date: 2019/5/18 下午 1:42
+      */
     @SuppressLint("SetTextI18n")
     public void onCalendarSelect(com.haibin.calendarview.Calendar calendar, boolean isClick) {
         mTextLunar.setVisibility(View.VISIBLE);
@@ -304,9 +304,12 @@ public class FragmentDate extends Fragment implements
     }
 
     /**
-     * @param year
-     * @Description 点击Toolbar上的月日Textview时，将其修改成年份
-     */
+      *@Description: 点击Toolbar上的月日Textview时，将其修改成年份
+      *@Param: [year]
+      *@Return: void
+      *@Author: mingjun
+      *@Date: 2019/5/18 下午 1:43
+      */
     @Override
     public void onYearChange(int year) {
         mTextMonthDay.setText(String.valueOf(year));
@@ -316,6 +319,13 @@ public class FragmentDate extends Fragment implements
     public void onCalendarOutOfRange(com.haibin.calendarview.Calendar calendar) {
     }
 
+    /**
+      *@Description: 异步获取招聘会数据
+      *@Param: []
+      *@Return: void
+      *@Author: mingjun
+      *@Date: 2019/5/18 下午 1:43
+      */
     private void getRecruitmentDateData(){
         HttpUtil.get(FZU_RECRUITMENT_DATE_URL, new AsyncHttpResponseHandler() {
             @Override
@@ -323,15 +333,14 @@ public class FragmentDate extends Fragment implements
                 String content = "";
                 try {
                     content = new String(bytes, "GBK");
-/*
-                    {
-                        id: 5978,
-                        title: '建发房产2020届实习生宣讲会 地点:福州大学旗山校区学生活动中心学术报告厅',
-                        start: new Date(2019, 4, 23, 19, 0),
-                        allDay: false,
-                        url: '../meeting/showMeeting.asp?id=5978'
-                    }
-*/
+//                  正则表达式获取数据如下
+//                    {
+//                        id: 5978,
+//                        title: '建发房产2020届实习生宣讲会 地点:福州大学旗山校区学生活动中心学术报告厅',
+//                        start: new Date(2019, 4, 23, 19, 0),
+//                        allDay: false,
+//                        url: '../meeting/showMeeting.asp?id=5978'
+//                    }
                     String newRegExp = "\\s*?id: ([0-9]{2,6}),\\s*?title: '(.*?) 地点:(.*?)',\\s*?start: new Date\\(([0-9]*?), ([0-9]*?), ([0-9]*?), ([0-9]*?), ([0-9]*?)\\),\\s*?allDay: .*?,\\s*?url: '..(.*?)'";
                     Pattern pattern;
                     Matcher matcher;
@@ -362,6 +371,7 @@ public class FragmentDate extends Fragment implements
 
             @Override
             public void onFinish() {
+                //向handler发送获取信息成功消息
                 handler.sendEmptyMessage(GET_REVRUITMENT_DATE_DATA_SUCCESS);
             }
         });

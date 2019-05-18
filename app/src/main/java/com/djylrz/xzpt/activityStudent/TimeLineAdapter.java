@@ -16,8 +16,6 @@ import com.djylrz.xzpt.model.TimeLineModel;
 import com.djylrz.xzpt.utils.DateTimeUtils;
 import com.djylrz.xzpt.utils.VectorDrawableUtils;
 import com.github.vipulasri.timelineview.TimelineView;
-import com.vondear.rxtool.RxTool;
-import com.vondear.rxtool.view.RxToast;
 
 import java.util.List;
 
@@ -33,7 +31,6 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
     private Orientation mOrientation;
     private boolean mWithLinePadding;
     private LayoutInflater mLayoutInflater;
-    private TimeLineModel timeLineModel;
 
     public TimeLineAdapter(List<TimeLineModel> feedList, Orientation orientation, boolean withLinePadding) {
         mFeedList = feedList;
@@ -60,7 +57,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
     @Override
     public void onBindViewHolder(TimeLineViewHolder holder, int position) {
 
-        timeLineModel = mFeedList.get(position);
+        final TimeLineModel timeLineModel = mFeedList.get(position);
 
         if(timeLineModel.getStatus() == OrderStatus.INACTIVE) {
             holder.mTimelineView.setMarker(VectorDrawableUtils.getDrawable(mContext, R.drawable.ic_marker_inactive, android.R.color.darker_gray));
@@ -72,10 +69,11 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
 
         if(!timeLineModel.getDate().isEmpty()) {
             holder.mDate.setVisibility(View.VISIBLE);
-            holder.mDate.setText(DateTimeUtils.parseDateTime(timeLineModel.getDate(), "yyyy-MM-dd HH:mm", "hh:mm a, dd-MMM-yyyy"));
+            holder.mDate.setText(DateTimeUtils.parseDateTime(timeLineModel.getDate(), "yyyy-MM-dd HH:mm", "HH:mm a, yyyy年MM月dd日"));
         }
-        else
+        else {
             holder.mDate.setVisibility(View.GONE);
+        }
         holder.mLocation.setText(timeLineModel.getmLocation());
         holder.mMessage.setText(timeLineModel.getMessage());
         holder.mCard.setOnClickListener(new View.OnClickListener() {

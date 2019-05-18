@@ -10,6 +10,8 @@ import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
 import com.djylrz.xzpt.activityStudent.MainActivity;
+import com.vondear.rxtool.RxTool;
+import com.vondear.rxtool.view.RxToast;
 import com.vondear.rxui.view.dialog.RxDialogShapeLoading;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
@@ -52,7 +54,8 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        //初始化RxTool工具
+        RxTool.init(this);
         // 注册push服务，注册成功后会向BroadcastReceiver发送广播
         // 可以从BroadcastReceiver的onCommandResult方法中MiPushCommandMessage对象参数中获取注册信息
         if (shouldInit()) {
@@ -80,8 +83,6 @@ public class MyApplication extends Application {
             sHandler = new DemoHandler(getApplicationContext());
         }
 
-        //注册全局加载对话框
-        rxDialogShapeLoading = new RxDialogShapeLoading(this);
 
     }
 
