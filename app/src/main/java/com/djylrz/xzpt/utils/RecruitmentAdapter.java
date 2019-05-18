@@ -30,7 +30,7 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
     private List<Recruitment> mRecruitments;
     private int type;
     private Context context;
-    DateFormat df2 = new SimpleDateFormat("yyyy-MM-01 hh:mm");
+    DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     static class ViewHolder extends RecyclerView.ViewHolder{
         View recruitmentView;

@@ -130,7 +130,7 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         //获取传递过来的岗位信息
         Intent intent = getIntent();
         recruitment = (Recruitment) intent.getSerializableExtra("recruitment");
-        DateFormat df2 = new SimpleDateFormat("yyyy-MM-01 hh:mm:ss EE");
+        DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss EE");
         String workTime;
         String industryLabel = data.get((int) recruitment.getIndustryLabel());
         String jobType;
@@ -202,7 +202,8 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                 .setBold().setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_OPPOSITE)
                 .setBackgroundColor(getResources().getColor(R.color.lightblue))
                 .setForegroundColor(getResources().getColor(R.color.black))
-
+                .append("招聘人数"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
+                .append(recruitment.getHeadCount() + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
                 .append("岗位类型"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
                 .append(jobType + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
 
