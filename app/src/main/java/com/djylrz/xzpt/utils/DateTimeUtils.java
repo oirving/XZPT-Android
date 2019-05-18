@@ -8,8 +8,10 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Created by mingjun on 21/10/18.
- */
+  *@Description: DateTimeUtils
+  *@Author: mingjun
+  *@Date: 2019/5/18 下午 1:21
+  */
 public class DateTimeUtils {
 
     public static String parseDateTime(String dateString, String originalFormat, String outputFromat){
