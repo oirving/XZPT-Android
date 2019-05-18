@@ -10,6 +10,5 @@
         android:id="@+id/resume_preview_imageview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp"
         android:src="@drawable/resumemodel2" />
 </LinearLayout>

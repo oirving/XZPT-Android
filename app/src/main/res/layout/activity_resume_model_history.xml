@@ -23,7 +23,7 @@
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="简历模板"
+                android:text="历史记录"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 

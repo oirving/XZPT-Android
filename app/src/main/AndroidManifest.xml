@@ -21,14 +21,16 @@
     <application
         android:name="com.djylrz.xzpt.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/done"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activityCompany.ComResumeDeliveryRecordDetailActivity"></activity>
-        <activity android:name=".activityCompany.ComRecruitmentDetailActivity"></activity>
+        <activity android:name=".activityStudent.ResumeModelHistoryActivity"></activity>
+        <activity android:name=".activityStudent.BasicResumeActivity" />
+        <activity android:name=".activityCompany.ComResumeDeliveryRecordDetailActivity" />
+        <activity android:name=".activityCompany.ComRecruitmentDetailActivity" />
         <activity android:name=".activityStudent.SelectTagActivity" />
 
         <uses-library
@@ -55,7 +57,7 @@
         <activity android:name=".activityStudent.PersonalInformation" />
         <activity android:name=".activityStudent.JobIntention" />
         <activity android:name=".activityCompany.CompanyLogin" />
-        <activity android:name=".activityStudent.RecruitmentDetailActivity"/>
+        <activity android:name=".activityStudent.RecruitmentDetailActivity" />
         <activity android:name=".activity.ActorChoose">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
