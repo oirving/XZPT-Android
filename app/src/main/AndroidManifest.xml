@@ -17,6 +17,7 @@
 
     <uses-permission android:name="com.djylrz.xzpt.permission.MIPUSH_RECEIVE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name="com.djylrz.xzpt.MyApplication"
