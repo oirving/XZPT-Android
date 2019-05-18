@@ -15,19 +15,19 @@ import okhttp3.RequestBody;
  * @author Murphy
  * @date 2019/5/18 19:31
  */
-public class FileUploadUtil {
+public class FileTransferUtil {
     private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("multipart/form-data");
     private static final String UPLOAD_URL = "/upload/file";
-    private static volatile FileUploadUtil instance = null;
+    private static volatile FileTransferUtil instance = null;
 
-    private FileUploadUtil() {
+    private FileTransferUtil() {
     }
 
-    public static FileUploadUtil getInstance() {
+    public static FileTransferUtil getInstance() {
         if (instance == null) {
-            synchronized (FileUploadUtil.class) {
+            synchronized (FileTransferUtil.class) {
                 if (instance == null) {
-                    instance = new FileUploadUtil();
+                    instance = new FileTransferUtil();
                 }
             }
         }
