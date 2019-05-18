@@ -27,6 +27,7 @@ import com.djylrz.xzpt.utils.HttpUtil;
 import com.haibin.calendarview.CalendarLayout;
 import com.haibin.calendarview.CalendarView;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.vondear.rxtool.view.RxToast;
 import com.vondear.rxui.view.dialog.RxDialogShapeLoading;
 
 import java.util.ArrayList;
@@ -53,6 +54,8 @@ public class FragmentDate extends Fragment implements
         View.OnClickListener {
     private static final String TAG = "FragmentDate";
     private static final int GET_REVRUITMENT_DATE_DATA_SUCCESS = 1;
+    private static final int GET_REVRUITMENT_DATE_DATA_FAILURE = 2;
+
     //日历部分
     private TextView mTextMonthDay;
     private TextView mTextYear;
@@ -90,6 +93,16 @@ public class FragmentDate extends Fragment implements
                     initData();
                     //初始化时间轴
                     initViewTimeLine();
+                    break;
+                case GET_REVRUITMENT_DATE_DATA_FAILURE:
+                    //结束加载动画
+                    MyApplication.rxDialogShapeLoading.hide();
+                    //初始化日历
+                    initView();
+                    initData();
+                    //初始化时间轴
+                    initViewTimeLine();
+                    RxToast.error("网络连接失败，请检查网络连接！");
                     break;
             }
         }
@@ -388,6 +401,8 @@ public class FragmentDate extends Fragment implements
             }
             @Override
             public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                //向handler发送获取信息失败消息
+                handler.sendEmptyMessage(GET_REVRUITMENT_DATE_DATA_FAILURE);
             }
 
             @Override
