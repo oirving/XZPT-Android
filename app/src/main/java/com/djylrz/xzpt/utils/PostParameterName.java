@@ -19,6 +19,8 @@ public class PostParameterName {
 
     public static final String POST_URL_GET_RECOMMEND = HOST +"/user/getrecommend?token=";//获取推荐信息URL
     public static final String POST_URL_SEARCH_RECRUIMENT=HOST +"/user/searchrecruitment?token=";//&keyWord=  搜索招聘信息
+    public static final String POST_URL_GET_HOT_RECRUIMENT=HOST +"/user/gethotspot?token=";//&keyWord=  获取热度招聘信息
+
 
     public static final String POST_URL_CREATE_RESUME = HOST + "/user/createresume?token=";//创建简历接口
     public static final String POST_URL_GET_LIST_RESUME = HOST + "/user/getlistresume?token=";//获取所有简历接口
