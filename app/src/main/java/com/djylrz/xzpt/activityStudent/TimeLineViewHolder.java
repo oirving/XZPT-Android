@@ -4,11 +4,13 @@ import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.djylrz.xzpt.R;
 import com.github.vipulasri.timelineview.TimelineView;
 
+import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -29,6 +31,10 @@ public class TimeLineViewHolder extends RecyclerView.ViewHolder {
     TextView mLocation;
     @BindView(R.id.card_timeline)
     CardView mCard;
+    @BindView(R.id.linerlayout_time)
+    LinearLayout linerLayoutTime;
+    @BindView(R.id.linerlayout_location)
+    LinearLayout linerLayoutLocation;
     Context context;
 
     public TimeLineViewHolder(View itemView, int viewType) {

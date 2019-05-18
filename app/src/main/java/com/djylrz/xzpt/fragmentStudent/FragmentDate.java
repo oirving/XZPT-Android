@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -84,6 +85,10 @@ public class FragmentDate extends Fragment implements
                 case GET_REVRUITMENT_DATE_DATA_SUCCESS:
                     //结束加载动画
                     MyApplication.rxDialogShapeLoading.hide();
+                    //初始化日历
+                    initView();
+                    initData();
+                    //初始化时间轴
                     initViewTimeLine();
                     break;
             }
@@ -99,9 +104,11 @@ public class FragmentDate extends Fragment implements
         MyApplication.rxDialogShapeLoading = new RxDialogShapeLoading(getContext());
         MyApplication.rxDialogShapeLoading.setLoadingText("加载数据中...");
         MyApplication.rxDialogShapeLoading.show();
-        //初始化日历
-        initView();
-        initData();
+
+        //先异步获取数据，获取数据成功再通过handler初始化时间轴
+        getRecruitmentDateData();
+
+
 
         //初始化时间轴
         mOrientation = (Orientation) getActivity().getIntent().getSerializableExtra(FragmentDate.EXTRA_ORIENTATION);
@@ -111,8 +118,7 @@ public class FragmentDate extends Fragment implements
         mRecyclerView.setLayoutManager(getLinearLayoutManager());
         mRecyclerView.setHasFixedSize(true);
 
-        //先异步获取数据，获取数据成功再通过handler初始化时间轴
-        getRecruitmentDateData();
+
         return view;
     }
 
@@ -148,9 +154,9 @@ public class FragmentDate extends Fragment implements
 //        mDataList.add(new TimeLineModel("Order placed successfully", "2017-02-10 14:00", OrderStatus.COMPLETED));
 
         for (RecruitmentDate redate:recruitmentDateList) {
-            Log.d(TAG, redate.getYear()+"-"+year);
-            Log.d(TAG, redate.getMonth()+"-"+month);
-            Log.d(TAG, redate.getDay()+"-"+day);
+//            Log.d(TAG, redate.getYear()+"-"+year);
+//            Log.d(TAG, redate.getMonth()+"-"+month);
+//            Log.d(TAG, redate.getDay()+"-"+day);
             if (redate.getYear().equals(year+"")&&redate.getMonth().equals(month+"")&&redate.getDay().equals(day+"")){
                 Log.d(TAG, "setDataListItems: "+redate.getTitle());
                 mDataList.add(new TimeLineModel(redate, OrderStatus.ACTIVE));
@@ -162,6 +168,8 @@ public class FragmentDate extends Fragment implements
         if (mTimeLineAdapter != null) {
             if(mDataList.size()==0){
                 mDataList.add(new TimeLineModel("今天没有招聘会哦~","",OrderStatus.INACTIVE));
+            }else{
+
             }
             mTimeLineAdapter.notifyDataSetChanged();
         }
@@ -242,15 +250,25 @@ public class FragmentDate extends Fragment implements
       *@Date: 2019/5/18 下午 1:42
       */
     protected void initData() {
-        int year = mCalendarView.getCurYear();
-        int month = mCalendarView.getCurMonth();
 
-        //对日期添加上标
+        Calendar aCalendar = Calendar.getInstance(Locale.CHINA);
+        int year = aCalendar.get(Calendar.YEAR);
+        int month = aCalendar.get(Calendar.MONTH) + 1;
+        int dayNum=aCalendar.getActualMaximum(Calendar.DATE);
+        int[] day = new int [dayNum];
+        for (RecruitmentDate redate:recruitmentDateList) {
+            if (redate.getYear().equals(year+"")&&redate.getMonth().equals(month+"")){
+                day[Integer.parseInt(redate.getDay())] = 1;
+            }
+        }
+        //只对当前月的日期添加上标
         Map<String, com.haibin.calendarview.Calendar> map = new HashMap<>();
-        map.put(getSchemeCalendar(year, month, 3, 0xFF40db25, "会").toString(),
-                getSchemeCalendar(year, month, 3, 0xFF40db25, "会"));
-        map.put(getSchemeCalendar(year, month, 6, 0xFF40db25, "会").toString(),
-                getSchemeCalendar(year, month, 6, 0xFF40db25, "会"));
+        for(int i = 0; i < dayNum; ++i){
+            if(day[i]==1){
+                map.put(getSchemeCalendar(year, month, i, 0xFF40db25, "会").toString(),
+                        getSchemeCalendar(year, month, i, 0xFF40db25, "会"));
+            }
+        }
         //此方法在巨大的数据量上不影响遍历性能，推荐使用
         mCalendarView.setSchemeDate(map);
 

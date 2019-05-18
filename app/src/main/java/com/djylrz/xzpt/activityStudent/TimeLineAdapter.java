@@ -3,6 +3,7 @@ package com.djylrz.xzpt.activityStudent;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,14 +69,17 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
         }
 
         if(!timeLineModel.getDate().isEmpty()) {
-            holder.mDate.setVisibility(View.VISIBLE);
+            holder.linerLayoutTime.setVisibility(View.VISIBLE);
+            holder.linerLayoutLocation.setVisibility(View.VISIBLE);
             holder.mDate.setText(DateTimeUtils.parseDateTime(timeLineModel.getDate(), "yyyy-MM-dd HH:mm", "HH:mm a, yyyy年MM月dd日"));
         }
         else {
-            holder.mDate.setVisibility(View.GONE);
+            holder.linerLayoutTime.setVisibility(View.GONE);
+            holder.linerLayoutLocation.setVisibility(View.GONE);
         }
         holder.mLocation.setText(timeLineModel.getmLocation());
         holder.mMessage.setText(timeLineModel.getMessage());
+
         holder.mCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
