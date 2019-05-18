@@ -160,6 +160,9 @@ public class FragmentDate extends Fragment implements
         Collections.sort(mDataList);
         /*适配器不为空，通知适配器刷新*/
         if (mTimeLineAdapter != null) {
+            if(mDataList.size()==0){
+                mDataList.add(new TimeLineModel("今天没有招聘会哦~","",OrderStatus.INACTIVE));
+            }
             mTimeLineAdapter.notifyDataSetChanged();
         }
     }
