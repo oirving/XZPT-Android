@@ -7,6 +7,7 @@ public class PostParameterName {
     public static final String STUDENT_TOKEN = "student_token";//学生token
     public static final String STUDENT_USER_JSON = "student_user_json";//登录之后获取用户信息存到本地SharedPreferences的key
 
+    public static final String FILE = "file";//登录之后获取用户信息存到本地SharedPreferences的key
 
     public static final String POST_URL_LOGIN = HOST+"/user/login";//学生登录接口
     public static final String POST_URL_LOGIN_WITH_TOKEN = HOST + "/user/vertifytoken?token=";//学生token登录

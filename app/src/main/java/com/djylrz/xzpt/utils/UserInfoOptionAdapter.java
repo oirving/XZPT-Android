@@ -56,8 +56,7 @@ public class UserInfoOptionAdapter extends RecyclerView.Adapter<UserInfoOptionAd
                 Toast.makeText(v.getContext(),"clicked" + userSelector.getOption(),Toast.LENGTH_SHORT).show();
                 switch (position) {
                     case 0:
-                        Intent intent = new Intent(v.getContext(), MyResumeActivity.class);
-                        v.getContext().startActivity(intent);
+
                         break;
                     case 1:
                         Intent intent1 = new Intent(v.getContext(), JobIntention.class);
@@ -68,16 +67,20 @@ public class UserInfoOptionAdapter extends RecyclerView.Adapter<UserInfoOptionAd
                         v.getContext().startActivity(intent2);
                         break;
                     case 3:
-                        Intent intent3 = new Intent(v.getContext(), HelpAndFeedbackActivity.class);
+                        Intent intent3 = new Intent(v.getContext(), MyResumeActivity.class);
                         v.getContext().startActivity(intent3);
                         break;
                     case 4:
+                        Intent intent4 = new Intent(v.getContext(), HelpAndFeedbackActivity.class);
+                        v.getContext().startActivity(intent4);
+                        break;
+                    case 5:
                         SharedPreferences userToken = v.getContext().getSharedPreferences("token",0);
                         SharedPreferences.Editor editor = userToken.edit();
                         editor.remove(PostParameterName.STUDENT_TOKEN);
                         editor.commit();
-                        Intent intent4 = new Intent(v.getContext(), ActorChoose.class);
-                        v.getContext().startActivity(intent4);
+                        Intent intent5 = new Intent(v.getContext(), ActorChoose.class);
+                        v.getContext().startActivity(intent5);
                         ((Activity)v.getContext()).finish();
                         break;
                         default:

@@ -24,6 +24,7 @@
             android:layout_marginBottom="20dp"
             android:layout_gravity="center"
             />
+            <!--android:src="@drawable/fzu"-->
 
         <LinearLayout
             android:layout_width="wrap_content"
