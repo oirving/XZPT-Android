@@ -77,6 +77,7 @@ public class MainActivity extends BaseActivity {
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,6 +131,7 @@ public class MainActivity extends BaseActivity {
                 // menu item ID. This behaves the same as tapping on an item
                 //未找到原因
             }
+
 
             @Override
             public void onPageScrollStateChanged(int state) {

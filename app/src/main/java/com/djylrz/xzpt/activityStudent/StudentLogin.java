@@ -3,6 +3,8 @@ package com.djylrz.xzpt.activityStudent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +21,13 @@ import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.google.gson.Gson;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -32,15 +40,20 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
     private EditText id;//接收账号
     private EditText password;//接收密码
     private ImageView headPortrait;//头像
-
     private String responseData;
+    private Bitmap bitmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_login);
         id = (EditText)findViewById(R.id.student_input_name);//输入的账号
         password = (EditText)findViewById(R.id.student_input_password);//输入的密码
+
+        //todo 填入地址获取网络图片作为头像
+        //bitmap = getHttpBitmap("");
         headPortrait = (ImageView)findViewById(R.id.student_head_portrait);//头像
+        //headPortrait.setImageBitmap(bitmap);
 
         Button login = (Button)findViewById(R.id.student_login_button);//登陆按钮
         login.setOnClickListener(this);
@@ -76,6 +89,48 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    /**
+     * 加载本地图片
+     * @param url
+     * @return
+     */
+    public static Bitmap getLoacalBitmap(String url) {
+        try {
+            FileInputStream fis = new FileInputStream(url);
+            return BitmapFactory.decodeStream(fis);  ///把流转化为Bitmap图片
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 从服务器取图片
+     * @param url
+     * @return
+     */
+    public static Bitmap getHttpBitmap(String url) {
+        URL myFileUrl = null;
+        Bitmap bitmap1 = null;
+        try {
+            myFileUrl = new URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        try {
+            HttpURLConnection conn = (HttpURLConnection) myFileUrl.openConnection();
+            conn.setConnectTimeout(0);
+            conn.setDoInput(true);
+            conn.connect();
+            InputStream is = conn.getInputStream();
+            bitmap1 = BitmapFactory.decodeStream(is);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap1;
+    }
     //可以用于从其他活动接收账号和密码
     public static void actionStart(Context context, String id, String password) {
         Intent intent = new Intent(context,StudentLogin.class);
