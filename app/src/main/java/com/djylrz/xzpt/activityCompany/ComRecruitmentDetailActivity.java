@@ -416,7 +416,8 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                 }else{
                     //提示弹窗
                     final RxDialogSureCancel rxDialogSureCancel = new RxDialogSureCancel(mContext);
-                    rxDialogSureCancel.getTitleView().setBackgroundResource(R.drawable.logo);
+                    rxDialogSureCancel.getTitleView().setText("确认删除");
+                    rxDialogSureCancel.setContent("删除后不可恢复！确认删除该岗位？");
                     rxDialogSureCancel.getSureView().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
