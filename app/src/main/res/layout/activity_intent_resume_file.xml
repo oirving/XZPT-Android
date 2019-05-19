@@ -56,4 +56,8 @@
         android:text="下载并查看文件"
         android:textColor="@color/white"
         />
+    <EditText
+        android:id="@+id/text_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>
