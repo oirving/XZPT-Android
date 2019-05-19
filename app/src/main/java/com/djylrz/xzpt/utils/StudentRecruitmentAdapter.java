@@ -75,7 +75,7 @@ public class StudentRecruitmentAdapter extends RecyclerView.Adapter<StudentRecru
         holder.recruitmentCompany.setText(recruitment.getCompanyName());
         holder.recruitmentLocation.setText(recruitment.getLocation());
         holder.recruitmentDegree.setText(recruitment.getDegree());
-        holder.recruitmentWorkTime.setText(recruitment.getWorkTime()+"");
+        holder.recruitmentWorkTime.setText(Constants.WORK_TIME[(int)recruitment.getWorkTime()]);
     }
 
     @Override
