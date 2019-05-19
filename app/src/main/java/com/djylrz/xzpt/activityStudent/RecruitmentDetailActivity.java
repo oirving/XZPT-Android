@@ -51,6 +51,7 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
     private TextView industryLabel;
     private TextView stationLabel;
     private TextView contact;
+    private TextView headcount;
     private Button delivery;
     private Button chat;
 
@@ -79,7 +80,7 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
         delivery = findViewById(R.id.delivery);
         chat = findViewById(R.id.chat);
         contact = findViewById(R.id.contact);
-
+        headcount = findViewById(R.id.headcount);
         delivery.setOnClickListener(this);
         chat.setOnClickListener(this);
 
@@ -173,6 +174,9 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
         industryLabel.setText(recruitment.getIndustry());
         stationLabel.setText(recruitment.getStation());
         contact.setText(recruitment.getContact());
+        if (recruitment.getHeadCount()!=null){
+            headcount.setText(String.valueOf(recruitment.getHeadCount()));
+        }
     }
 
 
