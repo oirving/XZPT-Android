@@ -57,6 +57,25 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
     private Button btnEdit;//编辑按钮
     private Button btnOp;//操作按钮（停招岗位为重新发布，在招岗位为结束招聘）
     private boolean flagModify = false;
+    private String[] mVals = new String[]
+            {"C++", "Javascript", "金融", "直播", "电商", "Java", "移动互联网", "分布式", "C", "服务器端", "社交",
+                    "带薪年假", "银行", "云计算", "MySQL", "Linux/Unix", "旅游", "绩效奖金", "工具软件", "大数据",
+                    "系统架构", "互联网金融", "J2EE", "Hadoop", "中间件", "支付", "顶尖团队", "医疗健康", "牛人多",
+                    "ERP", "新零售", "平台", "数据库", "企业服务", "PHP", "汽车", "五险一金", "节日礼物", "本地生活",
+                    "软件开发", "移动开发", "招聘", "Python", "广告营销", "Yii", "保险", "SOA", "Node.js", "IOS",
+                    "Golang", "嵌入式", "Phalcon", "Laravel", "硬件制造", "HTML", "客户端", "美女CEO", "数据处理",
+                    "股票期权", "无限量零食", "抓取", "docker", "前端开发", "数据挖掘", "高级技术管理", "GO", "Web前端",
+                    "架构师", "文体活动", "信息安全", "Ruby", "运维", "爬虫工程师", "自动化", "图像处理", "MFC", "游戏",
+                    "即时通讯", "C#/.NET", "通信", "媒体", "发展空间大", "Windows", "视频", "两次年度旅游", "通信/网络设备",
+                    "定期体检", "年底双薪", "教育", "JS", "现象级产品", "地图", "算法", "视觉", "品牌", "用户体验", "理财",
+                    "UI", "UED", "画册", "动画", "平面", "网店", "原画", "创意", "UE", "App设计", "Flash", "3D", "包装", "借贷",
+                    "美工", "广告", "交互设计专家", "餐补交通补", "福利优厚", "工程师文化", "超豪华办公室", "专项奖金",
+                    "岗位晋升", "Android", "全栈", "HTML5", "爬虫", "领导力", "团建旅游", "Shell", "扁平管理", "年度旅游",
+                    "爬虫架构", "搜索", "技能培训", "音视频", "QT", "视频流转码", "视频编解码", "简单有爱文化", "福利倍儿好",
+                    "免费班车", "年终分红", "语音处理", "机器学习", "移动交互", "电商美工", "网页", "手绘", "场景", "UX",
+                    "部门管理", "Scala", "交通补助", "过节费", "弹性工作", "午餐补助", "创业公司范儿", "网络爬虫", "区块链",
+                    "团队建设", "美味晚餐", "领导好", "音频编解码", "弹性工作制", "年终奖丰厚", "Q版", "2D", "多媒体", "目标管理"
+            };
     private static final String TAG = "ComRecruitmentDetailAct";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +151,7 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         recruitment = (Recruitment) intent.getSerializableExtra("recruitment");
         DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss EE");
         String workTime;
-        String industryLabel = data.get((int) recruitment.getIndustryLabel());
+        String industryLabel = data.get((int) recruitment.getIndustryLabel()-1);
         String jobType;
         String recruitmentStatus;//简历状态
         switch ((int)recruitment.getValidate()){
@@ -192,7 +211,17 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
 
         // 响应点击事件的话必须设置以下属性
         mTvAboutSpannable.setMovementMethod(LinkMovementMethod.getInstance());
-
+        //获取岗位标签名称
+        String strStationLabels = recruitment.getStationLabel();
+        String[] strStationLabel = strStationLabels.split(",");
+        strStationLabels = "";
+        if(strStationLabel.length == 1){
+            strStationLabels = mVals[Integer.parseInt(strStationLabel[0])-1];
+        }else{
+            for (String stationLabel : strStationLabel) {
+                strStationLabels = strStationLabels + mVals[Integer.parseInt(stationLabel)-1] + ",";
+            }
+        }
         RxTextTool.getBuilder("").setBold().setAlign(Layout.Alignment.ALIGN_CENTER)
                 .append(recruitment.getJobName() + "\n").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.colorPrimary))
                 .append("发布时间： "+df2.format(recruitment.getPublishTime())+ "\n").setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.black)).setProportion((float)0.8)
@@ -219,14 +248,19 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                 .append("月薪资"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
                 .append(recruitment.getSalary() + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
 
-                .append("工作时间"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
+                .append("学历要求"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
                 .append(recruitment.getDegree() + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
 
-                .append("月薪资"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
+                .append("工作时间制度"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
                 .append(workTime + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
 
                 .append("所属行业"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-                .append(industryLabel + "\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
+                .append(industryLabel + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
+
+                .append("岗位标签"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
+                .append(strStationLabels + "\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
+
+
 
                 .into(mTvAboutSpannable);
     }

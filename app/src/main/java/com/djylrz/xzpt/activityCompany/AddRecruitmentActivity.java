@@ -21,7 +21,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.djylrz.xzpt.R;
-import com.djylrz.xzpt.activityStudent.SelectTagActivity;
 import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.utils.PostParameterName;
@@ -95,8 +94,6 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
     //动画控件
     private SubData subData;
     private RequestQueue requestQueue;
-    private RxDialogLoading rxDialogLoading;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,9 +142,6 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
         editTextDeliveryRequest = findViewById(R.id.job_deliveryRequest_et);
         editTextContact = findViewById(R.id.job_contact_et);
         editTextCHeadCount = findViewById(R.id.job_headcount_et);
-        rxDialogLoading = new RxDialogLoading(this);
-        rxDialogLoading.setLoadingText("正在发布岗位");
-        rxDialogLoading.setLoadingColor(R.color.colorPrimary);
         //设置标题栏
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setTitle("发布岗位");
@@ -165,8 +159,6 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                 switch (item.getItemId()) {
                     case R.id.add_menu_done:
                         //发布岗位
-                        //开始加载动画
-                        rxDialogLoading.show();
                         //检查是否填写完整
                         if (checkData()) {
                             //提交数据至服务器
@@ -232,7 +224,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
 
             textViewWorkTime.setText(strWorkTime);
             subData.setWorkTime(recruitment.getWorkTime() + "");
-            textViewIndustryLabel.setText(data.get((int) recruitment.getIndustryLabel()));
+            textViewIndustryLabel.setText(data.get((int) recruitment.getIndustryLabel()-1));
             subData.setIndustryLabel(recruitment.getIndustryLabel() + "");
             String strJobType;
             switch ((int) recruitment.getJobType()) {
@@ -254,11 +246,21 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             String strStationLabels = recruitment.getStationLabel();
             String[] strStationLabel = strStationLabels.split(",");
             strStationLabels = "";
-            for (String stationLabel : strStationLabel) {
-                strStationLabels = strStationLabels + mVals[Integer.parseInt(stationLabel)] + ",";
+            if(strStationLabel.length == 1){
+                strStationLabels = mVals[Integer.parseInt(strStationLabel[0])-1];
+            }else{
+                for (String stationLabel : strStationLabel) {
+                    strStationLabels = strStationLabels + mVals[Integer.parseInt(stationLabel)-1] + ",";
+                }
             }
             textViewStationLabel.setText(strStationLabels);
             subData.setStationLabel(recruitment.getStationLabel());
+
+            //显示招聘人数
+            String headCount = recruitment.getHeadCount()+"";
+            subData.setHeadCount(headCount);
+            editTextCHeadCount.setText(headCount);
+
         }
     }
 
@@ -451,7 +453,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
     }
 
     /**
-     * 重复次数、提醒时间、提醒方式的回调函数
+     * 岗位分类标签回调函数
      *
      * @param requestCode
      * @param resultCode
@@ -483,8 +485,6 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
         Matcher isNum = pattern.matcher(headCount);
         if (!isNum.matches()) {
             Toast.makeText(activity, "招聘人数只能填写数字", Toast.LENGTH_SHORT).show();
-            //结束加载动画
-            rxDialogLoading.hide();
             return false;
         } else {
             subData.setHeadCount(headCount);
@@ -494,8 +494,6 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                 subData.getLocation() == null || subData.getDeliveryRequest() == null || subData.getDeliveryRequest().equals("") || subData.getDegree() == null
                 || subData.getWorkTime() == null || subData.getIndustryLabel() == null || subData.getStationLabel() == null || subData.getJobType() == null) {
             Toast.makeText(activity, "除薪资外，其他项请完整填写", Toast.LENGTH_SHORT).show();
-            //结束加载动画
-            rxDialogLoading.hide();
             return false;
         } else {
             return true;
@@ -546,8 +544,6 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    //结束加载动画
-                                    rxDialogLoading.hide();
                                     if (postResult.getResultCode() == 200) {
                                         Toast.makeText(activity, "岗位发布成功", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(AddRecruitmentActivity.this, Main2Activity.class);
