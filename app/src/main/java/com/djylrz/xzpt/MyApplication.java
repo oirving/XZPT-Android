@@ -33,6 +33,7 @@ import java.util.List;
   */
 public class MyApplication extends Application {
 
+    private static Context context;
     // user your appid the key.
     private static final String APP_ID = "2882303761518007113";
     // user your appid the key.
@@ -58,6 +59,7 @@ public class MyApplication extends Application {
         super.onCreate();
         //初始化腾讯x5内核
         QbSdk.initX5Environment(this,null);
+        MyApplication.context = getApplicationContext();
         //初始化RxTool工具
         RxTool.init(this);
         // 注册push服务，注册成功后会向BroadcastReceiver发送广播
@@ -113,6 +115,14 @@ public class MyApplication extends Application {
 
     public static void setMainActivity(MainActivity activity) {
         sMainActivity = activity;
+    }
+
+    public static Context getAppContext() {
+        return MyApplication.context;
+    }
+
+    public static void setContext(Context context) {
+        MyApplication.context = context;
     }
 
     public static class DemoHandler extends Handler {

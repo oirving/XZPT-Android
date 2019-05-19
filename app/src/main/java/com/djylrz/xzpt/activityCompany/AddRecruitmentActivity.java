@@ -22,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Recruitment;
+import com.djylrz.xzpt.bean.SubRecruitmentData;
 import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.google.gson.Gson;
@@ -30,7 +31,6 @@ import com.lljjcoder.Interface.OnCityItemClickListener;
 import com.lljjcoder.bean.DistrictBean;
 import com.lljjcoder.bean.ProvinceBean;
 import com.lljjcoder.style.cityjd.JDCityPicker;
-import com.vondear.rxui.view.dialog.RxDialogLoading;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,7 +92,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                     "团队建设", "美味晚餐", "领导好", "音频编解码", "弹性工作制", "年终奖丰厚", "Q版", "2D", "多媒体", "目标管理"
             };
     //动画控件
-    private SubData subData;
+    private SubRecruitmentData subRecruitmentData;
     private RequestQueue requestQueue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,7 +180,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
         layoutStationLabel.setOnClickListener(this);
         layoutType.setOnClickListener(this);
 
-        subData = new SubData();
+        subRecruitmentData = new SubRecruitmentData();
         requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
 
         //如果从intent获取recruitment不为空，则是编辑岗位
@@ -195,11 +195,11 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             editTextDeliveryRequest.setSaveEnabled(false);
             editTextDeliveryRequest.setText(recruitment.getDeliveryRequest());
             textViewLocation.setText(recruitment.getLocation());
-            subData.setLocation(recruitment.getLocation());
+            subRecruitmentData.setLocation(recruitment.getLocation());
             textViewSalary.setText(recruitment.getSalary());
-            subData.setSalary(recruitment.getSalary());
+            subRecruitmentData.setSalary(recruitment.getSalary());
             textViewDegree.setText(recruitment.getDegree());
-            subData.setDegree(recruitment.getDegree());
+            subRecruitmentData.setDegree(recruitment.getDegree());
             String strWorkTime;
             switch ((int) recruitment.getWorkTime()) {
                 case 0:
@@ -223,9 +223,9 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             }
 
             textViewWorkTime.setText(strWorkTime);
-            subData.setWorkTime(recruitment.getWorkTime() + "");
+            subRecruitmentData.setWorkTime(recruitment.getWorkTime() + "");
             textViewIndustryLabel.setText(data.get((int) recruitment.getIndustryLabel()-1));
-            subData.setIndustryLabel(recruitment.getIndustryLabel() + "");
+            subRecruitmentData.setIndustryLabel(recruitment.getIndustryLabel() + "");
             String strJobType;
             switch ((int) recruitment.getJobType()) {
                 case 1:
@@ -242,7 +242,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                     break;
             }
             textViewType.setText(strJobType);
-            subData.setJobType(recruitment.getJobType() + "");
+            subRecruitmentData.setJobType(recruitment.getJobType() + "");
             String strStationLabels = recruitment.getStationLabel();
             String[] strStationLabel = strStationLabels.split(",");
             strStationLabels = "";
@@ -254,11 +254,11 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                 }
             }
             textViewStationLabel.setText(strStationLabels);
-            subData.setStationLabel(recruitment.getStationLabel());
+            subRecruitmentData.setStationLabel(recruitment.getStationLabel());
 
             //显示招聘人数
             String headCount = recruitment.getHeadCount()+"";
-            subData.setHeadCount(headCount);
+            subRecruitmentData.setHeadCount(headCount);
             editTextCHeadCount.setText(headCount);
 
         }
@@ -276,7 +276,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                     @Override
                     public void onSelected(ProvinceBean province, com.lljjcoder.bean.CityBean city, DistrictBean district) {
                         textViewLocation.setText(province.getName() + city.getName() + district.getName());
-                        subData.setLocation(province.getName() + city.getName() + district.getName());
+                        subRecruitmentData.setLocation(province.getName() + city.getName() + district.getName());
                     }
 
                     @Override
@@ -331,7 +331,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             public void onItemPicked(int index, String item) {
                 textViewDegree.setText(item);
                 Toast.makeText(activity, item, Toast.LENGTH_SHORT).show();
-                subData.setDegree(item);
+                subRecruitmentData.setDegree(item);
             }
         });
         picker.show();
@@ -365,7 +365,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             public void onPicked(int selectedFirstIndex, int selectedSecondIndex) {
                 if (selectedFirstIndex <= selectedSecondIndex) {
                     textViewSalary.setText(firstData.get(selectedFirstIndex) + "K - " + secondData.get(selectedSecondIndex) + "K");
-                    subData.setSalary(firstData.get(selectedFirstIndex) + "K - " + secondData.get(selectedSecondIndex) + "K");
+                    subRecruitmentData.setSalary(firstData.get(selectedFirstIndex) + "K - " + secondData.get(selectedSecondIndex) + "K");
                     Toast.makeText(activity, firstData.get(selectedFirstIndex) + "K - " + secondData.get(selectedSecondIndex) + "K", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(activity, "薪资区间应该从小到大，请重新设置", Toast.LENGTH_SHORT).show();
@@ -397,7 +397,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             @Override
             public void onItemPicked(int index, String item) {
                 textViewWorkTime.setText(item);
-                subData.setWorkTime(index + "");
+                subRecruitmentData.setWorkTime(index + "");
                 Toast.makeText(activity, item, Toast.LENGTH_SHORT).show();
             }
         });
@@ -419,7 +419,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             @Override
             public void onItemPicked(int index, String item) {
                 textViewIndustryLabel.setText(item);
-                subData.setIndustryLabel((index + 1) + "");
+                subRecruitmentData.setIndustryLabel((index + 1) + "");
                 Toast.makeText(activity, index + " " + item, Toast.LENGTH_SHORT).show();
             }
         });
@@ -445,7 +445,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             @Override
             public void onItemPicked(int index, String item) {
                 textViewType.setText(item);
-                subData.setJobType((index + 1) + "");
+                subRecruitmentData.setJobType((index + 1) + "");
                 Toast.makeText(activity, index + " " + item, Toast.LENGTH_SHORT).show();
             }
         });
@@ -463,7 +463,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == 0) {//识别码
             textViewStationLabel.setText(data.getStringExtra("names"));
-            subData.setStationLabel(data.getStringExtra("number"));
+            subRecruitmentData.setStationLabel(data.getStringExtra("number"));
 
         }
 
@@ -474,10 +474,10 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
      */
     private boolean checkData() {
         //获取用户填写的数据
-        subData.setJobName(editTextJobName.getText().toString());
-        subData.setDescription(editTextDescription.getText().toString());
-        subData.setDeliveryRequest(editTextDeliveryRequest.getText().toString());
-        subData.setContact(editTextContact.getText().toString());
+        subRecruitmentData.setJobName(editTextJobName.getText().toString());
+        subRecruitmentData.setDescription(editTextDescription.getText().toString());
+        subRecruitmentData.setDeliveryRequest(editTextDeliveryRequest.getText().toString());
+        subRecruitmentData.setContact(editTextContact.getText().toString());
 
         //判断招聘人数是否为数字
         String headCount = editTextCHeadCount.getText().toString();
@@ -487,12 +487,12 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             Toast.makeText(activity, "招聘人数只能填写数字", Toast.LENGTH_SHORT).show();
             return false;
         } else {
-            subData.setHeadCount(headCount);
+            subRecruitmentData.setHeadCount(headCount);
         }
-        Log.d(TAG, "checkData: " + subData.getJobName() + "," + subData.getDescription() + "," + subData.getDeliveryRequest() + "," + subData.getContact());
-        if (subData.getJobName().equals("") || subData.getJobName() == null || subData.getDescription() == null || subData.getDescription().equals("") || subData.getContact() == null || subData.getContact().equals("") ||
-                subData.getLocation() == null || subData.getDeliveryRequest() == null || subData.getDeliveryRequest().equals("") || subData.getDegree() == null
-                || subData.getWorkTime() == null || subData.getIndustryLabel() == null || subData.getStationLabel() == null || subData.getJobType() == null) {
+        Log.d(TAG, "checkData: " + subRecruitmentData.getJobName() + "," + subRecruitmentData.getDescription() + "," + subRecruitmentData.getDeliveryRequest() + "," + subRecruitmentData.getContact());
+        if (subRecruitmentData.getJobName().equals("") || subRecruitmentData.getJobName() == null || subRecruitmentData.getDescription() == null || subRecruitmentData.getDescription().equals("") || subRecruitmentData.getContact() == null || subRecruitmentData.getContact().equals("") ||
+                subRecruitmentData.getLocation() == null || subRecruitmentData.getDeliveryRequest() == null || subRecruitmentData.getDeliveryRequest().equals("") || subRecruitmentData.getDegree() == null
+                || subRecruitmentData.getWorkTime() == null || subRecruitmentData.getIndustryLabel() == null || subRecruitmentData.getStationLabel() == null || subRecruitmentData.getJobType() == null) {
             Toast.makeText(activity, "除薪资外，其他项请完整填写", Toast.LENGTH_SHORT).show();
             return false;
         } else {
@@ -511,24 +511,24 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             if (recruitment != null) {
                 url = PostParameterName.POST_URL_COMPANY_UPDATE_RESRUITMENT + token + "&recruitmentId=" + recruitment.getRecruitmentId();
                 subDataNew = recruitment;
-                subDataNew.setJobName(this.subData.getJobName());
-                subDataNew.setDescription(this.subData.getDescription());
+                subDataNew.setJobName(this.subRecruitmentData.getJobName());
+                subDataNew.setDescription(this.subRecruitmentData.getDescription());
                 subDataNew.setPublishTime(null);
-                subDataNew.setDeliveryRequest(this.subData.getDeliveryRequest());
-                subDataNew.setContact(this.subData.getContact());
-                subDataNew.setLocation(this.subData.getLocation());
-                subDataNew.setSalary(this.subData.getSalary());
-                subDataNew.setDegree(this.subData.getDegree());
-                subDataNew.setWorkTime(Integer.parseInt(this.subData.getWorkTime()));
-                subDataNew.setIndustryLabel(Integer.parseInt(this.subData.getIndustryLabel()));
-                subDataNew.setJobType(Integer.parseInt(this.subData.getJobType()));
-                subDataNew.setStationLabel(this.subData.getStationLabel());
+                subDataNew.setDeliveryRequest(this.subRecruitmentData.getDeliveryRequest());
+                subDataNew.setContact(this.subRecruitmentData.getContact());
+                subDataNew.setLocation(this.subRecruitmentData.getLocation());
+                subDataNew.setSalary(this.subRecruitmentData.getSalary());
+                subDataNew.setDegree(this.subRecruitmentData.getDegree());
+                subDataNew.setWorkTime(Integer.parseInt(this.subRecruitmentData.getWorkTime()));
+                subDataNew.setIndustryLabel(Integer.parseInt(this.subRecruitmentData.getIndustryLabel()));
+                subDataNew.setJobType(Integer.parseInt(this.subRecruitmentData.getJobType()));
+                subDataNew.setStationLabel(this.subRecruitmentData.getStationLabel());
             } else {
                 url = PostParameterName.POST_URL_COMPANY_RELEASE_RECRUITMENT + token;
             }
 
             Log.d(TAG, "onCreate: 开始发送json请求" + url);
-            JSONObject jsonObject = new JSONObject(new Gson().toJson(subData));
+            JSONObject jsonObject = new JSONObject(new Gson().toJson(subRecruitmentData));
             if (recruitment != null) {
                 jsonObject = new JSONObject(new Gson().toJson(subDataNew));
             }
@@ -571,125 +571,3 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
 
 }
 
-class SubData {
-    //职位名称
-    private String jobName;
-    //岗位描述
-    private String description;
-    //联系人及联系方式
-    private String contact;
-    //工作地点
-    private String location;
-    //投递要求
-    private String deliveryRequest;
-    //薪资
-    private String salary;
-    //学历要求
-    private String degree;
-    //工作时间
-    private String workTime;
-    //行业标签
-    private String industryLabel;
-    //岗位标签
-    private String stationLabel;
-    //招聘、实习或者兼职
-    private String jobType;
-    //招聘人数
-    private String headCount;
-
-    public String getHeadCount() {
-        return headCount;
-    }
-
-    public void setHeadCount(String headCount) {
-        this.headCount = headCount;
-    }
-
-    public String getJobName() {
-        return jobName;
-    }
-
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getDeliveryRequest() {
-        return deliveryRequest;
-    }
-
-    public void setDeliveryRequest(String deliveryRequest) {
-        this.deliveryRequest = deliveryRequest;
-    }
-
-    public String getSalary() {
-        return salary;
-    }
-
-    public void setSalary(String salary) {
-        this.salary = salary;
-    }
-
-    public String getDegree() {
-        return degree;
-    }
-
-    public void setDegree(String degree) {
-        this.degree = degree;
-    }
-
-    public String getWorkTime() {
-        return workTime;
-    }
-
-    public void setWorkTime(String workTime) {
-        this.workTime = workTime;
-    }
-
-    public String getIndustryLabel() {
-        return industryLabel;
-    }
-
-    public void setIndustryLabel(String industryLabel) {
-        this.industryLabel = industryLabel;
-    }
-
-    public String getStationLabel() {
-        return stationLabel;
-    }
-
-    public void setStationLabel(String stationLabel) {
-        this.stationLabel = stationLabel;
-    }
-
-    public String getJobType() {
-        return jobType;
-    }
-
-    public void setJobType(String jobType) {
-        this.jobType = jobType;
-    }
-}
