@@ -26,6 +26,7 @@
                 android:text="简历模板"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
+
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 

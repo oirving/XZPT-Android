@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:actionMenuTextColor">@color/colorTextWhite</item>
+        <item name="actionMenuTextColor">@color/colorTextWhite</item> <!--menu字体颜色-->
     </style>
 
     <style name="ToolbarTheme" parent="Theme.AppCompat.Light">
@@ -16,6 +18,10 @@
         <item name="colorControlNormal">@color/white</item>
     </style>
 
+    <style name="ToolbarPopupTheme" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
+        <item name="android:colorBackground">#90000000</item>  <!-- 设置背景颜色-->
+        <item name="overlapAnchor">false</item>  <!--设置不覆盖锚点-->
+    </style>
 
     <style name="DialogTheme" parent="@android:style/Theme.Dialog">
 
@@ -130,5 +136,18 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1px</item>
         <item name="android:background">@color/border_clo</item>
+    </style>
+
+    <style name="CustomAlertDialogStyle">
+        <item name="android:bottomBright">@color/colorPrimary</item>
+        <item name="android:bottomDark">@color/colorPrimary</item>
+        <item name="android:bottomMedium">@color/colorPrimary</item>
+        <item name="android:centerBright">@color/colorPrimary</item>
+        <item name="android:centerDark">@color/colorPrimary</item>
+        <item name="android:centerMedium">@color/colorPrimary</item>
+        <item name="android:fullBright">@color/colorPrimary</item>
+        <item name="android:fullDark">@color/colorPrimary</item>
+        <item name="android:topBright">@color/colorPrimary</item>
+        <item name="android:topDark">@color/colorPrimary</item>
     </style>
 </resources>

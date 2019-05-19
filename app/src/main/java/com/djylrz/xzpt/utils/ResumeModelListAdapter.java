@@ -7,17 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.djylrz.xzpt.activityStudent.ResumeModelDetailsActivity;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.activityStudent.IntentResumeFileActivity;
 
 import java.util.List;
-
 public class ResumeModelListAdapter extends RecyclerView.Adapter<ResumeModelListAdapter.ViewHolder> {
 
     private List<ResumeModelItem> mResumeModelList;
-
 
     public ResumeModelListAdapter(List<ResumeModelItem> resumeModelList) {
         mResumeModelList = resumeModelList;
@@ -46,8 +43,7 @@ public class ResumeModelListAdapter extends RecyclerView.Adapter<ResumeModelList
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 ResumeModelItem resumeModelItem = mResumeModelList.get(position);
-                Toast.makeText(v.getContext(),"clicked 简历" ,Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(v.getContext(), ResumeModelDetailsActivity.class);
+                Intent intent = new Intent(v.getContext(),IntentResumeFileActivity.class);
                 v.getContext().startActivity(intent);
             }
         });
@@ -64,7 +60,5 @@ public class ResumeModelListAdapter extends RecyclerView.Adapter<ResumeModelList
     public int getItemCount() {
         return mResumeModelList.size();
     }
-
-
 
 }

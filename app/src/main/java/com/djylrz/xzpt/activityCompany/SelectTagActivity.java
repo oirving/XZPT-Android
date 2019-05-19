@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.activityStudent;
+package com.djylrz.xzpt.activityCompany;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -118,9 +118,9 @@ public class SelectTagActivity extends AppCompatActivity {
     private void parseSelectTags(){
         for(Integer tag : selectTagSet){
             if(tagIndex.equals("")){
-                tagIndex = tag+"";
+                tagIndex = (tag+1)+"";
             }else{
-                tagIndex = tagIndex + "," + tag;
+                tagIndex = (tagIndex+1) + "," + tag;
             }
             if(tagNames.equals("")){
                 tagNames =  mVals[tag];

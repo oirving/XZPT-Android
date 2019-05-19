@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.djylrz.xzpt.bean.RecruitmentDate;
+import com.djylrz.xzpt.utils.DateTimeUtils;
 
 /**
   *@Description: TimeLineModel
@@ -18,6 +19,7 @@ public class TimeLineModel implements Parcelable,Comparable<TimeLineModel>{
     private String mLocation;
     private String mHour;
     private String mMinutes;
+    private String URL;
     private OrderStatus mStatus;
 
     public TimeLineModel() {
@@ -38,10 +40,12 @@ public class TimeLineModel implements Parcelable,Comparable<TimeLineModel>{
                 recruitmentDate.getDay()+" "+
                 recruitmentDate.getHour()+":"+
                 recruitmentDate.getMinutes();
+        this.mDate = DateTimeUtils.parseDateTime(this.mDate, "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm");
         this.mLocation = recruitmentDate.getLocation();
         this.mStatus = mStatus;
         this.mHour = recruitmentDate.getHour();
         this.mMinutes = recruitmentDate.getMinutes();
+        this.URL = recruitmentDate.getUrl();
     }
 
     public String getMessage() {
@@ -90,6 +94,14 @@ public class TimeLineModel implements Parcelable,Comparable<TimeLineModel>{
 
     public void setmMinutes(String mMinutes) {
         this.mMinutes = mMinutes;
+    }
+
+    public String getURL() {
+        return URL;
+    }
+
+    public void setURL(String URL) {
+        this.URL = URL;
     }
 
     @Override

@@ -384,7 +384,7 @@ public class FragmentDate extends Fragment implements
                     while (matcher.find ()) {
                         recruitmentDateList.add(new RecruitmentDate(matcher.group(1),matcher.group(2),
                                 matcher.group(3),matcher.group(4),(Integer.parseInt(matcher.group(5))+1)+"",matcher.group(6),
-                                matcher.group(7),matcher.group(8),matcher.group(9)));
+                                matcher.group(7),matcher.group(8),"http://www.fjrclh.com"+matcher.group(9)));
 //                        Log.d(TAG, "id: " + matcher.group(1));
 //                        Log.d(TAG, "title: " + matcher.group(2));
 //                        Log.d(TAG, "地点: " + matcher.group(3));
