@@ -72,4 +72,15 @@
     <color name="widgetBg">#Afffffff</color>
     <color name="widgetBg2">#Dfffffff</color>
     <color name="content_background">#f2f2f2</color>
+
+    <!--<color name="colorPrimary">#FF394249</color>-->
+    <!--<color name="colorPrimaryDark">#FF273238</color>-->
+    <!--<color name="colorAccent">#FF394249</color>-->
+    <color name="colorTextWhite">#ffffffff</color>
+    <color name="colorCheckBox">#ffffffff</color>
+
+    <!--<color name="colorTable1">#8e44ad</color>-->
+    <!--<color name="colorTable2">#2ecc71</color>-->
+    <color name="charcoal">#FF394249</color>
+    <color name="medium_jungle_green">#FF273238</color>
 </resources>
