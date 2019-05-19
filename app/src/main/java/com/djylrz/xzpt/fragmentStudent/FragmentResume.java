@@ -33,7 +33,7 @@ public class FragmentResume extends Fragment {
     private Toolbar toolbar;
 
     /**
-            * Fragment中初始化Toolbar
+     * Fragment中初始化Toolbar
      * @param toolbar
      * @param title 标题
      * @param isDisplayHomeAsUp 是否显示返回箭头

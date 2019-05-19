@@ -1,7 +1,10 @@
 package com.djylrz.xzpt.activityStudent;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,12 +14,14 @@ import android.widget.Toast;
 
 
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.activity.ActivityWebView;
 import com.djylrz.xzpt.model.OrderStatus;
 import com.djylrz.xzpt.model.Orientation;
 import com.djylrz.xzpt.model.TimeLineModel;
 import com.djylrz.xzpt.utils.DateTimeUtils;
 import com.djylrz.xzpt.utils.VectorDrawableUtils;
 import com.github.vipulasri.timelineview.TimelineView;
+import com.vondear.rxui.view.dialog.RxDialogSure;
 
 import java.util.List;
 
@@ -83,13 +88,28 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
         holder.mCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "你点击了" + timeLineModel.getMessage(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(mContext, ActivityWebView.class);
+                intent.putExtra("URL",timeLineModel.getURL());
+                mContext.startActivity(intent);
+                //Toast.makeText(mContext, "你点击了" + timeLineModel.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         holder.mCard.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(mContext, "你长按了" + timeLineModel.getMessage(), Toast.LENGTH_SHORT).show();
+                //提示弹窗
+                new AlertDialog.Builder(mContext).setTitle("招聘会信息").setMessage("[标题] : " + timeLineModel.getMessage()
+                        + "\n[地点] : " + timeLineModel.getmLocation()
+                        + "\n[日期] : " + timeLineModel.getDate()
+                        + "\n[网址] : " + timeLineModel.getURL())
+                        .setCancelable(false)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).create().show();
+                //Toast.makeText(mContext, "你长按了" + timeLineModel.getMessage(), Toast.LENGTH_SHORT).show();
                 return true;
             }
         });

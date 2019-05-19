@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
+        app:popupTheme="@style/ToolbarPopupTheme"
         android:theme="@style/ToolbarTheme"
         android:titleTextColor="@color/white"
         app:title="企业首页">

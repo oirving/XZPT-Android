@@ -5,8 +5,7 @@
     <item
         android:id="@+id/navigation_date"
         android:icon="@drawable/date"
-        android:title="@string/title_date"
-        />
+        android:title="@string/title_date" />
     <item
         android:id="@+id/navigation_resume"
         android:icon="@drawable/resume"
