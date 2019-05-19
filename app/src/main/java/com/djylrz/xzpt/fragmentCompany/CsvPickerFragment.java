@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.ui;
+package com.djylrz.xzpt.fragmentCompany;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -42,6 +43,7 @@ public class CsvPickerFragment extends Fragment implements View.OnClickListener 
     private static final int START_CHARACTER = 16;
     private static final int END_CHARACTER = 20;
     private TextView tvPickFile;
+    private Toolbar toolbar;
 
     public static CsvPickerFragment newInstance() {
         Bundle args = new Bundle();
@@ -62,6 +64,15 @@ public class CsvPickerFragment extends Fragment implements View.OnClickListener 
         View view = inflater.inflate(R.layout.fragment_csv_picker, container, false);
         view.findViewById(R.id.bPickFile).setOnClickListener(this);
         tvPickFile = view.findViewById(R.id.tvPickFile);
+        toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    Objects.requireNonNull(getActivity()).onBackPressed();
+                }
+            }
+        });
         return view;
     }
 
@@ -150,7 +161,7 @@ public class CsvPickerFragment extends Fragment implements View.OnClickListener 
             if (!file.exists() && file.createNewFile()) {
                 InputStream inputStream = null;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    inputStream = Objects.requireNonNull(getContext()).getAssets().open("fifa100.csv");
+                    inputStream = Objects.requireNonNull(getContext()).getAssets().open("example.csv");
                 }
                 FileUtils.copy(inputStream, file);
             }

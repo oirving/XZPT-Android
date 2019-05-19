@@ -38,7 +38,7 @@
         <activity android:name=".activityCompany.ComResumeDeliveryRecordDetailActivity" />
         <activity android:name=".activityCompany.ComRecruitmentDetailActivity" />
         <activity android:name=".activityCompany.SelectTagActivity" />
-        <activity android:name=".ui.PickCSVActivity" />
+        <activity android:name=".fragmentCompany.PickCSVActivity" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
