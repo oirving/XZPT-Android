@@ -26,6 +26,7 @@ import com.djylrz.xzpt.utils.ResumeModelListAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class FragmentResume extends Fragment {
     private static final String TAG = "FragmentResume";
     private List<ResumeModelItem> resumeModelItemList = new ArrayList<>();
@@ -51,19 +52,18 @@ public class FragmentResume extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment2_resume,container,false);
+        final View view = inflater.inflate(R.layout.fragment2_resume,container,false);
         initResumeModel();
         toolbar = (Toolbar) view.findViewById(R.id.resume_toolbar);
         initToolbar(toolbar,"",false);
         setHasOptionsMenu(true);
         resumeModelListAdapter = new ResumeModelListAdapter(resumeModelItemList);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.resume_model_list);
+        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.resume_model_list);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(resumeModelListAdapter);
         return view;
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -78,8 +78,6 @@ public class FragmentResume extends Fragment {
                 startActivity(intent);
         return  true;
     }
-
-
 
     public void initResumeModel() {
         for(int i =0;i<20;i++) {
