@@ -80,4 +80,6 @@ dependencies {
     implementation files('libs/MiPush_SDK_Client_3_6_18.jar')
     implementation files('libs/android-async-http-1.4.9.jar')
     implementation files('libs/tbs_sdk_thirdapp_v4.3.0.1072_43646_sharewithdownloadwithfile_withoutGame_obfs_20190429_175122.jar')
+    //csv工具库
+    implementation "com.cleveroad:adaptivetablelayout:1.2.1"
 }
