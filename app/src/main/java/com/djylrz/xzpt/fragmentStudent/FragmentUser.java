@@ -74,6 +74,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
             case R.id.me_layout_delivery:
                 intent = new Intent(getContext(),MyResumeActivity.class);
                 startActivity(intent);
+                break;
             case R.id.me_layout_job_intent:
                 intent = new Intent(getContext(), JobIntention.class);
                 startActivity(intent);
