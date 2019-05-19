@@ -9,13 +9,15 @@ import android.os.Message;
 import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.djylrz.xzpt.activityStudent.MainActivity;
+import com.tencent.smtt.sdk.QbSdk;
 import com.vondear.rxtool.RxTool;
-import com.vondear.rxtool.view.RxToast;
 import com.vondear.rxui.view.dialog.RxDialogShapeLoading;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
 import com.xiaomi.mipush.sdk.MiPushClient;
+
 import java.util.List;
 
 /**
@@ -54,6 +56,8 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        //初始化腾讯x5内核
+        QbSdk.initX5Environment(this,null);
         //初始化RxTool工具
         RxTool.init(this);
         // 注册push服务，注册成功后会向BroadcastReceiver发送广播
@@ -138,4 +142,5 @@ public class MyApplication extends Application {
 
         }
     }
+
 }
