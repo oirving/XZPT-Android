@@ -2,14 +2,15 @@ package com.djylrz.xzpt.fragmentCompany;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ import com.djylrz.xzpt.ui.dialogs.SettingsDialog;
 import com.djylrz.xzpt.utils.PermissionHelper;
 
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import static com.djylrz.xzpt.datasource.Constants.ADD_COLUMN;
 import static com.djylrz.xzpt.datasource.Constants.ADD_ROW;
@@ -55,6 +57,11 @@ import static com.djylrz.xzpt.datasource.Constants.REQUEST_CODE_DELETE_ROW_CONFI
 import static com.djylrz.xzpt.datasource.Constants.REQUEST_CODE_EDIT_SONG;
 import static com.djylrz.xzpt.datasource.Constants.REQUEST_CODE_SETTINGS;
 
+/**
+ * @Description: TableLayoutFragment
+ * @Author: mingjun
+ * @Date: 2019/5/20 下午 2:42
+ */
 public class TableLayoutFragment
         extends Fragment
         implements OnItemClickListener, OnItemLongClickListener, UpdateFileCallback {
@@ -87,9 +94,7 @@ public class TableLayoutFragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mCsvFile = Uri.parse(Objects.requireNonNull(getArguments()).getString(EXTRA_CSV_FILE));
-        }
+        mCsvFile = Uri.parse(Objects.requireNonNull(getArguments()).getString(EXTRA_CSV_FILE));
         mCsvFileDataSource = new CsvFileDataSourceImpl(getContext(), mCsvFile);
     }
 
@@ -106,9 +111,7 @@ public class TableLayoutFragment
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    Objects.requireNonNull(getActivity()).onBackPressed();
-                }
+                Objects.requireNonNull(getActivity()).onBackPressed();
             }
         });
         toolbar.inflateMenu(R.menu.table_layout);
@@ -116,7 +119,18 @@ public class TableLayoutFragment
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.actionSave) {
-                    applyChanges();
+
+                    //检验数据合法性
+                    boolean flag = checkData();
+                    if (flag) {
+                        //保存文件
+                        applyChanges();
+                        //上传文件
+                        Log.d(TAG, "onMenuItemClick:文件地址为："  + mCsvFile.getPath());
+                    } else {
+
+                    }
+
                 } else if (item.getItemId() == R.id.actionSettings) {
                     SettingsDialog.newInstance(
                             mTableLayout.isHeaderFixed(),
@@ -128,9 +142,7 @@ public class TableLayoutFragment
                 return true;
             }
         });
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-//            mTableLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-        }
+        //            mTableLayout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         initAdapter();
 
         return view;
@@ -151,39 +163,35 @@ public class TableLayoutFragment
     }
 
     private void applyChanges() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (PermissionHelper.checkOrRequest(
-                    Objects.requireNonNull(getActivity()),
-                    REQUEST_EXTERNAL_STORAGE,
-                    PERMISSIONS_STORAGE)) {
-                showProgress();
-                mCsvFileDataSource.applyChanges(
-                        getLoaderManager(),
-                        mTableLayout.getLinkedAdapterRowsModifications(),
-                        mTableLayout.getLinkedAdapterColumnsModifications(),
-                        mTableLayout.isSolidRowHeader(),
-                        TableLayoutFragment.this);
-            }
+        if (PermissionHelper.checkOrRequest(
+                Objects.requireNonNull(getActivity()),
+                REQUEST_EXTERNAL_STORAGE,
+                PERMISSIONS_STORAGE)) {
+            showProgress();
+            mCsvFileDataSource.applyChanges(
+                    getLoaderManager(),
+                    mTableLayout.getLinkedAdapterRowsModifications(),
+                    mTableLayout.getLinkedAdapterColumnsModifications(),
+                    mTableLayout.isSolidRowHeader(),
+                    TableLayoutFragment.this);
         }
     }
 
     private void applyChanges(int actionChangeData, int position, boolean beforeOrAfter) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (PermissionHelper.checkOrRequest(
-                    Objects.requireNonNull(getActivity()),
-                    REQUEST_EXTERNAL_STORAGE,
-                    PERMISSIONS_STORAGE)) {
-                showProgress();
-                mCsvFileDataSource.applyChanges(
-                        getLoaderManager(),
-                        mTableLayout.getLinkedAdapterRowsModifications(),
-                        mTableLayout.getLinkedAdapterColumnsModifications(),
-                        mTableLayout.isSolidRowHeader(),
-                        actionChangeData,
-                        position,
-                        beforeOrAfter,
-                        TableLayoutFragment.this);
-            }
+        if (PermissionHelper.checkOrRequest(
+                Objects.requireNonNull(getActivity()),
+                REQUEST_EXTERNAL_STORAGE,
+                PERMISSIONS_STORAGE)) {
+            showProgress();
+            mCsvFileDataSource.applyChanges(
+                    getLoaderManager(),
+                    mTableLayout.getLinkedAdapterRowsModifications(),
+                    mTableLayout.getLinkedAdapterColumnsModifications(),
+                    mTableLayout.isSolidRowHeader(),
+                    actionChangeData,
+                    position,
+                    beforeOrAfter,
+                    TableLayoutFragment.this);
         }
     }
 
@@ -313,6 +321,8 @@ public class TableLayoutFragment
         mTableAdapter = new SampleLinkedTableAdapter(getContext(), mCsvFileDataSource);
         mTableAdapter.setOnItemClickListener(this);
         mTableAdapter.setOnItemLongClickListener(this);
+        mTableLayout.setDragAndDropEnabled(false);
+        mTableLayout.setHeaderFixed(true);
         mTableLayout.setAdapter(mTableAdapter);
     }
 
@@ -344,14 +354,95 @@ public class TableLayoutFragment
     private void applySettings(Intent data) {
         mTableLayout.setHeaderFixed(data.getBooleanExtra(SettingsDialog.EXTRA_VALUE_HEADER_FIXED, mTableLayout.isHeaderFixed()));
         mTableLayout.setSolidRowHeader(data.getBooleanExtra(SettingsDialog.EXTRA_VALUE_SOLID_HEADER, mTableLayout.isSolidRowHeader()));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            mTableLayout.setLayoutDirection(
-                    data.getBooleanExtra(SettingsDialog.EXTRA_VALUE_RTL_DIRECTION, mTableLayout.isRTL())
-                            ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
-        }
+        mTableLayout.setLayoutDirection(
+                data.getBooleanExtra(SettingsDialog.EXTRA_VALUE_RTL_DIRECTION, mTableLayout.isRTL())
+                        ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
         mTableLayout.setDragAndDropEnabled(data.getBooleanExtra(
                 SettingsDialog.EXTRA_VALUE_DRAG_AND_DROP_ENABLED, mTableLayout.isDragAndDropEnabled()));
         mTableAdapter.setRtl(mTableLayout.isRTL());
         mTableAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * @Description: 检验数据合法性
+     * @Param: []
+     * @Return: void
+     * @Author: mingjun
+     * @Date: 2019/5/20 下午 3:27
+     */
+    private boolean checkData() {
+        String pattern7 = "^\\d{3}$";//纯数字，非负数
+        String pattern8 = "^[0-3]{1}$";//只能是0-3的一位数字
+        String pattern9 = "^[0-9]*$";//纯数字
+        int rowsCount = mCsvFileDataSource.getRowsCount();
+        int columnsCount = mCsvFileDataSource.getColumnsCount();
+        for (int i = 0; i < columnsCount; ++i) {
+            for (int j = 1; j < rowsCount; ++j) {
+                switch (i) {
+                    //对工作制内容进行检测
+                    case 7:
+                        if (!Pattern.matches(pattern7, mCsvFileDataSource.getItemData(j, i))) {
+                            //提示弹窗
+                            new AlertDialog.Builder(getContext()).setTitle("检测到错误").setMessage(
+                                    "[出错位置] : " + "第" + j + "行（" + mCsvFileDataSource.getItemData(j, 0) + "），第" + i + "列(" + mCsvFileDataSource.getItemData(0, i) + ")"
+                                            + "\n[错误内容] : " + mCsvFileDataSource.getItemData(j, i)
+                                            + "\n[错误类型] : " + "格式错误"
+                                            + "\n[修改建议] : " + "\n1.工作制请填写形如'955,965,956,966,996'的3位数字")
+                                    .setCancelable(false)
+                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    }).create().show();
+                            return false;
+                        }
+                        break;
+                    //对岗位类型内容进行检测
+                    case 8:
+                        if (!Pattern.matches(pattern8, mCsvFileDataSource.getItemData(j, i))) {
+                            //提示弹窗
+                            new AlertDialog.Builder(getContext()).setTitle("检测到错误").setMessage(
+                                    "[出错位置] : " + "第" + j + "行（" + mCsvFileDataSource.getItemData(j, 0) + "），第" + i + "列(" + mCsvFileDataSource.getItemData(0, i) + ")"
+                                            + "\n[错误内容] : " + mCsvFileDataSource.getItemData(j, i)
+                                            + "\n[错误类型] : " + "格式错误"
+                                            + "\n[修改建议] : " + "岗位类型只能填写以下三个数字之一" +
+                                            "\n数字1：实习" +
+                                            "\n数字2：全职" +
+                                            "\n数字3：兼职")
+                                    .setCancelable(false)
+                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    }).create().show();
+                            return false;
+                        }
+                        break;
+                    //对招聘人数内容进行检测
+                    case 9:
+                        if (!Pattern.matches(pattern9, mCsvFileDataSource.getItemData(j, i))) {
+                            //提示弹窗
+                            new AlertDialog.Builder(getContext()).setTitle("检测到错误").setMessage(
+                                    "[出错位置] : " + "第" + j + "行（" + mCsvFileDataSource.getItemData(j, 0) + "），第" + i + "列(" + mCsvFileDataSource.getItemData(0, i) + ")"
+                                            + "\n[错误内容] : " + mCsvFileDataSource.getItemData(j, i)
+                                            + "\n[错误类型] : " + "格式错误"
+                                            + "\n[修改建议] : " + "招聘人数请填写非负整数，0表示无限制")
+                                    .setCancelable(false)
+                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    }).create().show();
+                            return false;
+                        }
+                        break;
+                }
+            }
+        }
+        //无错误
+        return true;
     }
 }

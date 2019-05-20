@@ -431,8 +431,8 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
      */
     public void onTypePicker(View view) {
         List<String> data = new ArrayList<>();
-        data.add("招聘");
         data.add("实习");
+        data.add("全职");
         data.add("兼职");
 
         SinglePicker<String> picker = new SinglePicker<>(this, data);
