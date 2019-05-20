@@ -9,4 +9,57 @@
     <string name="register_fail">Register push fail.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="pick_csv_file">Add CSV table from your phone memory and you can read and edit it.</string>
+    <string name="pick_csv_or_demo_file">打开CSV文件或使用我们的模板（DEMO）编辑</string>
+    <string name="pick_file">选择CSV文件</string>
+    <string name="demo">Demo</string>
+    <!-- edit song dialog -->
+    <string name="edit_song">编辑</string>
+    <string name="settings">设置</string>
+    <string name="settings_fixed_header">固定标题模式</string>
+    <string name="settings_rtl_direction">Rtl direction</string>
+    <string name="settings_drag_and_drop_enabled">行列是否可拖动</string>
+    <string name="settings_solid_row">Solid Row</string>
+    <string name="position">Position</string>
+    <string name="photo_url">Photo url</string>
+    <string name="artist_name">Artist name</string>
+    <string name="album_name">Album name</string>
+    <string name="song">Song</string>
+    <string name="genres">Genres</string>
+    <string name="time">Time</string>
+    <string name="chart_number">WLS on chart</string>
+    <string name="votes">Votes count</string>
+
+    <string name="rock">Rock</string>
+    <string name="r_and_b">R&amp;B</string>
+    <string name="pop">Pop</string>
+    <string name="jazz">Jazz</string>
+    <string name="hip_hop">Hip hop</string>
+    <string name="electronic">Electronic</string>
+    <string name="blues">Blues</string>
+    <string name="country">Country</string>
+
+
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+
+    <string name="artists_header">Artists</string>
+    <string name="save">发布</string>
+
+    <string name="changes_saved">所有更改已经保存</string>
+    <string name="unexpected_error">未知错误</string>
+    <string name="no_such_file_error">没有该csv文件</string>
+    <string name="not_csv_file_error">没有csv文件</string>
+    <string name="delete_row">删除行</string>
+    <string name="add_row">添加行</string>
+    <string name="add_above_row">添加在该行上面</string>
+    <string name="add_below_row">添加在该行下面</string>
+
+    <string name="want_to_delete">确定要删除？</string>
+    <string name="add_column">添加列</string>
+    <string name="delete_column">删除列</string>
+    <string name="add_column_left">添加在该列左边</string>
+    <string name="add_column_right">添加在该列右边</string>
+    <string name="message">这需要一些时间</string>
 </resources>

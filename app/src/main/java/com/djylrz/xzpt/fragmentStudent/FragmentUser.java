@@ -11,24 +11,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activity.ActorChoose;
+import com.djylrz.xzpt.activityStudent.BasicResumeActivity;
 import com.djylrz.xzpt.activityStudent.FocusCompanyActivity;
 import com.djylrz.xzpt.activityStudent.JobIntention;
 import com.djylrz.xzpt.activityStudent.MyResumeActivity;
 import com.djylrz.xzpt.activityStudent.PersonalInformation;
-import com.djylrz.xzpt.R;
-import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
-import com.djylrz.xzpt.utils.RecyclerDivider;
 import com.djylrz.xzpt.utils.UserInfoOptionAdapter;
 import com.djylrz.xzpt.utils.UserSelector;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class FragmentUser extends Fragment implements View.OnClickListener{
 
@@ -40,6 +34,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
     private LinearLayout meLayoutImfornation;//个人信息
     private LinearLayout meLayoutMyResume;//我的简历
     private LinearLayout meLayoutJobIntent;//求职意向
+    private LinearLayout meLayoutDeliveryRecord;//投递记录
     private LinearLayout meLayoutFocusCompany;//关注公司
 
     private View view;
@@ -47,27 +42,13 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        //初始化我的页面选项
-//        List<UserSelector> userSelectorList = new ArrayList<>();
-//        myResume= new UserSelector(R.drawable.resume,"我 的 简 历 >");
-//        userSelectorList.add(myResume);
-//
-//        jobInention = new UserSelector(R.drawable.card,"求 职 意 向 管 理 >");
-//        userSelectorList.add(jobInention);
-//
-//        focusCompany = new UserSelector(R.drawable.giftcard,"关 注 公 司 >");
-//        userSelectorList.add(focusCompany);
-//
-//        help = new UserSelector(R.drawable.help,"帮 助 与 反 馈 >");
-//        userSelectorList.add(help);
-//
-//        logout = new UserSelector(0,"注 销>");
-//        userSelectorList.add(logout);
         view = inflater.inflate(R.layout.fragment5_user, container, false);
         meLayoutImfornation = view.findViewById(R.id.me_layout_information);
         meLayoutImfornation.setOnClickListener(this);
         meLayoutMyResume = view.findViewById(R.id.me_layout_my_resume);
         meLayoutMyResume.setOnClickListener(this);
+        meLayoutDeliveryRecord = view.findViewById(R.id.me_layout_delivery);
+        meLayoutDeliveryRecord.setOnClickListener(this);
         meLayoutJobIntent = view.findViewById(R.id.me_layout_job_intent);
         meLayoutJobIntent.setOnClickListener(this);
         meLayoutFocusCompany = view.findViewById(R.id.me_layout_focus_company);
@@ -87,7 +68,11 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
                 startActivity(intent);
                 break;
             case R.id.me_layout_my_resume:
-                intent = new Intent(getContext(), MyResumeActivity.class);
+                intent = new Intent(getContext(), BasicResumeActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.me_layout_delivery:
+                intent = new Intent(getContext(),MyResumeActivity.class);
                 startActivity(intent);
                 break;
             case R.id.me_layout_job_intent:

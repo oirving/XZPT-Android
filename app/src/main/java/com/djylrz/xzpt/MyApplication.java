@@ -11,6 +11,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.djylrz.xzpt.activityStudent.MainActivity;
+import com.tencent.smtt.sdk.QbSdk;
+import com.vondear.rxtool.RxTool;
+import com.vondear.rxui.view.dialog.RxDialogShapeLoading;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
 import com.xiaomi.mipush.sdk.MiPushClient;
@@ -20,12 +23,17 @@ import java.util.List;
 /**
  * 1、为了打开客户端的日志，便于在开发过程中调试，需要自定义一个 Application。
  * 并将自定义的 application 注册在 AndroidManifest.xml 文件中。<br/>
- * 2、为了提高 push 的注册率，您可以在 Application 的 onCreate 中初始化 push。你也可以根据需要，在其他地方初始化 push。
- *
- * @author wangkuiwei
+ * 2、为了提高 push 的注册率，可以在 Application 的 onCreate 中初始化 push。你也可以根据需要，在其他地方初始化 push。
  */
+
+/**
+  *@Description: MyApplication
+  *@Author: mingjun
+  *@Date: 2019/5/18 上午 12:26
+  */
 public class MyApplication extends Application {
 
+    private static Context context;
     // user your appid the key.
     private static final String APP_ID = "2882303761518007113";
     // user your appid the key.
@@ -39,13 +47,21 @@ public class MyApplication extends Application {
     private static DemoHandler sHandler = null;
     private static MainActivity sMainActivity = null;
 
+    //全局加载动画对话框
+    public static RxDialogShapeLoading rxDialogShapeLoading;
+
+
     //全局用户id
     public static String userId = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
-
+        //初始化腾讯x5内核
+        QbSdk.initX5Environment(this,null);
+        MyApplication.context = getApplicationContext();
+        //初始化RxTool工具
+        RxTool.init(this);
         // 注册push服务，注册成功后会向BroadcastReceiver发送广播
         // 可以从BroadcastReceiver的onCommandResult方法中MiPushCommandMessage对象参数中获取注册信息
         if (shouldInit()) {
@@ -73,6 +89,7 @@ public class MyApplication extends Application {
             sHandler = new DemoHandler(getApplicationContext());
         }
 
+
     }
 
     private boolean shouldInit() {
@@ -98,6 +115,14 @@ public class MyApplication extends Application {
 
     public static void setMainActivity(MainActivity activity) {
         sMainActivity = activity;
+    }
+
+    public static Context getAppContext() {
+        return MyApplication.context;
+    }
+
+    public static void setContext(Context context) {
+        MyApplication.context = context;
     }
 
     public static class DemoHandler extends Handler {
@@ -127,4 +152,5 @@ public class MyApplication extends Application {
 
         }
     }
+
 }
