@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.ui;
+package com.djylrz.xzpt.fragmentCompany;
 
 import android.Manifest;
 import android.app.Activity;

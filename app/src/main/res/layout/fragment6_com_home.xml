@@ -2,57 +2,55 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/home_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        app:popupTheme="@style/ToolbarPopupTheme"
-        android:theme="@style/ToolbarTheme"
         android:titleTextColor="@color/white"
+        app:popupTheme="@style/ToolbarPopupTheme"
         app:title="企业首页">
 
     </android.support.v7.widget.Toolbar>
 
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="50dp"
-    android:background="#eeeeee"
-    android:fillViewport="true"
-    android:scrollbars="none">
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+        android:background="#eeeeee"
+        android:fillViewport="true"
+        android:paddingBottom="50dp"
+        android:scrollbars="none">
 
-
-        <com.flyco.tablayout.SegmentTabLayout
-            android:id="@+id/tl"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="25dp"
-            android:paddingRight="25dp"
-            tools:tl_bar_color="#ffffff"
-            tools:tl_indicator_anim_enable="true"
-            tools:tl_indicator_color="@color/colorPrimary"
-            tools:tl_indicator_margin_bottom="2dp"
-            tools:tl_indicator_margin_left="2dp"
-            tools:tl_indicator_margin_right="2dp"
-            tools:tl_indicator_margin_top="2dp"
-            tools:tl_textBold="SELECT"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/vp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-</ScrollView>
+
+            <com.flyco.tablayout.SegmentTabLayout
+                android:id="@+id/tl"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                tools:tl_bar_color="#ffffff"
+                tools:tl_indicator_anim_enable="true"
+                tools:tl_indicator_color="@color/colorPrimary"
+                tools:tl_indicator_margin_bottom="2dp"
+                tools:tl_indicator_margin_left="2dp"
+                tools:tl_indicator_margin_right="2dp"
+                tools:tl_indicator_margin_top="2dp"
+                tools:tl_textBold="SELECT" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
