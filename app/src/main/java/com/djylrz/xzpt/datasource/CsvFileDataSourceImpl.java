@@ -75,7 +75,6 @@ public class CsvFileDataSourceImpl implements TableDataSource<String, String, St
     public String getItemData(int rowIndex, int columnIndex) {
         try {
             List<String> rowList = getRow(rowIndex);
-            Log.d(TAG, "getItemData: （"+ rowIndex+","+columnIndex+"）:" + rowList.get(columnIndex));
             return rowList == null ? "" : rowList.get(columnIndex);
         } catch (Exception e) {
             Log.e(TAG, "get rowIndex=" + rowIndex + "; colIndex=" + columnIndex + ";\ncache = " +
