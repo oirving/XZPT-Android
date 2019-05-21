@@ -13,13 +13,41 @@
         android:background="@color/colorPrimary"
         android:theme="@style/ToolbarTheme"
         android:titleTextColor="@color/white"
-        app:title="联系人"
+        app:title="消息"
         app:titleTextColor="@color/white">
     </android.support.v7.widget.Toolbar>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/chat_rv"
+    <cn.jiguang.imui.messages.ptr.PullToRefreshLayout
+        android:id="@+id/pull_to_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"
+        app:PtrCloseDuration="300"
+        app:PtrCloseHeaderDuration="2000"
+        app:PtrKeepHeaderWhenRefresh="true"
+        app:PtrPullToRefresh="true"
+        app:PtrRatioHeightToRefresh="1.2"
+        app:PtrResistance="1.2"
+        android:layout_above="@+id/chat_input"
+        android:layout_below="@+id/title_container">
+
+        <cn.jiguang.imui.messages.MessageList
+            android:id="@+id/msg_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:avatarHeight="48dp"
+            app:avatarWidth="48dp"
+            app:showReceiverDisplayName="true"
+            app:showSenderDisplayName="false"
+            app:avatarRadius="5dp"
+            app:bubbleMaxWidth="0.70"
+            app:dateTextSize="14sp"
+            app:receiveBubblePaddingLeft="16dp"
+            app:receiveBubblePaddingRight="8dp"
+            app:receiveTextColor="#ffffff"
+            app:receiveTextSize="14sp"
+            app:sendBubblePaddingLeft="8dp"
+            app:sendBubblePaddingRight="16dp"
+            app:sendTextColor="#7587A8"
+            app:sendTextSize="14sp" />
+    </cn.jiguang.imui.messages.ptr.PullToRefreshLayout>
 
 </LinearLayout>

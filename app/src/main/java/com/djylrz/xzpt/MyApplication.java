@@ -17,6 +17,7 @@ import com.vondear.rxui.view.dialog.RxDialogShapeLoading;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
 import com.xiaomi.mipush.sdk.MiPushClient;
+import com.xiaomi.msg.logger.MIMCLog;
 
 import java.util.List;
 
@@ -88,6 +89,70 @@ public class MyApplication extends Application {
         if (sHandler == null) {
             sHandler = new DemoHandler(getApplicationContext());
         }
+
+        /**
+         *  - 小米消息云服务
+         * 是否启用本地写日志文件功能，默认启用，日志文件所在位置是在调用MIMCUser.newInstance()时，传入的cachePath处
+         * @param[isSave]: true启用，false关闭
+         */
+        MIMCLog.enableLog2File(false);
+
+        /**
+         * - 小米消息云服务
+         * 设置本地保存日志级别，默认INFO级别 - 小米消息云服务
+         * @param[level]:
+         *    MIMCLog.DEBUG
+         *    MIMCLog.INFO(默认)
+         *    MIMCLog.WARN
+         *    MIMCLog.ERROR
+         */
+        MIMCLog.setLogSaveLevel(MIMCLog.INFO);
+
+        /**
+         * 设置控制台打印日志级别，默认INFO级别
+         * @param[level]:
+         *    MIMCLog.DEBUG
+         *    MIMCLog.INFO(默认)
+         *    MIMCLog.WARN
+         *    MIMCLog.ERROR
+         */
+        MIMCLog.setLogPrintLevel(MIMCLog.INFO);
+
+        // 默认控制台不打印日志，若需要打印到控制台，实现如下接口：
+//        MIMCLog.setLogger(new Logger() {
+//            @Override
+//            public void d(String tag, String msg) {
+//
+//            }
+//
+//            @Override
+//            public void d(String tag, String msg, Throwable th) {
+//            }
+//
+//            @Override
+//            public void i(String tag, String msg) {
+//            }
+//
+//            @Override
+//            public void i(String tag, String msg, Throwable th) {
+//            }
+//
+//            @Override
+//            public void w(String tag, String msg) {
+//            }
+//
+//            @Override
+//            public void w(String tag, String msg, Throwable th) {
+//            }
+//
+//            @Override
+//            public void e(String tag, String msg) {
+//            }
+//
+//            @Override
+//            public void e(String tag, String msg, Throwable th) {
+//            }
+//        });
 
 
     }

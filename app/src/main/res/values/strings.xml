@@ -51,14 +51,14 @@
     <string name="unexpected_error">未知错误</string>
     <string name="no_such_file_error">没有该csv文件</string>
     <string name="not_csv_file_error">没有csv文件</string>
-    <string name="delete_row">删除这一行</string>
-    <string name="add_row">添加新一行</string>
+    <string name="delete_row">删除行</string>
+    <string name="add_row">添加行</string>
     <string name="add_above_row">添加在该行上面</string>
     <string name="add_below_row">添加在该行下面</string>
 
     <string name="want_to_delete">确定要删除？</string>
-    <string name="add_column">添加一列</string>
-    <string name="delete_column">删除一列</string>
+    <string name="add_column">添加列</string>
+    <string name="delete_column">删除列</string>
     <string name="add_column_left">添加在该列左边</string>
     <string name="add_column_right">添加在该列右边</string>
     <string name="message">这需要一些时间</string>
