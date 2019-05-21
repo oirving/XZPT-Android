@@ -4,9 +4,11 @@ import com.stfalcon.chatkit.commons.models.IDialog;
 
 import java.util.ArrayList;
 
-/*
- * Created by troy379 on 04.04.17.
- */
+/**
+  *@Description: Dialog
+  *@Author: mingjun
+  *@Date: 2019/5/21 下午 8:11
+  */
 public class Dialog implements IDialog<Message> {
 
     private String id;

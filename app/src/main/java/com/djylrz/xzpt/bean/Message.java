@@ -5,9 +5,11 @@ import com.stfalcon.chatkit.commons.models.MessageContentType;
 
 import java.util.Date;
 
-/*
- * Created by troy379 on 04.04.17.
- */
+/**
+  *@Description: TODO
+  *@Author: mingjun
+  *@Date: 2019/5/21 下午 8:16
+  */
 public class Message implements IMessage,
         MessageContentType.Image, /*this is for default image messages implementation*/
         MessageContentType /*and this one is for custom content type (in this case - voice message)*/ {

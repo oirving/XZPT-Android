@@ -19,6 +19,8 @@ import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.dialogs.DialogsList;
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
 
+import java.util.ArrayList;
+
 
 public class FragmentComChat extends Fragment
         implements DialogsListAdapter.OnDialogClickListener<Dialog>,
@@ -33,18 +35,26 @@ public class FragmentComChat extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mDecorView = inflater.inflate(R.layout.fragment9_com_chat, container, false);
         dialogsList = (DialogsList) mDecorView.findViewById(R.id.dialogsList);
+        initAdapter();
+        return mDecorView;
+    }
+
+    private void initAdapter() {
         imageLoader = new ImageLoader() {
             @Override
             public void loadImage(ImageView imageView, String url, Object payload) {
                 Glide.with(getActivity()).load(R.drawable.avatar_default).into(imageView);
             }
         };
-        initAdapter();
-        return mDecorView;
-    }
-
-    private void initAdapter() {
         dialogsAdapter = new DialogsListAdapter<>(imageLoader);
+        //设置列表数据
+        /*
+         adapter.setItems(List items) - replaces existing list with a new dialog list;
+         adapter.addItems(List items) - adds a new dialog list to the end of the list;
+         adapter.addItem(DIALOG dialog) - adds one dialog to the end of the list
+         adapter.addItem(int position, DIALOG dialog) - adds a new dialog to the specified position.
+         adapter.upsertItem(DIALOG dialog) - adds one dialog to the end of the list if not exists, otherwise updates the existing dialog.
+         */
         dialogsAdapter.setItems(DialogsFixtures.getDialogs());
 
         dialogsAdapter.setOnDialogClickListener(this);
@@ -53,7 +63,8 @@ public class FragmentComChat extends Fragment
         dialogsList.setAdapter(dialogsAdapter);
     }
 
-    //for example
+    //f如果对话框已更改，您可以通过调用按列表中的位置adapter.updateItem(int position, DIALOG item)更新它，
+    // 或通过调用通过对话框ID更新它adapter.updateItemById(DIALOG item)
     private void onNewMessage(String dialogId, Message message) {
         boolean isUpdated = dialogsAdapter.updateDialogWithMessage(dialogId, message);
         if (!isUpdated) {
@@ -65,6 +76,9 @@ public class FragmentComChat extends Fragment
     private void onNewDialog(Dialog dialog) {
         dialogsAdapter.addItem(dialog);
     }
+
+    //To delete messages from the list, you need to call "adapter.deleteById(String id)".
+    //To delete all of the dialogs, just call "adapter.clear()" method.
 
     @Override
     public void onDialogClick(Dialog dialog) {

@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
-  *@Description: TODO
+  *@Description: DialogsFixtures
   *@Author: mingjun
   *@Date: 2019/5/21 下午 4:57
   */
@@ -41,7 +41,7 @@ public final class DialogsFixtures extends FixturesData {
 
     private static ArrayList<ChatUser> getUsers() {
         ArrayList<ChatUser> users = new ArrayList<>();
-        int usersCount = 1 + rnd.nextInt(4);
+        int usersCount = 1 + rnd.nextInt(4);//1-5
 
         for (int i = 0; i < usersCount; i++) {
             users.add(getUser());

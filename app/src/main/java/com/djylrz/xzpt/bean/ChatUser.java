@@ -2,9 +2,11 @@ package com.djylrz.xzpt.bean;
 
 import com.stfalcon.chatkit.commons.models.IUser;
 
-/*
- * Created by troy379 on 04.04.17.
- */
+/**
+  *@Description: TODO
+  *@Author: mingjun
+  *@Date: 2019/5/21 下午 8:16
+  */
 public class ChatUser implements IUser {
 
     private String id;

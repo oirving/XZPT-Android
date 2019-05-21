@@ -42,6 +42,7 @@ public class PostParameterName {
     public static final String POST_URL_COMPANY_UPDATE_RESRUITMENT = HOST + "/company/updaterecruitment?token=";//企业修改招聘信息
     public static final String POST_URL_COMPANY_GET_RESRUITMENT = HOST + "/company/getrecruitment?token=";//企业获取单条招聘信息
     public static final String POST_URL_COMPANY_DELETE_RECRUITMENT = HOST + "/company/deleterecruitment?token=";//企业删除单条招聘信息
+    public static final String POST_URL_COMPANY_IMPORT_RECRUITMENT_LIST_BY_FILE = HOST + "/company/importdata?token=";//企业导入信息，从文件导入
 
 
     public static final String REQUEST_CODE = "code";

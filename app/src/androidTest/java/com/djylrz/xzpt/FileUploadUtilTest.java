@@ -1,6 +1,7 @@
 package com.djylrz.xzpt;
 
 import android.os.Environment;
+import android.util.Log;
 
 import com.djylrz.xzpt.utils.FileTransferUtil;
 
@@ -12,6 +13,8 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+import static com.android.volley.VolleyLog.TAG;
+
 public class FileUploadUtilTest {
     @Test
     public void uploadTest() throws IOException {
@@ -21,10 +24,9 @@ public class FileUploadUtilTest {
             public void onFailure(Call call, IOException e) {
 
             }
-
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-
+               System.out.println(response.body().string());
             }
         });
     }

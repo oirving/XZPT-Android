@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 /**
-  *@Description: TODO
+  *@Description: FixturesData
   *@Author: mingjun
   *@Date: 2019/5/21 下午 4:56
   */
