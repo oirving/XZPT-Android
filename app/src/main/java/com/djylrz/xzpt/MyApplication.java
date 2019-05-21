@@ -15,6 +15,7 @@ import com.tencent.smtt.sdk.QbSdk;
 import com.vondear.rxtool.RxTool;
 import com.vondear.rxui.view.dialog.RxDialogShapeLoading;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
+import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mipush.sdk.Logger;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.xiaomi.msg.logger.MIMCLog;
@@ -35,6 +36,7 @@ import java.util.List;
 public class MyApplication extends Application {
 
     private static Context context;
+    private MIMCUser XMUser;
     // user your appid the key.
     private static final String APP_ID = "2882303761518007113";
     // user your appid the key.

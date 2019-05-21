@@ -35,6 +35,7 @@ public class PostParameterName {
     public static final String POST_URL_COMPANY_LOGIN = HOST + "/company/login/";//企业登录接口
     public static final String POST_URL_COMPANY_LOGIN_WITH_TOKEN = HOST + "/company/vertifytoken?token=";//企业token登录
     public static final String POST_URL_COMPANY_RELEASE_RECRUITMENT = HOST + "/company/releaserecruitment?token=";//企业token登录
+    public static final String POST_URL_GET_COMPANY_BY_TOKEN = HOST +"/company/getcompanybytoken?token=";//查看企业信息
     public static final String POST_URL_COMPANY_GET_RECRUITMENT_LIST = HOST + "/company/getlistrecruitment?token=";//企业查看所有招聘信息（分页）
     public static final String POST_URL_COMPANY_GET_DELIVER_RECORD = HOST + "/company/getlistdeliveryrecord?token=";//企业查看所有招聘信息（分页）
     public static final String POST_URL_COMPANY_GET_RESUME_BY_ID = HOST + "/company/getresumebyid?token=";//企业查看用户简历
