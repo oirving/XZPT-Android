@@ -20,6 +20,7 @@
     <com.stfalcon.chatkit.dialogs.DialogsList
         android:id="@+id/dialogsList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:paddingBottom="50dp"/>
 
 </LinearLayout>
