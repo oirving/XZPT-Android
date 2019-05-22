@@ -299,7 +299,6 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
     private void startDownload() {
         mDownloadObserver = new DownloadObserver(new Handler());
         getContentResolver().registerContentObserver(
-                //todo 修改文件保存地址 ->小榕
                 Uri.parse("content://downloads/my_downloads"), true,
                 mDownloadObserver);
 

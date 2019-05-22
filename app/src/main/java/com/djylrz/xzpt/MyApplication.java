@@ -11,12 +11,15 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.djylrz.xzpt.activityStudent.MainActivity;
+import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
 import com.tencent.smtt.sdk.QbSdk;
 import com.vondear.rxtool.RxTool;
 import com.vondear.rxui.view.dialog.RxDialogShapeLoading;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
+import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mipush.sdk.Logger;
 import com.xiaomi.mipush.sdk.MiPushClient;
+import com.xiaomi.msg.logger.MIMCLog;
 
 import java.util.List;
 
@@ -34,6 +37,7 @@ import java.util.List;
 public class MyApplication extends Application {
 
     private static Context context;
+    private static MIMCUser XMUser;
     // user your appid the key.
     private static final String APP_ID = "2882303761518007113";
     // user your appid the key.
@@ -89,6 +93,70 @@ public class MyApplication extends Application {
             sHandler = new DemoHandler(getApplicationContext());
         }
 
+        /**
+         *  - 小米消息云服务
+         * 是否启用本地写日志文件功能，默认启用，日志文件所在位置是在调用MIMCUser.newInstance()时，传入的cachePath处
+         * @param[isSave]: true启用，false关闭
+         */
+        MIMCLog.enableLog2File(false);
+
+        /**
+         * - 小米消息云服务
+         * 设置本地保存日志级别，默认INFO级别 - 小米消息云服务
+         * @param[level]:
+         *    MIMCLog.DEBUG
+         *    MIMCLog.INFO(默认)
+         *    MIMCLog.WARN
+         *    MIMCLog.ERROR
+         */
+        MIMCLog.setLogSaveLevel(MIMCLog.INFO);
+
+        /**
+         * 设置控制台打印日志级别，默认INFO级别
+         * @param[level]:
+         *    MIMCLog.DEBUG
+         *    MIMCLog.INFO(默认)
+         *    MIMCLog.WARN
+         *    MIMCLog.ERROR
+         */
+        MIMCLog.setLogPrintLevel(MIMCLog.INFO);
+
+        // 默认控制台不打印日志，若需要打印到控制台，实现如下接口：
+//        MIMCLog.setLogger(new Logger() {
+//            @Override
+//            public void d(String tag, String msg) {
+//
+//            }
+//
+//            @Override
+//            public void d(String tag, String msg, Throwable th) {
+//            }
+//
+//            @Override
+//            public void i(String tag, String msg) {
+//            }
+//
+//            @Override
+//            public void i(String tag, String msg, Throwable th) {
+//            }
+//
+//            @Override
+//            public void w(String tag, String msg) {
+//            }
+//
+//            @Override
+//            public void w(String tag, String msg, Throwable th) {
+//            }
+//
+//            @Override
+//            public void e(String tag, String msg) {
+//            }
+//
+//            @Override
+//            public void e(String tag, String msg, Throwable th) {
+//            }
+//        });
+
 
     }
 
@@ -141,6 +209,13 @@ public class MyApplication extends Application {
                     MiPushClient.setAlias(context, userId, null);
                     //显示设置XMPUSH别名提示
                     Toast.makeText(context, "设置别名成功："+userId, Toast.LENGTH_LONG).show();
+
+                    //小米云消息服务用户初始化
+                    MIMCUser user = UserManager.getInstance().newUser(userId);
+                    if (user != null) {
+                        user.login();
+                        Toast.makeText(context, "聊天功能初始化成功：" + user.getAppAccount(), Toast.LENGTH_LONG).show();
+                    }
                     break;
                 case MyApplication.REGISTER_XMPUSH_SUCCESS:
                     //显示xmpush注册成功提示
@@ -153,4 +228,23 @@ public class MyApplication extends Application {
         }
     }
 
+    public static Context getContext() {
+        return context;
+    }
+
+    public static MIMCUser getXMUser() {
+        return XMUser;
+    }
+
+    public static void setXMUser(MIMCUser XMUser) {
+        MyApplication.XMUser = XMUser;
+    }
+
+    public static String getUserId() {
+        return userId;
+    }
+
+    public static void setUserId(String userId) {
+        MyApplication.userId = userId;
+    }
 }

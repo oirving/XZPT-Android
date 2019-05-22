@@ -15,7 +15,7 @@
     <string name="pick_file">选择CSV文件</string>
     <string name="demo">Demo</string>
     <!-- edit song dialog -->
-    <string name="edit_song">Edit song</string>
+    <string name="edit_song">编辑</string>
     <string name="settings">设置</string>
     <string name="settings_fixed_header">固定标题模式</string>
     <string name="settings_rtl_direction">Rtl direction</string>
@@ -45,21 +45,21 @@
     <string name="cancel">取消</string>
 
     <string name="artists_header">Artists</string>
-    <string name="save">保存</string>
+    <string name="save">发布</string>
 
-    <string name="changes_saved">All changes have been saved</string>
-    <string name="unexpected_error">Unexpected error</string>
-    <string name="no_such_file_error">No such csv file</string>
-    <string name="not_csv_file_error">Not csv file</string>
-    <string name="delete_row">删除这一行</string>
-    <string name="add_row">添加新一行</string>
+    <string name="changes_saved">所有更改已经保存</string>
+    <string name="unexpected_error">未知错误</string>
+    <string name="no_such_file_error">没有该csv文件</string>
+    <string name="not_csv_file_error">没有csv文件</string>
+    <string name="delete_row">删除行</string>
+    <string name="add_row">添加行</string>
     <string name="add_above_row">添加在该行上面</string>
     <string name="add_below_row">添加在该行下面</string>
 
     <string name="want_to_delete">确定要删除？</string>
-    <string name="add_column">Add column</string>
-    <string name="delete_column">Delete column</string>
-    <string name="add_column_left">Add a column to the left</string>
-    <string name="add_column_right">Add a column to the right</string>
+    <string name="add_column">添加列</string>
+    <string name="delete_column">删除列</string>
+    <string name="add_column_left">添加在该列左边</string>
+    <string name="add_column_right">添加在该列右边</string>
     <string name="message">这需要一些时间</string>
 </resources>

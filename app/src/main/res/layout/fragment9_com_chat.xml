@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".fragmentCompany.FragmentComChat">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/check_toolbar"
         android:layout_width="match_parent"
@@ -13,13 +14,13 @@
         android:background="@color/colorPrimary"
         android:theme="@style/ToolbarTheme"
         android:titleTextColor="@color/white"
-        app:title="联系人"
-        app:titleTextColor="@color/white">
-    </android.support.v7.widget.Toolbar>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/chat_rv"
+        app:title="消息"
+        app:titleTextColor="@color/white"></android.support.v7.widget.Toolbar>
+
+    <com.stfalcon.chatkit.dialogs.DialogsList
+        android:id="@+id/dialogsList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"
+        android:paddingBottom="50dp"/>
 
 </LinearLayout>

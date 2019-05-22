@@ -1,13 +1,19 @@
-package com.djylrz.xzpt.ui;
+package com.djylrz.xzpt.fragmentCompany;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.fragmentCompany.CsvPickerFragment;
+import com.djylrz.xzpt.fragmentCompany.TableLayoutFragment;
 
 import java.io.File;
-
+/**
+  *@Description: PickCSVActivity
+  *@Author: mingjun
+  *@Date: 2019/5/20 下午 2:43
+  */
 public class PickCSVActivity extends AppCompatActivity implements
         CsvPickerFragment.OnCsvFileSelectedListener {
     @Override

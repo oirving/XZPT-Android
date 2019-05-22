@@ -1,51 +1,31 @@
 package com.djylrz.xzpt.fragmentCompany;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activityCompany.AddRecruitmentActivity;
 import com.djylrz.xzpt.bean.SubRecruitmentData;
-import com.djylrz.xzpt.ui.PickCSVActivity;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
-import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
 
 public class FragmentComHome extends Fragment {
     private Context mContext = getContext();

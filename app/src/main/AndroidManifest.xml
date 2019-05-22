@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" /> <!-- <uses-sdk  android:minSdkVersion="8"/> -->
     <!-- xmpush -->
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,6 +21,10 @@
     <uses-permission android:name="com.djylrz.xzpt.permission.MIPUSH_RECEIVE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- 小米消息云 -->
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application
         android:name=".MyApplication"
@@ -36,7 +42,7 @@
         <activity android:name=".activityCompany.ComResumeDeliveryRecordDetailActivity" />
         <activity android:name=".activityCompany.ComRecruitmentDetailActivity" />
         <activity android:name=".activityCompany.SelectTagActivity" />
-        <activity android:name=".ui.PickCSVActivity" />
+        <activity android:name=".fragmentCompany.PickCSVActivity" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />

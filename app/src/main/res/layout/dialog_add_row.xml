@@ -4,6 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="142dp"
+    android:layout_marginBottom="142dp"
     android:layout_marginEnd="42dp"
     android:layout_marginLeft="42dp"
     android:layout_marginRight="42dp"
@@ -24,6 +26,7 @@
             android:text="@string/add_row"
             android:textColor="@color/colorTextWhite"
             android:textSize="18sp"
+
             android:textStyle="bold"/>
 
         <TextView

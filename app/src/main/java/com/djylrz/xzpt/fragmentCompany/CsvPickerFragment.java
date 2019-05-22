@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.ui;
+package com.djylrz.xzpt.fragmentCompany;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -34,7 +35,11 @@ import java.io.InputStream;
 import java.util.Objects;
 
 import static android.content.Intent.EXTRA_MIME_TYPES;
-
+/**
+  *@Description: TODO
+  *@Author: mingjun
+  *@Date: 2019/5/20 下午 2:44
+  */
 public class CsvPickerFragment extends Fragment implements View.OnClickListener {
     private static final int REQUEST_CODE_PERMISSION_READ_EXTERNAL_STORAGE = 1;
     private static final int REQUEST_CODE_PERMISSION_READ_EXTERNAL_STORAGE_DEMO = 3;
@@ -62,6 +67,13 @@ public class CsvPickerFragment extends Fragment implements View.OnClickListener 
         View view = inflater.inflate(R.layout.fragment_csv_picker, container, false);
         view.findViewById(R.id.bPickFile).setOnClickListener(this);
         tvPickFile = view.findViewById(R.id.tvPickFile);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Objects.requireNonNull(getActivity()).onBackPressed();
+            }
+        });
         return view;
     }
 
@@ -114,7 +126,7 @@ public class CsvPickerFragment extends Fragment implements View.OnClickListener 
         if (requestCode == REQUEST_CODE_PICK_CSV && data != null && resultCode == Activity.RESULT_OK) {
             Activity activity = getActivity();
             if (activity instanceof OnCsvFileSelectedListener) {
-                ((OnCsvFileSelectedListener) activity).onCsvFileSelected(documentsProvider.getType(data.getData()));
+                ((OnCsvFileSelectedListener) activity).onCsvFileSelected(documentsProvider.getType(Objects.requireNonNull(data.getData())));
             }
         }
     }
@@ -131,13 +143,9 @@ public class CsvPickerFragment extends Fragment implements View.OnClickListener 
         String[] mimeTypes = {"text/comma-separated-values", "text/csv"};
         Intent intent;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.putExtra(EXTRA_MIME_TYPES, mimeTypes);
-            intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-        } else {
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
-        }
+        intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.putExtra(EXTRA_MIME_TYPES, mimeTypes);
+        intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
 
         intent.setType("*/*");
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -149,9 +157,7 @@ public class CsvPickerFragment extends Fragment implements View.OnClickListener 
         try {
             if (!file.exists() && file.createNewFile()) {
                 InputStream inputStream = null;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    inputStream = Objects.requireNonNull(getContext()).getAssets().open("fifa100.csv");
-                }
+                inputStream = Objects.requireNonNull(getContext()).getAssets().open("example.csv");
                 FileUtils.copy(inputStream, file);
             }
         } catch (IOException e) {
@@ -170,7 +176,7 @@ public class CsvPickerFragment extends Fragment implements View.OnClickListener 
     }
 
     public File createDemoTempFile() {
-        String tempFileName = "DEMO_table_layout_application.csv";
+        String tempFileName = "DEMO_xzpt_recruitment_list.csv";
         return new File(Environment.getExternalStorageDirectory(), tempFileName);
     }
 

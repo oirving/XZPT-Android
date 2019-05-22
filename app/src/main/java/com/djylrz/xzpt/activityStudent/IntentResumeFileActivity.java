@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
 
     private Button btnFileBrowsing;
     private Toolbar toolbar;
+    private EditText url; //测试用输入远程文档地址，正式版请删除
     //todo 填写简历模板的名称 ->小榕
     private String title;//简历模板名称
     private TextView resumeFileName;//文件名称
@@ -27,7 +29,7 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
     private String fileName="TBS测试.doc";
     //    private String fileUrl="http://123.207.239.170/test.docx";//远程文档地址，如下载失败请验证此链接是否还可用（那个时候可能我养不住服务器了）
     //todo 填写文档的地址 ->小榕
-    private String fileUrl="https://raw.githubusercontent.com/yangxch/Resources/master/test.docx";//远程文档地址
+    private String fileUrl="http://www.fuzhou.gov.cn/tzgg/201904/P020190430575112821124.docx";//远程文档地址
 
     /**
      * Fragment中初始化Toolbar
@@ -49,6 +51,7 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intent_resume_file);
         toolbar = (Toolbar) findViewById(R.id.resume_toolbar);
+        url = (EditText) findViewById(R.id.text_url);
         initToolbar(toolbar,title,false);
         resumeFileName = (TextView) findViewById(R.id.resume_file_name);
         resumeFileName.setText(fileName);
@@ -59,6 +62,8 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.resume_file_download:
+                //从输入框获取远程文件地址，正式版请去除
+                fileUrl = url.getText().toString();
                 //动态权限申请
                 if (ContextCompat.checkSelfPermission(IntentResumeFileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(IntentResumeFileActivity.this, new String[]{ Manifest.permission. WRITE_EXTERNAL_STORAGE }, 1);
