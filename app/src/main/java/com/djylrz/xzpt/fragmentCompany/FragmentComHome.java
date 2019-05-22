@@ -53,11 +53,12 @@ public class FragmentComHome extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.home_menu_hand_add:
-                        //新增岗位
+                        //手动新增岗位
                         Intent intent = new Intent(getContext(), AddRecruitmentActivity.class);
                         startActivity(intent);
                         break;
                     case R.id.home_menu_file_add:
+                        //从文件批量导入岗位
                         Intent intent1 = new Intent(getContext(), PickCSVActivity.class);
                         startActivity(intent1);
                         break;
@@ -145,35 +146,6 @@ public class FragmentComHome extends Fragment {
                 }
                 break;
         }
-    }
-
-
-    /**
-     * @Description: 打开文件选择器，选择从csv文件
-     * @Param: []
-     * @Return: void
-     * @Author: mingjun
-     * @Date: 2019/5/19 上午 11:37
-     */
-    private void selectCSVFile() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("text/csv");
-        startActivityForResult(Intent.createChooser(intent, "Open CSV"), 1);
-    }
-
-    /**
-     * @Description: 读取csv文件
-     * @Param: [from]
-     * @Return: void
-     * @Author: mingjun
-     * @Date: 2019/5/19 下午 12:28
-     */
-
-    //读取CSV文件
-    public List<SubRecruitmentData> readCSV(String path, Activity activity) {
-        List<SubRecruitmentData> list = new ArrayList<>();
-        return list;
     }
 
 }

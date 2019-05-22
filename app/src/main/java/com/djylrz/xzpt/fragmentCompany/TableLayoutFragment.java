@@ -498,7 +498,7 @@ public class TableLayoutFragment
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                //Log.d(TAG, "返回json: " + response.body().string());
+//                Log.d(TAG, "返回json: " + response.body().string());
                 final PostResult postResult = new Gson().fromJson(response.body().string(),PostResult.class);
                 receiveFileName = postResult.getResultObject();
                 if(receiveFileName != null){
@@ -507,12 +507,12 @@ public class TableLayoutFragment
                     handler.sendEmptyMessage(UPLOAD_FILE_FAIL);
                 }
             }
-        });
+        },true);
     }
     private void importRecruitments(){
         SharedPreferences preferences = getActivity().getSharedPreferences(PostParameterName.TOKEN,0);
         String token = preferences.getString(PostParameterName.TOKEN,null);
-        String url = PostParameterName.POST_URL_COMPANY_IMPORT_RECRUITMENT_LIST_BY_FILE + token + "&file="+ receiveFileName;
+        String url = PostParameterName.POST_URL_COMPANY_IMPORT_RECRUITMENT_LIST_BY_FILE + token + "&file="+ receiveFileName + "&private=1";
 
         HttpUtil.post(url, new AsyncHttpResponseHandler() {
             @Override

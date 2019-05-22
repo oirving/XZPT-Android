@@ -37,7 +37,6 @@ import java.util.List;
 public class MyApplication extends Application {
 
     private static Context context;
-    private static MIMCUser XMUser;
     // user your appid the key.
     private static final String APP_ID = "2882303761518007113";
     // user your appid the key.
@@ -211,10 +210,10 @@ public class MyApplication extends Application {
                     Toast.makeText(context, "设置别名成功："+userId, Toast.LENGTH_LONG).show();
 
                     //小米云消息服务用户初始化
-                    MIMCUser user = UserManager.getInstance().newUser(userId);
-                    if (user != null) {
-                        user.login();
-                        Toast.makeText(context, "聊天功能初始化成功：" + user.getAppAccount(), Toast.LENGTH_LONG).show();
+                    MIMCUser XMUser = UserManager.getInstance().newUser(userId);
+                    if (XMUser != null) {
+                        XMUser.login();
+                        Toast.makeText(context, "聊天功能初始化成功->用户token为：" + XMUser.getToken(), Toast.LENGTH_LONG).show();
                     }
                     break;
                 case MyApplication.REGISTER_XMPUSH_SUCCESS:
@@ -230,14 +229,6 @@ public class MyApplication extends Application {
 
     public static Context getContext() {
         return context;
-    }
-
-    public static MIMCUser getXMUser() {
-        return XMUser;
-    }
-
-    public static void setXMUser(MIMCUser XMUser) {
-        MyApplication.XMUser = XMUser;
     }
 
     public static String getUserId() {
