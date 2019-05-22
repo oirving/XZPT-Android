@@ -1,4 +1,6 @@
-package com.djylrz.xzpt.xiaomi.mimc;
+package com.djylrz.xzpt.xiaomi.mimc.av;
+
+import com.djylrz.xzpt.xiaomi.mimc.listener.OnAudioEncodedListener;
 
 public class FFmpegAudioEncoder implements Codec {
     private static final String TAG = "FFmpegAudioEncoder";

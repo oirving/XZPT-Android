@@ -1,9 +1,12 @@
-package com.djylrz.xzpt.xiaomi.mimc;
+package com.djylrz.xzpt.xiaomi.mimc.common;
 
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.djylrz.xzpt.MyApplication;
+import com.djylrz.xzpt.xiaomi.mimc.listener.OnCallStateListener;
+import com.djylrz.xzpt.xiaomi.mimc.bean.ChatMsg;
+import com.djylrz.xzpt.xiaomi.mimc.bean.Msg;
 import com.xiaomi.mimc.MIMCGroupMessage;
 import com.xiaomi.mimc.MIMCMessage;
 import com.xiaomi.mimc.MIMCMessageHandler;

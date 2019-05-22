@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.xiaomi.mimc;
+package com.djylrz.xzpt.xiaomi.mimc.av;
 
 import android.media.AudioRecord;
 import android.media.audiofx.AcousticEchoCanceler;
@@ -8,10 +8,10 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
-import static com.djylrz.xzpt.xiaomi.mimc.Constant.DEFAULT_AUDIO_CHANNEL_CONFIG;
-import static com.djylrz.xzpt.xiaomi.mimc.Constant.DEFAULT_AUDIO_FORMAT;
-import static com.djylrz.xzpt.xiaomi.mimc.Constant.DEFAULT_AUDIO_RECORD_SOURCE;
-import static com.djylrz.xzpt.xiaomi.mimc.Constant.DEFAULT_AUDIO_SAMPLE_RATE;
+import static com.djylrz.xzpt.xiaomi.mimc.common.Constant.DEFAULT_AUDIO_CHANNEL_CONFIG;
+import static com.djylrz.xzpt.xiaomi.mimc.common.Constant.DEFAULT_AUDIO_FORMAT;
+import static com.djylrz.xzpt.xiaomi.mimc.common.Constant.DEFAULT_AUDIO_RECORD_SOURCE;
+import static com.djylrz.xzpt.xiaomi.mimc.common.Constant.DEFAULT_AUDIO_SAMPLE_RATE;
 
 
 /**

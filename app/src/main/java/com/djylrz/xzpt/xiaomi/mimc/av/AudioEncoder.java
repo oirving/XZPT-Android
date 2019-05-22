@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.xiaomi.mimc;
+package com.djylrz.xzpt.xiaomi.mimc.av;
 
 import android.media.AudioRecord;
 import android.media.MediaCodec;
@@ -8,88 +8,95 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import com.djylrz.xzpt.xiaomi.mimc.listener.OnAudioEncodedListener;
+
 import java.nio.ByteBuffer;
 
 import static android.media.MediaFormat.MIMETYPE_AUDIO_AAC;
-import static com.djylrz.xzpt.xiaomi.mimc.Constant.DEFAULT_AUDIO_CHANNEL_CONFIG;
-import static com.djylrz.xzpt.xiaomi.mimc.Constant.DEFAULT_AUDIO_FORMAT;
-import static com.djylrz.xzpt.xiaomi.mimc.Constant.DEFAULT_AUDIO_SAMPLE_RATE;
-import static com.djylrz.xzpt.xiaomi.mimc.Constant.DEFAULT_CODEC_CHANNEL_COUNT;
+import static com.djylrz.xzpt.xiaomi.mimc.common.Constant.DEFAULT_AUDIO_CHANNEL_CONFIG;
+import static com.djylrz.xzpt.xiaomi.mimc.common.Constant.DEFAULT_AUDIO_FORMAT;
+import static com.djylrz.xzpt.xiaomi.mimc.common.Constant.DEFAULT_AUDIO_SAMPLE_RATE;
+import static com.djylrz.xzpt.xiaomi.mimc.common.Constant.DEFAULT_CODEC_CHANNEL_COUNT;
+import static com.djylrz.xzpt.xiaomi.mimc.common.Constant.DEFAULT_ENCODER_BIT_RATE;
 
 
 /**
  * Created by houminjiang on 18-6-14.
  */
 
-public class AudioDecoder implements Codec {
+public class AudioEncoder implements Codec {
     private MediaCodec mediaCodec;
-    private boolean isDecoderStarted = false;
-    private OnAudioDecodedListener onAudioDecodedListener;
+    private boolean isEncoderStarted = false;
+    private OnAudioEncodedListener onAudioEncodedListener;
     private MediaCodec.BufferInfo bufferInfo;
-    private static final String TAG = "AudioDecoder";
+    private long encodedSequence = 0;
+//    private byte[] specificData;
+    private static final String TAG = "AudioEncoder";
 
-    public void setOnAudioDecodedListener(OnAudioDecodedListener onAudioDecodedListener) {
-        this.onAudioDecodedListener = onAudioDecodedListener;
+    public void setOnAudioEncodedListener(OnAudioEncodedListener onAudioEncodedListener) {
+        this.onAudioEncodedListener = onAudioEncodedListener;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public boolean start() {
-        return startDecoder(DEFAULT_AUDIO_SAMPLE_RATE, DEFAULT_CODEC_CHANNEL_COUNT,
+        return startEncoder(DEFAULT_AUDIO_SAMPLE_RATE, DEFAULT_CODEC_CHANNEL_COUNT, DEFAULT_ENCODER_BIT_RATE,
             2 * AudioRecord.getMinBufferSize(DEFAULT_AUDIO_SAMPLE_RATE, DEFAULT_AUDIO_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void stop() {
-        stopDecoder();
+        stopEncoder();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    private boolean startDecoder(int sampleRate, int channelCount, int maxInputSize) {
-        if (isDecoderStarted) {
-            Log.i(TAG, "Decoder has started.");
+    private boolean startEncoder(int sampleRate, int channelCount, int bitRate, int maxInputSize) {
+        if (isEncoderStarted) {
+            Log.w(TAG, "Encoder has started.");
             return true;
         }
 
         try {
-            mediaCodec = MediaCodec.createDecoderByType(MIMETYPE_AUDIO_AAC);
+            mediaCodec = MediaCodec.createEncoderByType(MIMETYPE_AUDIO_AAC);
             MediaFormat format = new MediaFormat();
             format.setString(MediaFormat.KEY_MIME, MIMETYPE_AUDIO_AAC);
             format.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, maxInputSize);
+            format.setInteger(MediaFormat.KEY_BIT_RATE, bitRate);
             format.setInteger(MediaFormat.KEY_CHANNEL_COUNT, channelCount);
             format.setInteger(MediaFormat.KEY_SAMPLE_RATE, sampleRate);
             format.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC);
-            mediaCodec.configure(format, null, null, 0);
+            mediaCodec.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
             bufferInfo = new MediaCodec.BufferInfo();
             mediaCodec.start();
-            isDecoderStarted = true;
+            isEncoderStarted = true;
         } catch (Exception e) {
-            Log.e(TAG, "Create decoder exception:", e);
+            Log.e(TAG, "Create encoder exception:", e);
             return false;
         }
 
-        Log.i(TAG, "Start decoder success.");
+        Log.i(TAG, "Start encoder success.");
         return true;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void stopDecoder() {
-        if (!isDecoderStarted) {
+    private void stopEncoder() {
+        if (!isEncoderStarted) {
             return;
         }
         mediaCodec.stop();
         mediaCodec.release();
         mediaCodec = null;
-        isDecoderStarted = false;
-        Log.i(TAG, "Stop decoder success.");
+        isEncoderStarted = false;
+        encodedSequence = 0;
+        Log.i(TAG, "Stop encoder success.");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean codec(byte[] data) {
-        if (!isDecoderStarted) {
-            Log.w(TAG, "Decoder is not started.");
+        if (!isEncoderStarted) {
+            Log.w(TAG, "Encoder is not started.");
             return false;
         }
 
@@ -108,16 +115,17 @@ public class AudioDecoder implements Codec {
                 ByteBuffer outputBuffer = mediaCodec.getOutputBuffer(outputBufferId);
                 outputBuffer.position(bufferInfo.offset);
                 outputBuffer.limit(bufferInfo.offset + bufferInfo.size);
-                byte[] decodedData = new byte[bufferInfo.size];
-                outputBuffer.get(decodedData);
-                if (onAudioDecodedListener != null) {
-                    onAudioDecodedListener.onAudioDecoded(decodedData);
+                byte[] encodedData = new byte[bufferInfo.size];
+                outputBuffer.get(encodedData, 0, bufferInfo.size);
+
+                if (onAudioEncodedListener != null) {
+                    onAudioEncodedListener.onAudioEncoded(encodedData, ++encodedSequence);
                 }
                 mediaCodec.releaseOutputBuffer(outputBufferId, false);
                 outputBufferId = mediaCodec.dequeueOutputBuffer(bufferInfo, 0);
             }
         } catch (Exception e) {
-            Log.e(TAG, "Decode input exception:", e);
+            Log.e(TAG, "Encode input exception:", e);
             return false;
         }
 

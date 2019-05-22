@@ -1,6 +1,7 @@
-package com.djylrz.xzpt.xiaomi.mimc;
+package com.djylrz.xzpt.xiaomi.mimc.bean;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.djylrz.xzpt.xiaomi.mimc.common.MsgHelper;
 
 /**
  * Created by muzi on 18-3-30.

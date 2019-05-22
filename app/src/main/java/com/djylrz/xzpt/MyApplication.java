@@ -11,7 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.djylrz.xzpt.activityStudent.MainActivity;
-import com.djylrz.xzpt.xiaomi.mimc.UserManager;
+import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
 import com.tencent.smtt.sdk.QbSdk;
 import com.vondear.rxtool.RxTool;
 import com.vondear.rxui.view.dialog.RxDialogShapeLoading;

@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.xiaomi.mimc;
+package com.djylrz.xzpt.xiaomi.mimc.bean;
 
 public class Audio {
     private byte[] data;

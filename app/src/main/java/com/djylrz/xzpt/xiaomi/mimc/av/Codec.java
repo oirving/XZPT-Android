@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.xiaomi.mimc;
+package com.djylrz.xzpt.xiaomi.mimc.av;
 
 /**
  * Created by houminjiang on 18-5-29.

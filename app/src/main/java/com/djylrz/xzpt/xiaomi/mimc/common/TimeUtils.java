@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.xiaomi.mimc;
+package com.djylrz.xzpt.xiaomi.mimc.common;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

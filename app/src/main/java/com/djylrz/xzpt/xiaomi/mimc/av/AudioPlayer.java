@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.xiaomi.mimc;
+package com.djylrz.xzpt.xiaomi.mimc.av;
 
 
 import android.content.Context;
@@ -14,11 +14,11 @@ import static android.media.AudioTrack.ERROR;
 import static android.media.AudioTrack.ERROR_BAD_VALUE;
 import static android.media.AudioTrack.ERROR_DEAD_OBJECT;
 import static android.media.AudioTrack.ERROR_INVALID_OPERATION;
-import static com.djylrz.xzpt.xiaomi.mimc.Constant.DEFAULT_AUDIO_FORMAT;
-import static com.djylrz.xzpt.xiaomi.mimc.Constant.DEFAULT_AUDIO_SAMPLE_RATE;
-import static com.djylrz.xzpt.xiaomi.mimc.Constant.DEFAULT_PLAY_CHANNEL_CONFIG;
-import static com.djylrz.xzpt.xiaomi.mimc.Constant.DEFAULT_PLAY_MODE;
-import static com.djylrz.xzpt.xiaomi.mimc.Constant.DEFAULT_PLAY_STREAM_TYPE;
+import static com.djylrz.xzpt.xiaomi.mimc.common.Constant.DEFAULT_AUDIO_FORMAT;
+import static com.djylrz.xzpt.xiaomi.mimc.common.Constant.DEFAULT_AUDIO_SAMPLE_RATE;
+import static com.djylrz.xzpt.xiaomi.mimc.common.Constant.DEFAULT_PLAY_CHANNEL_CONFIG;
+import static com.djylrz.xzpt.xiaomi.mimc.common.Constant.DEFAULT_PLAY_MODE;
+import static com.djylrz.xzpt.xiaomi.mimc.common.Constant.DEFAULT_PLAY_STREAM_TYPE;
 
 
 /**

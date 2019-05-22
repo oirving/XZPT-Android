@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.xiaomi.mimc;
+package com.djylrz.xzpt.xiaomi.mimc.common;
 
 import android.content.Context;
 import android.graphics.Bitmap;
