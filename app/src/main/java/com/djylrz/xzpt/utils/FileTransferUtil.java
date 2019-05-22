@@ -17,7 +17,7 @@ import okhttp3.RequestBody;
  */
 public class FileTransferUtil {
     private static final MediaType MEDIA_TYPE_PNG = MediaType.parse("multipart/form-data");
-    private static final String UPLOAD_URL = "/upload/file";
+    private static final String UPLOAD_URL = "/upload";
     private static volatile FileTransferUtil instance = null;
 
     private FileTransferUtil() {
@@ -42,9 +42,10 @@ public class FileTransferUtil {
      * @Param: token 上传用户的token
      * @Param: filePath 上传的文件路径
      * @Param: callback 回调函数
+     * @Param: isPrivate 上传文件是否为私密文件
      * @Return:void
      **/
-    public void uploadFile(String token, String filePath, Callback callback) {
+    public void uploadFile(String token, String filePath, Callback callback, boolean isPrivate) {
         // 获得输入框中的路径
         String path = filePath.trim();
         File file = new File(path);
@@ -53,6 +54,7 @@ public class FileTransferUtil {
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart(PostParameterName.TOKEN, token) // 提交普通字段
+                .addFormDataPart(PostParameterName.IS_PRIVATE, (isPrivate ? 1 : 0) + "") // 提交普通字段
                 .addFormDataPart(PostParameterName.FILE, file.getName(), RequestBody.create(MEDIA_TYPE_PNG, file)) // 提交图片，第一个参数是键（name="第一个参数"），第二个参数是文件名，第三个是一个RequestBody
                 .build();
 

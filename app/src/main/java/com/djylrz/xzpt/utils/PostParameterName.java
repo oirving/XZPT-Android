@@ -59,6 +59,11 @@ public class PostParameterName {
     public static final String RESPOND_RESULTOBJECT = "resultObject";
 
 
+    /**
+     * 文件相关，代表文件是否为私密
+     */
+    public static final String IS_PRIVATE = "private";
+
     public static final int CHOOSE_RESUME_TO_DELIVER = 1;//Activity之间选择简历用于投递的跳转的结果
 
 }
