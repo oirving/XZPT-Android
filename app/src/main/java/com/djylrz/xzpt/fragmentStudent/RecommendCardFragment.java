@@ -16,6 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.bean.PageData;
 import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
@@ -133,6 +134,7 @@ public class RecommendCardFragment extends Fragment {
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
+                                    final JSONObject responseObject = response;
                                     Log.d(TAG, "onResponse: 返回" + response.toString());
                                     /* recruitmentList = new Gson().fromJson(stringJson, new TypeToken<List<Recruitment>>(){}.getType());*/
                                     try {
@@ -162,6 +164,16 @@ public class RecommendCardFragment extends Fragment {
                                     RecommendCardFragment.this.getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            try {
+                                                if (responseObject.getString(PostParameterName.RESPOND_RESULTCODE).equals("200")){
+                                                    loadMoreWrapper.notifyDataSetChanged();
+                                                }else{
+                                                    loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
+                                                    limitNum = recruitmentList.size();
+                                                }
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
 
                                         }
                                     });
@@ -189,10 +201,12 @@ public class RecommendCardFragment extends Fragment {
             String token = userToken.getString(PostParameterName.STUDENT_TOKEN, null);
             if (token != null) {
                 user.setToken(userToken.getString(PostParameterName.STUDENT_TOKEN, null));
-
+                PageData pageData = new PageData();
+                pageData.setCurrentPage(currentPage++);
+                pageData.setPageSize(PAGE_SIZE);
                 try {
                     Log.d(TAG, "initRecruitments: " + PostParameterName.POST_URL_GET_HOT_RECRUIMENT + user.getToken());
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_HOT_RECRUIMENT + user.getToken(), new JSONObject(new Gson().toJson(user)),
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_HOT_RECRUIMENT + user.getToken(), new JSONObject(new Gson().toJson(pageData)),
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
