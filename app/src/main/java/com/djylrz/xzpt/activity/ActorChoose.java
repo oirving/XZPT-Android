@@ -56,6 +56,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
     private String userToken;
     private String companyToken;
     private User user = new User();//用户实体对象
+    private Company company = new Company();//企业实体对象
     private String token;
     private RequestQueue requestQueue;
     @Override
@@ -201,6 +202,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                                             Intent intent = new Intent(ActorChoose.this, Main2Activity.class);
                                             startActivity(intent);
                                             Log.d(TAG, "postLogin: 企业用户登录成功！");
+                                            getCompanyInfo();
                                             finish();
 
                                         }break;
@@ -277,6 +279,67 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                                 });
                             }
                         }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("TAG", error.getMessage(), error);
+                    }});
+                requestQueue.add(jsonObjectRequest);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+    private void getCompanyInfo(){
+        //用户已经登录，查询个人信息并显示
+        requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
+        SharedPreferences userToken = getSharedPreferences("token",0);
+        token = userToken.getString(PostParameterName.TOKEN,null);
+        if (token != null){
+            Log.d(TAG, "onCreate: TOKEN is "+token);
+            company.setToken(token);
+            try {
+                Log.d(TAG, "onCreate: 获取企业信息，只填了token"+new Gson().toJson(company));
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_COMPANY_BY_TOKEN + company.getToken(),new JSONObject(new Gson().toJson(company)),
+                        new com.android.volley.Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d(TAG, "onResponse: 返回"+response.toString());
+                                Type jsonType = new TypeToken<TempResponseData<Company>>() {}.getType();
+
+                                Gson gson = new GsonBuilder()
+                                        .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                                        .create();
+                                final TempResponseData<Company> postResult = gson.fromJson(response.toString(), jsonType);
+                                Log.d(TAG, "onResponse: "+postResult.getResultCode());
+                                company = postResult.getResultObject();
+                                company.setToken(token);
+
+                                //获取用户信息，存储到本地。
+                                SharedPreferences sharedPreferences = getSharedPreferences("company", 0);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                try {
+                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：："+response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
+                                    editor.putString("student", new Gson().toJson(company));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                editor.commit();
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //设置全局userid
+                                        MyApplication.userId = company.getCompanyId();
+                                        //发消息给DemoHandler，设置mipush别名为userid
+                                        Message msg = Message.obtain();
+                                        msg.what = MyApplication.GET_USER_ID_SUCCESS;
+                                        MyApplication.getHandler().sendMessage(msg);
+                                        Log.d(TAG, "获取companyId成功");
+                                    }
+                                });
+                            }
+                        }, new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("TAG", error.getMessage(), error);

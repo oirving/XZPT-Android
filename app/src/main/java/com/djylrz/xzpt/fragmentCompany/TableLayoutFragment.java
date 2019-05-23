@@ -1,11 +1,16 @@
 package com.djylrz.xzpt.fragmentCompany;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -26,6 +31,7 @@ import com.cleveroad.adaptivetablelayout.OnItemClickListener;
 import com.cleveroad.adaptivetablelayout.OnItemLongClickListener;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.adapter.SampleLinkedTableAdapter;
+import com.djylrz.xzpt.bean.PostResult;
 import com.djylrz.xzpt.datasource.CsvFileDataSourceImpl;
 import com.djylrz.xzpt.datasource.UpdateFileCallback;
 import com.djylrz.xzpt.ui.dialogs.AddColumnDialog;
@@ -33,10 +39,20 @@ import com.djylrz.xzpt.ui.dialogs.AddRowDialog;
 import com.djylrz.xzpt.ui.dialogs.DeleteDialog;
 import com.djylrz.xzpt.ui.dialogs.EditItemDialog;
 import com.djylrz.xzpt.ui.dialogs.SettingsDialog;
+import com.djylrz.xzpt.utils.FileTransferUtil;
+import com.djylrz.xzpt.utils.HttpUtil;
 import com.djylrz.xzpt.utils.PermissionHelper;
-
+import com.djylrz.xzpt.utils.PostParameterName;
+import com.google.gson.Gson;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import cz.msebera.android.httpclient.Header;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.regex.Pattern;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 import static com.djylrz.xzpt.datasource.Constants.ADD_COLUMN;
 import static com.djylrz.xzpt.datasource.Constants.ADD_ROW;
@@ -68,6 +84,12 @@ public class TableLayoutFragment
     private static final String TAG = TableLayoutFragment.class.getSimpleName();
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1132;
+    public final static int SAVE_FILE_SUCCESS = 1;
+    public final static int UPLOAD_FILE_SUCCESS = 2;
+    public final static int UPLOAD_FILE_FAIL = 3;
+    public final static int IMPORT_RECRUITMENT_LIST_SUCCESS = 4;
+    public final static int IMPORT_RECRUITMENT_LIST_FAIL = 5;
+
     private static final String EXTRA_CSV_FILE = "EXTRA_CSV_FILE";
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -81,7 +103,24 @@ public class TableLayoutFragment
     private ProgressBar progressBar;
     private View vHandler;
     private Snackbar mSnackbar;
-
+    private String receiveFileName;
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case SAVE_FILE_SUCCESS:
+                    //上传文件
+                    uploadFile(mCsvFile);
+                    break;
+                case UPLOAD_FILE_SUCCESS:
+                    //请求导入文件
+                    importRecruitments();
+                    break;
+            }
+        }
+    };
     public static TableLayoutFragment newInstance(@NonNull String filename) {
         Bundle args = new Bundle();
         args.putString(EXTRA_CSV_FILE, filename);
@@ -126,7 +165,7 @@ public class TableLayoutFragment
                         //保存文件
                         applyChanges();
                         //上传文件
-                        Log.d(TAG, "onMenuItemClick:文件地址为："  + mCsvFile.getPath());
+//                        Log.d(TAG, "onMenuItemClick:文件地址为："  + mCsvFile.getPath());
                     } else {
 
                     }
@@ -302,6 +341,8 @@ public class TableLayoutFragment
         } else {
             Snackbar.make(view, R.string.unexpected_error, Snackbar.LENGTH_INDEFINITE).show();
         }
+        //向handler发送更新文件成功消息
+        handler.sendEmptyMessage(SAVE_FILE_SUCCESS);
     }
 
     @Override
@@ -315,6 +356,8 @@ public class TableLayoutFragment
         mCsvFileDataSource = new CsvFileDataSourceImpl(getContext(), mCsvFile);
         initAdapter();
         mTableAdapter.notifyDataSetChanged();
+        //向handler发送更新文件成功消息
+        handler.sendEmptyMessage(SAVE_FILE_SUCCESS);
     }
 
     private void initAdapter() {
@@ -444,5 +487,50 @@ public class TableLayoutFragment
         }
         //无错误
         return true;
+    }
+    private void uploadFile(Uri file){
+        SharedPreferences preferences = getActivity().getSharedPreferences(PostParameterName.TOKEN,0);
+        String token = preferences.getString(PostParameterName.TOKEN,null);
+        FileTransferUtil.getInstance().uploadFile(token, file.getPath(), new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+//                Log.d(TAG, "返回json: " + response.body().string());
+                final PostResult postResult = new Gson().fromJson(response.body().string(),PostResult.class);
+                receiveFileName = postResult.getResultObject();
+                if(receiveFileName != null){
+                    handler.sendEmptyMessage(UPLOAD_FILE_SUCCESS);
+                }else{
+                    handler.sendEmptyMessage(UPLOAD_FILE_FAIL);
+                }
+            }
+        },true);
+    }
+    private void importRecruitments(){
+        SharedPreferences preferences = getActivity().getSharedPreferences(PostParameterName.TOKEN,0);
+        String token = preferences.getString(PostParameterName.TOKEN,null);
+        String url = PostParameterName.POST_URL_COMPANY_IMPORT_RECRUITMENT_LIST_BY_FILE + token + "&file="+ receiveFileName + "&private=1";
+
+        HttpUtil.post(url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                String content = new String(bytes);;
+                Log.d(TAG, "onSuccess: " + content);
+            }
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                //向handler发送获取信息失败消息
+                handler.sendEmptyMessage(IMPORT_RECRUITMENT_LIST_FAIL);
+            }
+
+            @Override
+            public void onFinish() {
+                //向handler发送获取信息成功消息
+                //handler.sendEmptyMessage(IM);
+            }
+        });
     }
 }

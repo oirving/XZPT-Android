@@ -11,9 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.activity.ActorChoose;
 import com.djylrz.xzpt.R;
-
+import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
+import com.xiaomi.mimc.MIMCUser;
 
 
 public class FragmentComMine extends Fragment {
@@ -32,6 +34,11 @@ public class FragmentComMine extends Fragment {
                 SharedPreferences sp = getActivity().getSharedPreferences("token",0);
                 SharedPreferences.Editor editor = sp.edit(); editor.clear(); editor.commit();
                 Intent intent = new Intent(getContext(), ActorChoose.class);
+                //注销小米消息云
+                MIMCUser user = UserManager.getInstance().getUser();
+                if (user != null) {
+                    user.logout();
+                }
                 startActivity(intent);
                 getActivity().finish();
             }
