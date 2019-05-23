@@ -523,6 +523,7 @@ public class TableLayoutFragment
             @Override
             public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
                 //向handler发送获取信息失败消息
+                Log.d(TAG, "onFailure: ");
                 handler.sendEmptyMessage(IMPORT_RECRUITMENT_LIST_FAIL);
             }
 
