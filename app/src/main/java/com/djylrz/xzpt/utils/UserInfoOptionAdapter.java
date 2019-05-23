@@ -59,7 +59,7 @@ public class UserInfoOptionAdapter extends RecyclerView.Adapter<UserInfoOptionAd
 
                         break;
                     case 1:
-                        Intent intent1 = new Intent(v.getContext(), JobIntention.class);
+                        Intent intent1 = new Intent(v.getContext(), JobIntentionActivity.class);
                         v.getContext().startActivity(intent1);
                         break;
                     case 2:

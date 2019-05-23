@@ -13,12 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activity.ActorChoose;
-import com.djylrz.xzpt.activityStudent.BasicResumeActivity;
 import com.djylrz.xzpt.activityStudent.FocusCompanyActivity;
-import com.djylrz.xzpt.activityStudent.JobIntention;
+import com.djylrz.xzpt.activityStudent.JobIntentionActivity;
 import com.djylrz.xzpt.activityStudent.MyResumeActivity;
 import com.djylrz.xzpt.activityStudent.PersonalInformation;
 import com.djylrz.xzpt.utils.PostParameterName;
@@ -71,15 +69,15 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
                 startActivity(intent);
                 break;
             case R.id.me_layout_my_resume:
-                intent = new Intent(getContext(), BasicResumeActivity.class);
+                intent = new Intent(getContext(), MyResumeActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.me_layout_delivery:
-                intent = new Intent(getContext(),MyResumeActivity.class);
-                startActivity(intent);
-                break;
+//            case R.id.me_layout_delivery:
+//                intent = new Intent(getContext(),MyResumeActivity.class);
+//                startActivity(intent);
+//                break;
             case R.id.me_layout_job_intent:
-                intent = new Intent(getContext(), JobIntention.class);
+                intent = new Intent(getContext(), JobIntentionActivity.class);
                 startActivity(intent);
                 break;
             case R.id.me_layout_focus_company:

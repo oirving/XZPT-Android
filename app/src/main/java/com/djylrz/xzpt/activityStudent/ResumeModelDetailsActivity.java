@@ -58,7 +58,7 @@ public class ResumeModelDetailsActivity extends AppCompatActivity implements Vie
             case R.id.export:
                 break;
             case R.id.edit:
-                //todo : 跳转到编辑页面
+
                 Intent intent = new Intent(ResumeModelDetailsActivity.this,NewResumeActivity.class);
                 intent.putExtra("editResume",resume);
                 startActivity(intent);
