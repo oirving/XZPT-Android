@@ -188,7 +188,7 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.edit_job:
                 //工作期望编辑
-                Intent intent1 = new Intent(NewResumeActivity.this, JobIntention.class);
+                Intent intent1 = new Intent(NewResumeActivity.this, JobIntentionActivity.class);
                 startActivity(intent1);
                 break;
             case R.id.edit_awards:
