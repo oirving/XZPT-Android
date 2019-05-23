@@ -33,9 +33,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class JobIntention extends BaseActivity implements View.OnClickListener{
+public class JobIntentionActivity extends BaseActivity implements View.OnClickListener{
 
-    private static final String TAG = "JobIntention";
+    private static final String TAG = "JobIntentionActivity";
 
     private EditText job;
     private EditText workCity;
@@ -70,7 +70,7 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
         industry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(JobIntention.this,"行业标签"+Constants.INDUSTRY_LABEL[position], Toast.LENGTH_SHORT).show();
+                Toast.makeText(JobIntentionActivity.this,"行业标签"+Constants.INDUSTRY_LABEL[position], Toast.LENGTH_SHORT).show();
                 user.setIndustryLabel(position);
             }
             @Override
@@ -87,7 +87,7 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
         workTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(JobIntention.this,"工作时间制度"+Constants.WORK_TIME[position], Toast.LENGTH_SHORT).show();
+                Toast.makeText(JobIntentionActivity.this,"工作时间制度"+Constants.WORK_TIME[position], Toast.LENGTH_SHORT).show();
                 user.setWorkTime(position);
             }
             @Override
@@ -124,15 +124,15 @@ public class JobIntention extends BaseActivity implements View.OnClickListener{
                                         public void run() {
                                             switch(postResult.getResultCode()){
                                                 case "200":{
-                                                    Toast.makeText(JobIntention.this, "修改个人信息成功", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(JobIntentionActivity.this, "修改个人信息成功", Toast.LENGTH_SHORT).show();
                                                     getStudenInfo();
                                                     finish();//保存成功，结束当前页面
                                                 }break;
                                                 default:{
-                                                    Toast.makeText(JobIntention.this, "修改个人信息失败", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(JobIntentionActivity.this, "修改个人信息失败", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
-                                            JobIntention.this.finish();
+                                            JobIntentionActivity.this.finish();
                                         }
                                     });
                                 }

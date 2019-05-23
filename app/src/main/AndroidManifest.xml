@@ -34,11 +34,12 @@
         android:networkSecurityConfig="@xml/network_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        >
         <activity android:name=".activityStudent.IntentResumeFileActivity"></activity>
         <activity android:name=".activityStudent.ResumeDisplayActivity" />
         <activity android:name=".activityStudent.ResumeModelHistoryActivity" />
-        <activity android:name=".activityStudent.BasicResumeActivity" />
+        <activity android:name=".activityStudent.EditMyResumeActivity" />
         <activity android:name=".activityCompany.ComResumeDeliveryRecordDetailActivity" />
         <activity android:name=".activityCompany.ComRecruitmentDetailActivity" />
         <activity android:name=".activityCompany.SelectTagActivity" />
@@ -65,7 +66,7 @@
         <activity android:name=".activityStudent.StudentLogin" />
         <activity android:name=".activityStudent.Register" />
         <activity android:name=".activityStudent.PersonalInformation" />
-        <activity android:name=".activityStudent.JobIntention" />
+        <activity android:name=".activityStudent.JobIntentionActivity" />
         <activity android:name=".activityCompany.CompanyLogin" />
         <activity android:name=".activityStudent.RecruitmentDetailActivity" />
         <activity android:name=".activity.ActorChoose">

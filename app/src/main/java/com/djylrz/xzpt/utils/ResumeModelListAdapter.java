@@ -1,7 +1,12 @@
 package com.djylrz.xzpt.utils;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +15,17 @@ import android.widget.ImageView;
 
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activityStudent.IntentResumeFileActivity;
+import com.djylrz.xzpt.activityStudent.ResumeDisplayActivity;
 
 import java.util.List;
 public class ResumeModelListAdapter extends RecyclerView.Adapter<ResumeModelListAdapter.ViewHolder> {
 
     private List<ResumeModelItem> mResumeModelList;
+    //todo 填写文件名，会在文件浏览顶部显示 ->小榕
+    private String fileName="TBS测试.doc";
+    //    private String fileUrl="http://123.207.239.170/test.docx";//远程文档地址，如下载失败请验证此链接是否还可用（那个时候可能我养不住服务器了）
+    //todo 填写文档的地址 ->小榕
+    private String fileUrl="http://www.fuzhou.gov.cn/tzgg/201904/P020190430575112821124.docx";//远程文档地址
 
     public ResumeModelListAdapter(List<ResumeModelItem> resumeModelList) {
         mResumeModelList = resumeModelList;
@@ -45,6 +56,12 @@ public class ResumeModelListAdapter extends RecyclerView.Adapter<ResumeModelList
                 ResumeModelItem resumeModelItem = mResumeModelList.get(position);
                 Intent intent = new Intent(v.getContext(),IntentResumeFileActivity.class);
                 v.getContext().startActivity(intent);
+                //动态权限申请
+//                if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions((Activity) v.getContext(), new String[]{ Manifest.permission. WRITE_EXTERNAL_STORAGE }, 1);
+//                } else {
+//                    ResumeDisplayActivity.actionStart(v.getContext(),fileUrl,fileName);
+//                }
             }
         });
         return holder;
