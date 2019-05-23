@@ -11,10 +11,6 @@ import com.djylrz.xzpt.R;
 
 import java.util.List;
 
-/**
- * @author oirving
- * 招聘日历适配器
- */
 
 
 public class InterviewTipsAdapter extends RecyclerView.Adapter<InterviewTipsAdapter.ViewHolder> {

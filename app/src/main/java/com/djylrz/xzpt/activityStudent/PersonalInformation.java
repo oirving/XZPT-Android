@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.activityStudent;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +32,11 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PersonalInformation extends BaseActivity implements View.OnClickListener {
 
@@ -124,64 +129,68 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         switch (v.getId()) {
             //保存按钮
             case R.id.info_next_button:
-                //保存参数
-                user.setUserName(name.getText().toString());//名字
-                user.setSpecialty(major.getText().toString());//专业
-                user.setUserName(name.getText().toString());//名字
-                user.setAge(Integer.parseInt(age.getText().toString()));//年龄
-                user.setEmail(mailAddress.getText().toString());//邮件
-                user.setPresentCity(currentCity.getText().toString());//当前城市
-                user.setSchool(school.getText().toString());//学校
-                user.setTelephone(phoneNum.getText().toString());//电话，没有限定输入格式
+                if (isYear(startTime.getText().toString())&&isYear(endTime.getText().toString())&&isPhone(phoneNum.getText().toString())) {
+                    //保存参数
+                    user.setUserName(name.getText().toString());//名字
+                    user.setSpecialty(major.getText().toString());//专业
+                    user.setUserName(name.getText().toString());//名字
+                    user.setAge(Integer.parseInt(age.getText().toString()));//年龄
+                    user.setEmail(mailAddress.getText().toString());//邮件
+                    user.setPresentCity(currentCity.getText().toString());//当前城市
+                    user.setSchool(school.getText().toString());//学校
+                    user.setTelephone(phoneNum.getText().toString());//电话，没有限定输入格式
 
-                Calendar calendar = Calendar.getInstance();
-                if (!startTime.getText().toString().equals("")){
-                    calendar.set(Calendar.YEAR,Integer.parseInt(startTime.getText().toString()));
-                    user.setStartTime(new java.sql.Date(calendar.getTime().getTime()));//教育开始时间
-                }
-                if (!endTime.getText().toString().equals("")){
-                    calendar.set(Calendar.YEAR,Integer.parseInt(endTime.getText().toString()));
-                    user.setEndTime(new java.sql.Date(calendar.getTime().getTime()));//教育结束时间，string->Date,没有限定输入格式                ;
-                }
+                    Calendar calendar = Calendar.getInstance();
+                    if (!startTime.getText().toString().equals("")){
+                        calendar.set(Calendar.YEAR,Integer.parseInt(startTime.getText().toString()));
+                        user.setStartTime(new java.sql.Date(calendar.getTime().getTime()));//教育开始时间
+                    }
+                    if (!endTime.getText().toString().equals("")){
+                        calendar.set(Calendar.YEAR,Integer.parseInt(endTime.getText().toString()));
+                        user.setEndTime(new java.sql.Date(calendar.getTime().getTime()));//教育结束时间，string->Date,没有限定输入格式                ;
+                    }
 
-                //发送修改个人信息请求
-                Log.d(TAG, "onClick: "+PostParameterName.POST_URL_UPDATE_USER_INRO+user.getToken());
-                try {
-                    Gson gson = new GsonBuilder()
-                            .setDateFormat("yyyy-MM-dd HH:mm:ss")
-                            .create();
-                    Log.d(TAG, "onClick: "+new Gson().toJson(user));
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_UPDATE_USER_INRO + user.getToken(), new JSONObject(gson.toJson(user)),
-                            new Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    final PostResult postResult = new Gson().fromJson(response.toString(),PostResult.class);
-                                    Log.d(TAG, "onResponse: 修改个人信息"+response.toString());
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            switch(postResult.getResultCode()){
-                                                case "200":{
-                                                    Toast.makeText(PersonalInformation.this, "修改个人信息成功", Toast.LENGTH_SHORT).show();
-                                                    getStudentInfo();
-                                                    finish();//保存成功，结束当前页面
-                                                }break;
-                                                default:{
-                                                    Toast.makeText(PersonalInformation.this, "修改个人信息失败", Toast.LENGTH_SHORT).show();
+                    //发送修改个人信息请求
+                    Log.d(TAG, "onClick: "+PostParameterName.POST_URL_UPDATE_USER_INRO+user.getToken());
+                    try {
+                        Gson gson = new GsonBuilder()
+                                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                                .create();
+                        Log.d(TAG, "onClick: "+new Gson().toJson(user));
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_UPDATE_USER_INRO + user.getToken(), new JSONObject(gson.toJson(user)),
+                                new Response.Listener<JSONObject>() {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
+                                        final PostResult postResult = new Gson().fromJson(response.toString(),PostResult.class);
+                                        Log.d(TAG, "onResponse: 修改个人信息"+response.toString());
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                switch(postResult.getResultCode()){
+                                                    case "200":{
+                                                        Toast.makeText(PersonalInformation.this, "修改个人信息成功", Toast.LENGTH_SHORT).show();
+                                                        getStudentInfo();
+                                                        finish();//保存成功，结束当前页面
+                                                    }break;
+                                                    default:{
+                                                        Toast.makeText(PersonalInformation.this, "修改个人信息失败", Toast.LENGTH_SHORT).show();
+                                                    }
                                                 }
+                                                PersonalInformation.this.finish();
                                             }
-                                            PersonalInformation.this.finish();
-                                        }
-                                    });
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("TAG", error.getMessage(), error);
-                        }});
-                    requestQueue.add(jsonObjectRequest);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                                        });
+                                    }
+                                }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("TAG", error.getMessage(), error);
+                            }});
+                        requestQueue.add(jsonObjectRequest);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(this,"电话或教育时间输入有误！",Toast.LENGTH_SHORT);
                 }
                 break;
 
@@ -189,6 +198,32 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                 break;
         }
     }
+
+    private boolean isYear(String year){
+        // 指定日期格式为四位年/两位月份/两位日期，注意yyyy/MM/dd区分大小写；
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+        try {
+            // 设置lenient为false. 否则SimpleDateFormat会比较宽松地验证日期，比如2007/02/29会被接受，并转换成2007/03/01
+            format.setLenient(false);
+            format.parse(year);
+        } catch (ParseException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isPhone(String phone) {
+        String regex = "^((13[0-9])|(14[5,7,9])|(15([0-3]|[5-9]))|(166)|(17[0,1,3,5,6,7,8])|(18[0-9])|(19[8|9]))\\d{8}$";
+        if (phone.length() != 11) {
+            return false;
+        } else {
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(phone);
+            boolean isMatch = m.matches();
+            return isMatch;
+        }
+    }
+
     //初始化页面可用这个函数
     private void initpage(User user) {
         setEditTextSaveEnableFalse();
@@ -227,7 +262,6 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         school.setSaveEnabled(false);
         major.setSaveEnabled(false);
     }
-
 
     private void getStudentInfo(){
         //用户已经登录，查询个人信息并显示

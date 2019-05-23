@@ -29,7 +29,7 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
     private String fileName="TBS测试.doc";
     //    private String fileUrl="http://123.207.239.170/test.docx";//远程文档地址，如下载失败请验证此链接是否还可用（那个时候可能我养不住服务器了）
     //todo 填写文档的地址 ->小榕
-    private String fileUrl="http://www.fuzhou.gov.cn/tzgg/201904/P020190430575112821124.docx";//远程文档地址
+    private String fileUrl="https://serve.wangmingjun.top/app/xzpt/1.doc";//远程文档地址
 
     /**
      * Fragment中初始化Toolbar

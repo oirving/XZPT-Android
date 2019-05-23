@@ -33,6 +33,7 @@ public class FragmentResume extends Fragment {
     private ResumeModelListAdapter resumeModelListAdapter;
     private Toolbar toolbar;
 
+
     /**
      * Fragment中初始化Toolbar
      * @param toolbar
