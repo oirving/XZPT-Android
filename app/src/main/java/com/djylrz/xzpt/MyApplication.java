@@ -11,10 +11,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.djylrz.xzpt.activityStudent.MainActivity;
+import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
 import com.tencent.smtt.sdk.QbSdk;
 import com.vondear.rxtool.RxTool;
 import com.vondear.rxui.view.dialog.RxDialogShapeLoading;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
+import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mipush.sdk.Logger;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.xiaomi.msg.logger.MIMCLog;
@@ -206,6 +208,13 @@ public class MyApplication extends Application {
                     MiPushClient.setAlias(context, userId, null);
                     //显示设置XMPUSH别名提示
                     Toast.makeText(context, "设置别名成功："+userId, Toast.LENGTH_LONG).show();
+
+                    //小米云消息服务用户初始化
+                    MIMCUser XMUser = UserManager.getInstance().newUser(userId);
+                    if (XMUser != null) {
+                        XMUser.login();
+                        Toast.makeText(context, "聊天功能初始化成功->用户token为：" + XMUser.getToken(), Toast.LENGTH_LONG).show();
+                    }
                     break;
                 case MyApplication.REGISTER_XMPUSH_SUCCESS:
                     //显示xmpush注册成功提示
@@ -218,4 +227,15 @@ public class MyApplication extends Application {
         }
     }
 
+    public static Context getContext() {
+        return context;
+    }
+
+    public static String getUserId() {
+        return userId;
+    }
+
+    public static void setUserId(String userId) {
+        MyApplication.userId = userId;
+    }
 }

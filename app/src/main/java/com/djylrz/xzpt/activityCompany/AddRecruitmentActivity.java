@@ -224,7 +224,11 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
 
             textViewWorkTime.setText(strWorkTime);
             subRecruitmentData.setWorkTime(recruitment.getWorkTime() + "");
-            textViewIndustryLabel.setText(data.get((int) recruitment.getIndustryLabel()-1));
+            if(recruitment.getIndustryLabel() > 0){
+                textViewIndustryLabel.setText(data.get((int) recruitment.getIndustryLabel()-1));
+            }else{
+                textViewIndustryLabel.setText("请选择所属行业");
+            }
             subRecruitmentData.setIndustryLabel(recruitment.getIndustryLabel() + "");
             String strJobType;
             switch ((int) recruitment.getJobType()) {
@@ -244,14 +248,18 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             textViewType.setText(strJobType);
             subRecruitmentData.setJobType(recruitment.getJobType() + "");
             String strStationLabels = recruitment.getStationLabel();
-            String[] strStationLabel = strStationLabels.split(",");
-            strStationLabels = "";
-            if(strStationLabel.length == 1){
-                strStationLabels = mVals[Integer.parseInt(strStationLabel[0])-1];
-            }else{
-                for (String stationLabel : strStationLabel) {
-                    strStationLabels = strStationLabels + mVals[Integer.parseInt(stationLabel)-1] + ",";
+            if(strStationLabels != null){
+                String[] strStationLabel = strStationLabels.split(",");
+                strStationLabels = "";
+                if(strStationLabel.length == 1){
+                    strStationLabels = mVals[Integer.parseInt(strStationLabel[0])-1];
+                }else{
+                    for (String stationLabel : strStationLabel) {
+                        strStationLabels = strStationLabels + mVals[Integer.parseInt(stationLabel)-1] + ",";
+                    }
                 }
+            }else{
+                strStationLabels = "请选择岗位标签";
             }
             textViewStationLabel.setText(strStationLabels);
             subRecruitmentData.setStationLabel(recruitment.getStationLabel());

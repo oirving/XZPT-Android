@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activity.ActorChoose;
 import com.djylrz.xzpt.activityStudent.BasicResumeActivity;
@@ -23,6 +24,8 @@ import com.djylrz.xzpt.activityStudent.PersonalInformation;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.UserInfoOptionAdapter;
 import com.djylrz.xzpt.utils.UserSelector;
+import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
+import com.xiaomi.mimc.MIMCUser;
 
 public class FragmentUser extends Fragment implements View.OnClickListener{
 
@@ -88,6 +91,11 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
                 SharedPreferences.Editor editor = userToken.edit();
                 editor.remove(PostParameterName.STUDENT_TOKEN);
                 editor.commit();
+                //注销小米消息云
+                MIMCUser user = UserManager.getInstance().getUser();
+                if (user != null) {
+                    user.logout();
+                }
                 intent = new Intent(getContext(), ActorChoose.class);
                 getContext().startActivity(intent);
                 ((Activity)v.getContext()).finish();

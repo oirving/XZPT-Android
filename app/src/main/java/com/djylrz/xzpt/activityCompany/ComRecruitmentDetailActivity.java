@@ -151,7 +151,13 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         recruitment = (Recruitment) intent.getSerializableExtra("recruitment");
         DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss EE");
         String workTime;
-        String industryLabel = data.get((int) recruitment.getIndustryLabel()-1);
+        String industryLabel = "";
+        if(recruitment.getIndustryLabel() > 0){
+            industryLabel = data.get((int) recruitment.getIndustryLabel()-1);
+        }else{
+            industryLabel = "暂未分类";
+        }
+
         String jobType;
         String recruitmentStatus;//简历状态
         switch ((int)recruitment.getValidate()){
@@ -213,15 +219,20 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         mTvAboutSpannable.setMovementMethod(LinkMovementMethod.getInstance());
         //获取岗位标签名称
         String strStationLabels = recruitment.getStationLabel();
-        String[] strStationLabel = strStationLabels.split(",");
-        strStationLabels = "";
-        if(strStationLabel.length == 1){
-            strStationLabels = mVals[Integer.parseInt(strStationLabel[0])-1];
-        }else{
-            for (String stationLabel : strStationLabel) {
-                strStationLabels = strStationLabels + mVals[Integer.parseInt(stationLabel)-1] + ",";
+        if(strStationLabels != null){
+            String[] strStationLabel = strStationLabels.split(",");
+            strStationLabels = "";
+            if(strStationLabel.length == 1){
+                strStationLabels = mVals[Integer.parseInt(strStationLabel[0])-1];
+            }else{
+                for (String stationLabel : strStationLabel) {
+                    strStationLabels = strStationLabels + mVals[Integer.parseInt(stationLabel)-1] + ",";
+                }
             }
+        }else{
+            strStationLabels = "暂未分类";
         }
+
         RxTextTool.getBuilder("").setBold().setAlign(Layout.Alignment.ALIGN_CENTER)
                 .append(recruitment.getJobName() + "\n").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.colorPrimary))
                 .append("发布时间： "+df2.format(recruitment.getPublishTime())+ "\n").setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.black)).setProportion((float)0.8)
