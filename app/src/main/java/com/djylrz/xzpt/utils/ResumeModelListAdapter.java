@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activityStudent.IntentResumeFileActivity;
 import com.djylrz.xzpt.activityStudent.ResumeDisplayActivity;
@@ -55,6 +57,7 @@ public class ResumeModelListAdapter extends RecyclerView.Adapter<ResumeModelList
                 int position = holder.getAdapterPosition();
                 ResumeModelItem resumeModelItem = mResumeModelList.get(position);
                 Intent intent = new Intent(v.getContext(),IntentResumeFileActivity.class);
+                intent.putExtra(PostParameterName.INTENT_PUT_EXTRA_KEY_RESUME_TEMPLATE_FILENAME,resumeModelItem.getResumeTemplate().getImgFileName());
                 v.getContext().startActivity(intent);
                 //动态权限申请
 //                if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -70,7 +73,9 @@ public class ResumeModelListAdapter extends RecyclerView.Adapter<ResumeModelList
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ResumeModelItem resumeModelItem = mResumeModelList.get(position);
-        holder.resumeModel.setImageResource(resumeModelItem.getResumeModel());
+        //holder.resumeModel.setImageResource(resumeModelItem.getResumeModel());
+        Uri imageUri = Uri.parse(PostParameterName.DOWNLOAD_URL_RESUME_IMAGE_PREFIX+resumeModelItem.getResumeTemplate().getImgFileName());
+        Glide.with(holder.resumeModelListView.getContext()).load(imageUri).into(holder.resumeModel);
     }
 
     @Override
