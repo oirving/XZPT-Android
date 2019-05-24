@@ -4,11 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.bean.ChatUser;
 import com.djylrz.xzpt.bean.Message;
 import com.djylrz.xzpt.bean.MessagesFixtures;
 import com.stfalcon.chatkit.commons.ImageLoader;
@@ -17,6 +21,7 @@ import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.vondear.rxtool.view.RxToast;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class DefaultMessagesActivity extends AppCompatActivity
@@ -26,16 +31,18 @@ public class DefaultMessagesActivity extends AppCompatActivity
         MessageInput.AttachmentsListener,
         MessageInput.TypingListener {
 
-    public static void open(Context context) {
-        context.startActivity(new Intent(context, DefaultMessagesActivity.class));
+    public static void open(Context context, String senderId) {
+        context.startActivity(new Intent(context, DefaultMessagesActivity.class).putExtra("senderId",senderId));
     }
 
     private MessagesList messagesList;
     private static final int TOTAL_MESSAGES_COUNT = 100;
 
-    protected final String senderId = "0";
+    protected String senderId = "0";
+    protected String receiverId = "1";
     protected ImageLoader imageLoader;
     protected MessagesListAdapter<Message> messagesAdapter;
+    private Toolbar toolbar;
 
     private Menu menu;
     private int selectionCount;
@@ -44,8 +51,16 @@ public class DefaultMessagesActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default_messages);
-
+        this.receiverId = getIntent().getStringExtra("senderId");
         this.messagesList = (MessagesList) findViewById(R.id.messagesList);
+        this.toolbar = findViewById(R.id.chat_with_user_message_toolbar);
+        toolbar.bringToFront();
+        imageLoader = new ImageLoader() {
+            @Override
+            public void loadImage(ImageView imageView, String url, Object payload) {
+                Glide.with(DefaultMessagesActivity.this).load(R.drawable.avatar_default).into(imageView);
+            }
+        };
         initAdapter();
 
         MessageInput input = (MessageInput) findViewById(R.id.input);
@@ -56,8 +71,10 @@ public class DefaultMessagesActivity extends AppCompatActivity
 
     @Override
     public boolean onSubmit(CharSequence input) {
-        messagesAdapter.addToStart(
-                MessagesFixtures.getTextMessage(input.toString()), true);
+        ChatUser chatUser = new ChatUser(senderId,"name","avatar",true);
+        messagesAdapter.addToStart(new Message(senderId,chatUser,input.toString()),true);
+//        ChatUser chatUser2 = new ChatUser(receiverId,"name","avatar",true);
+//        messagesAdapter.addToStart(new Message(receiverId,chatUser2,input.toString()),true);
         return true;
     }
 

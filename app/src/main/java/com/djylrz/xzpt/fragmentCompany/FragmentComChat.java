@@ -146,7 +146,7 @@ public class FragmentComChat extends Fragment
     @Override
     public void onDialogClick(Dialog dialog) {
         Toast.makeText(getContext(), "点击了消息项", Toast.LENGTH_SHORT).show();
-        DefaultMessagesActivity.open(getContext());
+        DefaultMessagesActivity.open(getContext(),dialog.getId());
         //onRefreshDialogList();
     }
 
