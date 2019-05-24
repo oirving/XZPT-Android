@@ -14,10 +14,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.activity.DefaultMessagesActivity;
 import com.djylrz.xzpt.bean.ChatUser;
 import com.djylrz.xzpt.bean.Dialog;
 import com.djylrz.xzpt.bean.DialogsFixtures;
 import com.djylrz.xzpt.bean.Message;
+import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.HttpUtil;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.xiaomi.mimc.bean.ChatMsg;
@@ -31,8 +33,10 @@ import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.dialogs.DialogsList;
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
 
+import com.vondear.rxtool.view.RxToast;
 import com.xiaomi.mimc.MIMCGroupMessage;
 import com.xiaomi.mimc.MIMCMessage;
+import com.xiaomi.mimc.MIMCOnlineStatusListener;
 import com.xiaomi.mimc.MIMCServerAck;
 import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimc.common.MIMCConstant;
@@ -83,12 +87,12 @@ public class FragmentComChat extends Fragment
          adapter.addItem(int position, DIALOG dialog) - adds a new dialog to the specified position.
          adapter.upsertItem(DIALOG dialog) - adds one dialog to the end of the list if not exists, otherwise updates the existing dialog.
          */
-        dialogsAdapter.setItems(DialogsFixtures.getDialogs());
-
+        //dialogsAdapter.setItems(DialogsFixtures.getDialogs());
         dialogsAdapter.setOnDialogClickListener(this);
         dialogsAdapter.setOnDialogLongClickListener(this);
-
         dialogsList.setAdapter(dialogsAdapter);
+
+
     }
 
     //f如果对话框已更改，您可以通过调用按列表中的位置adapter.updateItem(int position, DIALOG item)更新它，
@@ -134,7 +138,8 @@ public class FragmentComChat extends Fragment
     @Override
     public void onDialogClick(Dialog dialog) {
         Toast.makeText(getContext(), "点击了消息项", Toast.LENGTH_SHORT).show();
-        onRefreshDialogList();
+        DefaultMessagesActivity.open(getContext());
+        //onRefreshDialogList();
     }
 
     @Override
@@ -205,8 +210,18 @@ public class FragmentComChat extends Fragment
 
     }
 
+
+
+    //处理登录状态改变
     @Override
     public void onHandleStatusChanged(MIMCConstant.OnlineStatus status) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //刷新会话列表
+                onRefreshDialogList();
+                RxToast.info("聊天功能初始化成功->用户token为：" + UserManager.getInstance().getUser().getToken());            }
+        });
 
     }
 
@@ -304,6 +319,7 @@ public class FragmentComChat extends Fragment
     public void onHandleQueryUnlimitedGroupOnlineUsers(String json, boolean isSuccess) {
 
     }
+
 }
 class Data<T>{
     /*
