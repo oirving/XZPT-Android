@@ -213,7 +213,6 @@ public class MyApplication extends Application {
                     MIMCUser XMUser = UserManager.getInstance().newUser(userId);
                     if (XMUser != null) {
                         XMUser.login();
-                        Toast.makeText(context, "聊天功能初始化成功->用户token为：" + XMUser.getToken(), Toast.LENGTH_LONG).show();
                     }
                     break;
                 case MyApplication.REGISTER_XMPUSH_SUCCESS:
