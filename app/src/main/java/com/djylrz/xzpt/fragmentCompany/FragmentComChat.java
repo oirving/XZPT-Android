@@ -14,10 +14,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.activity.DefaultMessagesActivity;
 import com.djylrz.xzpt.bean.ChatUser;
 import com.djylrz.xzpt.bean.Dialog;
 import com.djylrz.xzpt.bean.DialogsFixtures;
 import com.djylrz.xzpt.bean.Message;
+import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.HttpUtil;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.xiaomi.mimc.bean.ChatMsg;
@@ -30,14 +32,20 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.dialogs.DialogsList;
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
+
+import com.vondear.rxtool.view.RxToast;
 import com.xiaomi.mimc.MIMCGroupMessage;
 import com.xiaomi.mimc.MIMCMessage;
+import com.xiaomi.mimc.MIMCOnlineStatusListener;
 import com.xiaomi.mimc.MIMCServerAck;
 import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimc.common.MIMCConstant;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
@@ -45,8 +53,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class FragmentComChat extends Fragment
         implements DialogsListAdapter.OnDialogClickListener<Dialog>,
-        DialogsListAdapter.OnDialogLongClickListener<Dialog> ,
-        UserManager.OnHandleMIMCMsgListener{
+        DialogsListAdapter.OnDialogLongClickListener<Dialog> ,UserManager.OnHandleMIMCMsgListener{
     private static final String TAG = "FragmentComChat";
     private View mDecorView;
     private DialogsList dialogsList;
@@ -59,6 +66,8 @@ public class FragmentComChat extends Fragment
         mDecorView = inflater.inflate(R.layout.fragment9_com_chat, container, false);
         dialogsList = (DialogsList) mDecorView.findViewById(R.id.dialogsList);
         initAdapter();
+        // 设置处理MIMC消息监听器
+        UserManager.getInstance().setHandleMIMCMsgListener(this);
         return mDecorView;
     }
 
@@ -78,12 +87,12 @@ public class FragmentComChat extends Fragment
          adapter.addItem(int position, DIALOG dialog) - adds a new dialog to the specified position.
          adapter.upsertItem(DIALOG dialog) - adds one dialog to the end of the list if not exists, otherwise updates the existing dialog.
          */
-        dialogsAdapter.setItems(DialogsFixtures.getDialogs());
-
+        //dialogsAdapter.setItems(DialogsFixtures.getDialogs());
         dialogsAdapter.setOnDialogClickListener(this);
         dialogsAdapter.setOnDialogLongClickListener(this);
-
         dialogsList.setAdapter(dialogsAdapter);
+
+
     }
 
     //f如果对话框已更改，您可以通过调用按列表中的位置adapter.updateItem(int position, DIALOG item)更新它，
@@ -129,7 +138,8 @@ public class FragmentComChat extends Fragment
     @Override
     public void onDialogClick(Dialog dialog) {
         Toast.makeText(getContext(), "点击了消息项", Toast.LENGTH_SHORT).show();
-        onRefreshDialogList();
+        DefaultMessagesActivity.open(getContext());
+        //onRefreshDialogList();
     }
 
     @Override
@@ -153,7 +163,15 @@ public class FragmentComChat extends Fragment
         if(postResult.getCode().equals(200)){
             List<Data<LastMessage>>  dataList = postResult.getData();
             for (int i = 0; i < dataList.size(); ++i) {
-                Log.d(TAG, "data"+i+dataList.get(i));
+                Data<LastMessage> content = dataList.get(i);
+                ArrayList<ChatUser> users = new ArrayList<>();
+                ChatUser chatUser = new ChatUser(content.getLastMessage().getFromUuid(),content.getLastMessage().getFromAccount(),"",true);
+                users.add(chatUser);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Message message = null;
+                message = new Message(content.getLastMessage().getFromUuid(),chatUser,content.getLastMessage().getPayload(),new Date(Long.parseLong(content.getTimestamp())));
+                Dialog dialog = new Dialog(content.getLastMessage().getSequence(),content.getLastMessage().getFromAccount(),"",users,message,1);
+                dialogsAdapter.upsertItem(dialog);
             }
         }
     }
@@ -163,189 +181,110 @@ public class FragmentComChat extends Fragment
       *@Param: [chatMsg]
       *@Return: void
       *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:51
+      *@Date: 2019/5/23 下午 5:42
       */
-
     @Override
-    public void onHandleMessage(ChatMsg chatMsg) {
-
+    public void onHandleMessage(final ChatMsg chatMsg) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+//
+//                mDatas.add(chatMsg);
+//                mAdapter.notifyDataSetChanged();
+//                mRecyclerView.scrollToPosition(mAdapter.getItemCount() - 1);
+                ArrayList<ChatUser> users = new ArrayList<>();
+                ChatUser chatUser = new ChatUser(chatMsg.getMsg().getMsgId(),chatMsg.getFromAccount(),"",true);
+                users.add(chatUser);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Message message = null;
+                message = new Message(chatMsg.getMsg().getMsgId(),chatUser,chatMsg.getMsg().getPayload().toString(),new Date(chatMsg.getMsg().getTimestamp()));
+                Dialog dialog = new Dialog(chatMsg.getMsg().getMsgId(),chatMsg.getFromAccount(),"",users,message,1);
+                dialogsAdapter.upsertItem(dialog);
+                Log.d(TAG, "receive new message: " + chatMsg.getFromAccount() + " " + chatMsg.getMsg().getMsgId());
+            }
+        });
     }
 
-    /**
-      *@Description: 处理群消息
-      *@Param: [chatMsg]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:51
-      */
     @Override
     public void onHandleGroupMessage(ChatMsg chatMsg) {
 
     }
 
-    /**
-      *@Description: 处理登录状态
-      *@Param: [status]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:51
-      */
+
+
+    //处理登录状态改变
     @Override
     public void onHandleStatusChanged(MIMCConstant.OnlineStatus status) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //刷新会话列表
+                onRefreshDialogList();
+                RxToast.info("聊天功能初始化成功->用户token为：" + UserManager.getInstance().getUser().getToken());            }
+        });
 
     }
 
-    /**
-      *@Description: 处理服务端消息确认
-      *@Param: [serverAck]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:51
-      */
     @Override
     public void onHandleServerAck(MIMCServerAck serverAck) {
 
     }
 
-    /**
-      *@Description: 处理创建群
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:51
-      */
     @Override
     public void onHandleCreateGroup(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理查询群信息
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:52
-      */
     @Override
     public void onHandleQueryGroupInfo(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理查询已加入的群信息
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:52
-      */
     @Override
     public void onHandleQueryGroupsOfAccount(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理加入群
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:52
-      */
     @Override
     public void onHandleJoinGroup(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理非群主退群
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:52
-      */
     @Override
     public void onHandleQuitGroup(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理群主踢人出群
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:52
-      */
     @Override
     public void onHandleKickGroup(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理群主更新群信息
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:53
-      */
     @Override
     public void onHandleUpdateGroup(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理群主销毁群
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:54
-      */
     @Override
     public void onHandleDismissGroup(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理拉取单聊消息
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:54
-      */
     @Override
     public void onHandlePullP2PHistory(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理拉取群聊消息
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:54
-      */
     @Override
     public void onHandlePullP2THistory(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理发送消息超时
-      *@Param: [message]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:54
-      */
     @Override
     public void onHandleSendMessageTimeout(MIMCMessage message) {
 
     }
 
-    /**
-      *@Description: 处理发送群消息超时
-      *@Param: [groupMessage]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:54
-      */
     @Override
     public void onHandleSendGroupMessageTimeout(MIMCGroupMessage groupMessage) {
 
@@ -380,6 +319,7 @@ public class FragmentComChat extends Fragment
     public void onHandleQueryUnlimitedGroupOnlineUsers(String json, boolean isSuccess) {
 
     }
+
 }
 class Data<T>{
     /*
@@ -458,7 +398,7 @@ class LastMessage{
     private String fromAccount;
     private String payload;///消息体需base64解码
     private String sequence;//sequence主要用来做消息的排序和去重，全局唯一
-    private String bizType;//消息的扩展字段，参考历史消息页面
+    private String bizType;//可用于表示消息类型扩展字段（可选）
 
     public String getFromUuid() {
         return fromUuid;

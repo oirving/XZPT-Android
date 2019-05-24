@@ -79,6 +79,7 @@
         <activity android:name=".activityStudent.MainActivity" />
 
         <activity android:name=".activity.ActivityWebView" />
+        <activity android:name=".activity.DefaultMessagesActivity" />
 
         <service android:enabled="true" android:process=":pushservice" android:name="com.xiaomi.push.service.XMPushService"/>
 
