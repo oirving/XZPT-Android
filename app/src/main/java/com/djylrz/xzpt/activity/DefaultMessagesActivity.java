@@ -2,6 +2,7 @@ package com.djylrz.xzpt.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,20 +12,43 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.ChatUser;
 import com.djylrz.xzpt.bean.Message;
 import com.djylrz.xzpt.bean.MessagesFixtures;
+import com.djylrz.xzpt.utils.HttpUtil;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.xiaomi.mimc.bean.ChatMsg;
+import com.djylrz.xzpt.xiaomi.mimc.bean.ContactResponseData;
+import com.djylrz.xzpt.xiaomi.mimc.common.Constant;
 import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import com.vondear.rxtool.view.RxToast;
+import com.xiaomi.mimc.MIMCUser;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import cz.msebera.android.httpclient.Header;
 
 public class DefaultMessagesActivity extends AppCompatActivity
         implements MessagesListAdapter.SelectionListener,
@@ -34,8 +58,10 @@ public class DefaultMessagesActivity extends AppCompatActivity
         MessageInput.TypingListener,
         UserManager.OnHandleMessageToMessageActivityListener {
 
-    public static void open(Context context, String senderId) {
-        context.startActivity(new Intent(context, DefaultMessagesActivity.class).putExtra("senderId", senderId));
+    public static void open(Context context, String senderId, String userName, String headUrl) {
+        context.startActivity(new Intent(context, DefaultMessagesActivity.class).putExtra("senderId", senderId)
+        .putExtra("userName",userName)
+        .putExtra("headUrl",headUrl));
     }
 
     private MessagesList messagesList;
@@ -46,6 +72,8 @@ public class DefaultMessagesActivity extends AppCompatActivity
     protected ImageLoader imageLoader;
     protected MessagesListAdapter<Message> messagesAdapter;
     private Toolbar toolbar;
+    private String userName;
+    private String headUrl;
 
     private Menu menu;
     private int selectionCount;
@@ -56,6 +84,8 @@ public class DefaultMessagesActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default_messages);
         this.receiverId = getIntent().getStringExtra("senderId");
+        this.userName = getIntent().getStringExtra("userName");
+        this.headUrl = getIntent().getStringExtra("headUrl");
         this.messagesList = (MessagesList) findViewById(R.id.messagesList);
         this.toolbar = findViewById(R.id.chat_with_user_message_toolbar);
         //设置标题栏
@@ -89,8 +119,13 @@ public class DefaultMessagesActivity extends AppCompatActivity
 
     @Override
     public boolean onSubmit(CharSequence input) {
-        ChatUser chatUser = new ChatUser(senderId, "name", "avatar", true);
+        ChatUser chatUser = new ChatUser(senderId, "name", null, true);
         messagesAdapter.addToStart(new Message(senderId, chatUser, input.toString()), true);
+        UserManager userManager = UserManager.getInstance();
+        MIMCUser user = userManager.getUser();
+        if (user != null){
+            userManager.sendMsg(receiverId, input.toString().getBytes(), Constant.TEXT);
+        }
 //        ChatUser chatUser2 = new ChatUser(receiverId,"name","avatar",true);
 //        messagesAdapter.addToStart(new Message(receiverId,chatUser2,input.toString()),true);
         return true;
@@ -114,6 +149,7 @@ public class DefaultMessagesActivity extends AppCompatActivity
                     }
                 });
         this.messagesList.setAdapter(messagesAdapter);
+        onRefreshMessageList();
     }
 
     @Override
@@ -155,5 +191,224 @@ public class DefaultMessagesActivity extends AppCompatActivity
                 }
             }
         });
+    }
+    private void onRefreshMessageList() {
+        //清空原有message列表数据
+        messagesAdapter.clear();
+        MIMCUser user = UserManager.getInstance().getUser();
+        HttpUtil.getClient().removeAllHeaders();
+        HttpUtil.getClient().addHeader("token", user.getToken());
+        HttpUtil.getClient().addHeader("Content-Type", "application/json;charset=UTF-8");
+        HttpUtil.getClient().addHeader("Accept", "application/json;charset=UTF-8");
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("toAccount", MyApplication.getUserId());
+            jsonObject.put("fromAccount", receiverId);
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DAY_OF_MONTH, -1);
+            jsonObject.put("utcFromTime", cal.getTimeInMillis());
+            cal.add(Calendar.DAY_OF_MONTH, +1);
+            jsonObject.put("utcToTime", cal.getTimeInMillis());
+            jsonObject.put("count", 20);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        HttpUtil.post(PostParameterName.GET_URL_WEEK_GET_MESSAGE_LIST_BETWEEN_TWO_PERSON,jsonObject, new JsonHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d("json", "onFailure: " + errorResponse.toString());
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d("json", "onSuccess: " + response.toString());
+                try {
+                    ParseJson( response.toString());
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    public void ParseJson(String json) throws UnsupportedEncodingException {
+        ArrayList<Message> messages = new ArrayList<>();
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        Type jsonType = new TypeToken<ContactResponseData<Data<List<MessageofData>>>>() {
+        }.getType();
+        final ContactResponseData<Data<List<MessageofData>>> postResult = gson.fromJson(json, jsonType);
+        Log.d(MyApplication.TAG, "onResponse: code" + postResult.getCode());
+        if (postResult.getCode().equals(200)) {
+            List<MessageofData> messageofDataList = postResult.getData().getMessages();
+            for(int i = 0; i < messageofDataList.size(); ++i){
+                MessageofData messageofData = messageofDataList.get(i);
+                //需要对Payload进行base64解密
+                ChatUser chatUser;
+                if(messageofData.getFromAccount().equals(receiverId)){
+                    chatUser = new ChatUser(messageofData.getFromAccount(), userName, headUrl, true);
+                }else{
+                    chatUser = new ChatUser("0", "user", "avatar", true);
+                }
+                Log.d(MyApplication.TAG, "ParseJson: :form:"+messageofData.getFromAccount()+"--> to:"+messageofData.getToAccount());
+                Message message;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    //解析json消息体
+                    String payload = new String(Base64.getDecoder().decode(messageofData.getPayload().replace("\r\n", "")));
+                    String regExp = "\"payload\":\"(.*)\"";
+                    Pattern pattern;
+                    Matcher matcher;
+                    pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
+                    matcher = pattern.matcher(payload);
+                    if (matcher.find()) {
+                        String lastMessageBase64 = matcher.group(1);
+                        String lastMessage = new String(Base64.getDecoder().decode(lastMessageBase64));
+                        if(messageofData.getFromAccount().equals(receiverId)){
+                            message = new Message(messageofData.getFromAccount(), chatUser, new String(lastMessage));
+                        }else{
+                            message = new Message("0", chatUser, new String(lastMessage));
+                        }
+                    } else {
+                        message = new Message(messageofData.getFromAccount(), chatUser, "消息已损坏");
+                    }
+                } else {
+                    message = new Message(messageofData.getFromAccount(), chatUser, "消息已损坏");
+                }
+                messages.add(message);
+            }
+        }
+        messagesAdapter.addToEnd(messages,true);
+    }
+}
+class Data<T>{
+    /*
+    "appId": $appId,
+            "messages": [
+    {
+        "sequence": $sequence,
+            "payload": $payload,
+            "ts": $ts,
+            "fromAccount":$fromAccount,
+            "toAccount": $toAccount,
+            "bizType":$bizType,
+            "extra":$extra
+    }
+         ],
+                 "row": $row,
+            "timestamp":$timestamp
+   */
+    private String appId;
+    private T messages;
+    private String row;
+    private String timestamp;
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public T getMessages() {
+        return messages;
+    }
+
+    public void setMessages(T messages) {
+        this.messages = messages;
+    }
+
+    public String getRow() {
+        return row;
+    }
+
+    public void setRow(String row) {
+        this.row = row;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+}
+class MessageofData{
+    /*
+                "messages": [
+    {
+        "sequence": $sequence,
+            "payload": $payload,
+            "ts": $ts,
+            "fromAccount":$fromAccount,
+            "toAccount": $toAccount,
+            "bizType":$bizType,
+            "extra":$extra
+    }
+         ],
+         */
+    private String sequence;
+    private String payload;
+    private String ts;
+    private String fromAccount;
+    private String toAccount;
+    private String bizType;
+    private String extra;
+
+    public String getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(String sequence) {
+        this.sequence = sequence;
+    }
+
+    public String getPayload() {
+        return payload;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
+
+    public String getTs() {
+        return ts;
+    }
+
+    public void setTs(String ts) {
+        this.ts = ts;
+    }
+
+    public String getFromAccount() {
+        return fromAccount;
+    }
+
+    public void setFromAccount(String fromAccount) {
+        this.fromAccount = fromAccount;
+    }
+
+    public String getToAccount() {
+        return toAccount;
+    }
+
+    public void setToAccount(String toAccount) {
+        this.toAccount = toAccount;
+    }
+
+    public String getBizType() {
+        return bizType;
+    }
+
+    public void setBizType(String bizType) {
+        this.bizType = bizType;
+    }
+
+    public String getExtra() {
+        return extra;
+    }
+
+    public void setExtra(String extra) {
+        this.extra = extra;
     }
 }

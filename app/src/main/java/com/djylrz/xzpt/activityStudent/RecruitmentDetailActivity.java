@@ -17,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.activity.DefaultMessagesActivity;
 import com.djylrz.xzpt.bean.*;
 import com.djylrz.xzpt.utils.Constants;
 import com.djylrz.xzpt.utils.PostParameterName;
@@ -54,7 +55,7 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
     private TextView headcount;
     private Button delivery;
     private Button chat;
-
+    private String compantId;
     private Recruitment recruitment;
 
     private RequestQueue requestQueue;
@@ -99,8 +100,9 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
                 startActivityForResult(intent, 0);
                 break;
             case R.id.chat:
-                //暂时没有聊天功能
-                finish();
+                //聊天功能
+//                finish();
+                DefaultMessagesActivity.open(this, compantId, "user", "");
                 break;
         }
     }
@@ -177,6 +179,7 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
         if (recruitment.getHeadCount()!=null){
             headcount.setText(String.valueOf(recruitment.getHeadCount()));
         }
+        compantId = recruitment.getCompanyId();
     }
 
 

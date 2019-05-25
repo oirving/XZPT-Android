@@ -3,11 +3,17 @@ package com.djylrz.xzpt.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
+import com.djylrz.xzpt.MyApplication;
 import com.loopj.android.http.*;
 
-import cz.msebera.android.httpclient.Header;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+
+import cz.msebera.android.httpclient.entity.ByteArrayEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.protocol.HTTP;
 
 /**
   *@Description: 异步Http请求工具类
@@ -86,6 +92,16 @@ public class HttpUtil {
         client.post(urlString, params, res);
     }
 
+    public static void post(String url, JSONObject jsonObject, JsonHttpResponseHandler res) {
+        ByteArrayEntity entity = null;
+        try {
+            entity = new ByteArrayEntity(jsonObject.toString().getBytes("UTF-8"));
+            entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        client.post(MyApplication.getContext(), url, entity, "application/json;charset=UTF-8", res);
+    }
     /**
      * POST，返回二进制数据时使用，会返回byte数据
      *

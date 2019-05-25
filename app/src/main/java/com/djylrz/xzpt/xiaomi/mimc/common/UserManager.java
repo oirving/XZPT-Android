@@ -71,6 +71,8 @@ public class UserManager {
     private OnHandleMIMCMsgListener onHandleMIMCMsgListener = null;
     private OnHandleMessageToMessageActivityListener OnHandleMessageToMessageActivityListener = null;
     private OnCallStateListener onCallStateListener;
+    private String userName = null;
+    private String headUrl = null;
     public static int TIMEOUT_ON_LAUNCHED = 1 * 30 * 1000;
     public static int STATE_TIMEOUT = 0;
     public static int STATE_AGREE = 1;
@@ -94,17 +96,29 @@ public class UserManager {
                             Type jsonType = new TypeToken<TempResponseData<ChatDTO>>() {
                             }.getType();
                             final TempResponseData<ChatDTO> postResult = gson.fromJson(content, jsonType);
-                            Log.d(TAG, "onSuccess: name:" + postResult.getResultObject().getUserName() + "，headUrl:" + postResult.getResultObject().getHeadUrl());
-                            if (onHandleMIMCMsgListener != null) {
-                                Log.d(TAG, "onSuccess: 向会话列表更新消息");
-                                onHandleMIMCMsgListener.onHandleMessage(chatMsg, postResult.getResultObject().getUserName(), postResult.getResultObject().getHeadUrl());
-                            }
-                            if (OnHandleMessageToMessageActivityListener != null) {
-                                Log.d(TAG, "onSuccess: 向聊天界面更新消息");
-                                OnHandleMessageToMessageActivityListener.onHandleMessage(chatMsg,postResult.getResultObject().getUserName(), postResult.getResultObject().getHeadUrl());
-                            }
-                        }
+                            if(postResult.getResultCode()==200){
+                                Log.d(TAG, "onSuccess: name:" + postResult.getResultObject().getUserName() + "，headUrl:" + postResult.getResultObject().getHeadUrl());
+                                if (onHandleMIMCMsgListener != null) {
+                                    Log.d(TAG, "onSuccess: 向会话列表更新消息");
+                                    onHandleMIMCMsgListener.onHandleMessage(chatMsg, postResult.getResultObject().getUserName(), postResult.getResultObject().getHeadUrl());
+                                }
+                                if (OnHandleMessageToMessageActivityListener != null) {
+                                    Log.d(TAG, "onSuccess: 向聊天界面更新消息");
+                                    OnHandleMessageToMessageActivityListener.onHandleMessage(chatMsg,postResult.getResultObject().getUserName(), postResult.getResultObject().getHeadUrl());
+                                }
+                            }else{
+                                if (onHandleMIMCMsgListener != null) {
+                                    Log.d(TAG, "onSuccess: 向会话列表更新消息");
+                                    onHandleMIMCMsgListener.onHandleMessage(chatMsg, "", "");
+                                }
+                                if (OnHandleMessageToMessageActivityListener != null) {
+                                    Log.d(TAG, "onSuccess: 向聊天界面更新消息");
+                                    OnHandleMessageToMessageActivityListener.onHandleMessage(chatMsg,"", "");
+                                }
 
+                            }
+
+                        }
                         @Override
                         public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
                             String content = new String(bytes);
@@ -229,13 +243,13 @@ public class UserManager {
         msg.setPayload(payload);
         String json = JSON.toJSONString(msg);
         mUser.sendMessage(toAppAccount, json.getBytes(), bizType);
-        if (bizType.equals(Constant.TEXT) || bizType.equals(Constant.PIC_FILE)) {
-            ChatMsg chatMsg = new ChatMsg();
-            chatMsg.setFromAccount(appAccount);
-            chatMsg.setMsg(msg);
-            chatMsg.setSingle(true);
-            addMsg(chatMsg);
-        }
+//        if (bizType.equals(Constant.TEXT) || bizType.equals(Constant.PIC_FILE)) {
+//            ChatMsg chatMsg = new ChatMsg();
+//            chatMsg.setFromAccount(appAccount);
+//            chatMsg.setMsg(msg);
+//            chatMsg.setSingle(true);
+//            addMsg(chatMsg);
+//        }
     }
 
     public void sendGroupMsg(long groupID, byte[] content, String bizType, boolean isUnlimitedGroup) {
