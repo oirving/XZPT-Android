@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activity.ActorChoose;
+import com.djylrz.xzpt.activityStudent.DeliveryRecordActivity;
 import com.djylrz.xzpt.activityStudent.FocusCompanyActivity;
 import com.djylrz.xzpt.activityStudent.JobIntentionActivity;
 import com.djylrz.xzpt.activityStudent.MyResumeActivity;
@@ -64,10 +65,10 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
                 intent = new Intent(getContext(), MyResumeActivity.class);
                 startActivity(intent);
                 break;
-//            case R.id.me_layout_delivery:
-//                intent = new Intent(getContext(),MyResumeActivity.class);
-//                startActivity(intent);
-//                break;
+            case R.id.me_layout_delivery:
+                intent = new Intent(getContext(), DeliveryRecordActivity.class);
+                startActivity(intent);
+                break;
             case R.id.me_layout_job_intent:
                 intent = new Intent(getContext(), JobIntentionActivity.class);
                 startActivity(intent);

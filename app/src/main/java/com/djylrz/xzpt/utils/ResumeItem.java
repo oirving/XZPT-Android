@@ -16,7 +16,6 @@ public class ResumeItem {
         this.userName = userName;
         this.time = time;
         this.editImage = R.drawable.edit;
-        this.exportButton = R.id.resume_export_button;
     }
 
     public int getEditImage() {

@@ -33,7 +33,8 @@
         android:roundIcon="@mipmap/done"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activityStudent.MyResumePreviewActivity"></activity>
+        <activity android:name=".activityStudent.DeliveryRecordActivity"></activity>
+        <activity android:name=".activityStudent.MyResumePreviewActivity" />
         <activity android:name=".activityStudent.IntentResumeFileActivity" />
         <activity android:name=".activityStudent.ResumeDisplayActivity" />
         <activity android:name=".activityStudent.ResumeModelHistoryActivity" />
