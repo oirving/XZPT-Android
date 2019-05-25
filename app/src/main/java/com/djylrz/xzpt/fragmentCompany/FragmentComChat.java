@@ -153,7 +153,7 @@ public class FragmentComChat extends Fragment
     @Override
     public void onDialogClick(Dialog dialog) {
         //Toast.makeText(getContext(), "点击了消息项", Toast.LENGTH_SHORT).show();
-        DefaultMessagesActivity.open(getContext(), dialog.getId());
+        DefaultMessagesActivity.open(getContext(), dialog.getId(),dialog.getUsers().get(0).getName(),dialog.getUsers().get(0).getAvatar());
         //onRefreshDialogList();
     }
 
@@ -208,7 +208,6 @@ public class FragmentComChat extends Fragment
                                 headUrl = postResult.getResultObject().getHeadUrl();
                                 ChatUser chatUser = new ChatUser(dialogContent.getLastMessage().getFromAccount(), userName, headUrl, true);
                                 users.add(chatUser);
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                 Message message = null;
                                 //需要对Payload进行base64解密
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

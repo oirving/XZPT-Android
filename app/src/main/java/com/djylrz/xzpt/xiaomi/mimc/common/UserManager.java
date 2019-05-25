@@ -71,6 +71,8 @@ public class UserManager {
     private OnHandleMIMCMsgListener onHandleMIMCMsgListener = null;
     private OnHandleMessageToMessageActivityListener OnHandleMessageToMessageActivityListener = null;
     private OnCallStateListener onCallStateListener;
+    private String userName = null;
+    private String headUrl = null;
     public static int TIMEOUT_ON_LAUNCHED = 1 * 30 * 1000;
     public static int STATE_TIMEOUT = 0;
     public static int STATE_AGREE = 1;
@@ -104,7 +106,6 @@ public class UserManager {
                                 OnHandleMessageToMessageActivityListener.onHandleMessage(chatMsg,postResult.getResultObject().getUserName(), postResult.getResultObject().getHeadUrl());
                             }
                         }
-
                         @Override
                         public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
                             String content = new String(bytes);
@@ -229,13 +230,13 @@ public class UserManager {
         msg.setPayload(payload);
         String json = JSON.toJSONString(msg);
         mUser.sendMessage(toAppAccount, json.getBytes(), bizType);
-        if (bizType.equals(Constant.TEXT) || bizType.equals(Constant.PIC_FILE)) {
-            ChatMsg chatMsg = new ChatMsg();
-            chatMsg.setFromAccount(appAccount);
-            chatMsg.setMsg(msg);
-            chatMsg.setSingle(true);
-            addMsg(chatMsg);
-        }
+//        if (bizType.equals(Constant.TEXT) || bizType.equals(Constant.PIC_FILE)) {
+//            ChatMsg chatMsg = new ChatMsg();
+//            chatMsg.setFromAccount(appAccount);
+//            chatMsg.setMsg(msg);
+//            chatMsg.setSingle(true);
+//            addMsg(chatMsg);
+//        }
     }
 
     public void sendGroupMsg(long groupID, byte[] content, String bizType, boolean isUnlimitedGroup) {
