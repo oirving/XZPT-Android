@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.djylrz.xzpt.R;
@@ -17,7 +18,7 @@ import java.util.List;
 public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHolder> {
 
     private List<MyResumeItem> myResumeItems;
-    private OnremoveListnner onremoveListnner;
+    private onRemoveListener onRemoveListener;
 
     public MyResumeAdapter(List<MyResumeItem> myResumeItems) {
         this.myResumeItems = myResumeItems;
@@ -31,12 +32,17 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
         TextView companyName;
         ImageView next;
         ImageView delete;
+        LinearLayout delete_button_visible;
+        LinearLayout delete_button_gone;
         public ViewHolder(View v) {
             super(v);
             myResumeListView = v;
             jobName = (TextView)v.findViewById(R.id.job_name);
             next = (ImageView)v.findViewById(R.id.next);
             delete = (ImageView) v.findViewById(R.id.delete);
+            delete_button_visible = (LinearLayout)v.findViewById(R.id.delete_button_visible);
+            delete_button_visible = (LinearLayout)v.findViewById(R.id.delete_button_gone);
+
         }
     }
 
@@ -75,21 +81,22 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
             @Override
             //删除的事件
             public void onClick(View v) {
-                if (onremoveListnner!=null) {
-                    onremoveListnner.ondelect(position);
+                if (onRemoveListener !=null) {
+                    onRemoveListener.onDelete(position);
                     //todo 在数据库删除对应的简历 ->小榕
                     holder.delete.setVisibility(View.INVISIBLE);
                 }
             }
         });
+
     }
 
-    public interface OnremoveListnner{
-        void  ondelect(int i);
+    public interface onRemoveListener {
+        void onDelete(int i);
     }
 
-    public void setOnremoveListnner(OnremoveListnner onremoveListnner) {
-        this.onremoveListnner = onremoveListnner;
+    public void setOnRemoveListener(onRemoveListener onRemoveListener) {
+        this.onRemoveListener = onRemoveListener;
     }
 
     @Override
