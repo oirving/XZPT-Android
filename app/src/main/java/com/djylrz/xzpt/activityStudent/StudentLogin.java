@@ -210,6 +210,7 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
                         //跳转到用户主界面
                         Intent intent = new Intent(StudentLogin.this,MainActivity.class);
                         Log.d(TAG, "postLogin: 学生用户登录成功！");
+                        MyApplication.setUserType(1);
                         getStudentInfo();
                         startActivity(intent);
                         finish();

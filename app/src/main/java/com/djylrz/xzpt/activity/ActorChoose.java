@@ -156,6 +156,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                                             getStudentInfo();
                                             Intent intent = new Intent(ActorChoose.this, MainActivity.class);
                                             Log.d(TAG, "postLogin: 学生用户登录成功！");
+                                            MyApplication.setUserType(1);
                                             startActivity(intent);
                                             finish();
                                         }break;

@@ -29,6 +29,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -110,10 +113,14 @@ public class JobIntentionActivity extends BaseActivity implements View.OnClickLi
                 user.setStationLabel(job.getText().toString());//期待职业
                 user.setExpectedCity(workCity.getText().toString());//工作地点
                 user.setExpectSalary(basicSalary.getText().toString()+"k-"+topSalary.getText().toString()+"k");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Gson gson = new GsonBuilder()
+                        .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                        .create();
                 //发送修改求职意向请求
                 Log.d(TAG, "onClick: "+PostParameterName.POST_URL_UPDATE_USER_INRO+user.getToken());
                 try {
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_UPDATE_USER_INRO+user.getToken(),new JSONObject(new Gson().toJson(user)),
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_UPDATE_USER_INRO+user.getToken(),new JSONObject(gson.toJson(user)),
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {

@@ -24,6 +24,7 @@ import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PageData;
 import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.bean.User;
+import com.djylrz.xzpt.fragmentCompany.FragmentComChat;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.flyco.tablayout.SegmentTabLayout;
@@ -51,11 +52,11 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
     private EditText searchEditText;
     private Button searchButton;
     private SegmentTabLayout mTabLayout;
-    private List<RecommendCardFragment> mFragments;
+    private List<Fragment> mFragments;
     private static final String TAG = "FragmentFindJob";
 
     private SharedPreferences sharedPreferences;
-    private List<RecommendCardFragment> recommendCardFragmentList = null;
+    private List<Fragment> recommendCardFragmentList = null;
 
     @Nullable
     @Override
@@ -63,7 +64,11 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
         mFragments = new ArrayList<>();
         mDecorView = inflater.inflate(R.layout.fragment3_find_job,container,false);
         for (String title : mTitles) {
-            mFragments.add(RecommendCardFragment.getInstance(title));
+            if(title.equals("联系")){
+                mFragments.add(FragmentComChat.getInstance(title));
+            }else{
+                mFragments.add(RecommendCardFragment.getInstance(title));
+            }
         }
 
         recommendCardFragmentList=mFragments;
@@ -224,9 +229,13 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
                                         Toast.makeText(getContext(), "获取招聘信息成功", Toast.LENGTH_SHORT).show();
                                         //todo 更新页面——尚未实现下拉刷新
                                         finalRecruitments.size();
-                                        for(RecommendCardFragment recommendCardFragment:recommendCardFragmentList){
+                                        for(int i = 0; i < 2; ++i){
+                                            RecommendCardFragment recommendCardFragment = (RecommendCardFragment)recommendCardFragmentList.get(i);
                                             recommendCardFragment.updateAdapter(finalRecruitments);
                                         }
+//                                        for(Fragment fragment:recommendCardFragmentList){
+//                                            RecommendCardFragment recommendCardFragment = (RecommendCardFragment)fragment;
+//                                        }
                                     }
                                 });
                             }
