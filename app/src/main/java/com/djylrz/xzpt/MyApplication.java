@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.djylrz.xzpt.activityStudent.MainActivity;
 import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.tencent.smtt.sdk.QbSdk;
 import com.vondear.rxtool.RxTool;
 import com.vondear.rxui.view.dialog.RxDialogShapeLoading;
@@ -30,10 +31,10 @@ import java.util.List;
  */
 
 /**
-  *@Description: MyApplication
-  *@Author: mingjun
-  *@Date: 2019/5/18 上午 12:26
-  */
+ *@Description: MyApplication
+ *@Author: mingjun
+ *@Date: 2019/5/18 上午 12:26
+ */
 public class MyApplication extends Application {
 
     private static Context context;
@@ -66,6 +67,8 @@ public class MyApplication extends Application {
         //初始化腾讯x5内核
         QbSdk.initX5Environment(this,null);
         MyApplication.context = getApplicationContext();
+
+        Fresco.initialize(this);
         //初始化RxTool工具
         RxTool.init(this);
         // 注册push服务，注册成功后会向BroadcastReceiver发送广播

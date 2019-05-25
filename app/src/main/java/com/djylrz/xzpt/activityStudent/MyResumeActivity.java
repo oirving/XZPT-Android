@@ -3,6 +3,7 @@ package com.djylrz.xzpt.activityStudent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -10,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -41,12 +43,24 @@ import static com.vondear.rxtool.RxTool.getContext;
 public class MyResumeActivity extends AppCompatActivity {
 
     private static final String TAG = "MyResumeActivity";
-
     private List<MyResumeItem> myResumeList = new ArrayList<>();
     private List<Resume> resumeList = new ArrayList<>();
-
     private RecyclerView recyclerView;
-    private MyResumeAdapter adapter;
+    private MyResumeAdapter adapter;  /**
+     * Fragment中初始化Toolbar
+     * @param toolbar
+     * @param title 标题
+     * @param isDisplayHomeAsUp 是否显示返回箭头
+     */
+    public void initToolbar(Toolbar toolbar, String title, boolean isDisplayHomeAsUp) {
+        AppCompatActivity appCompatActivity= this;
+        appCompatActivity.setSupportActionBar(toolbar);
+        ActionBar actionBar = appCompatActivity.getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(title);
+            actionBar.setDisplayHomeAsUpEnabled(isDisplayHomeAsUp);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.activity.ActorChoose;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
