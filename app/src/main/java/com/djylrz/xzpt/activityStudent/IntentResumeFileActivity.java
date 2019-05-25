@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.utils.PostParameterName;
 
 public class IntentResumeFileActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -49,6 +50,11 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*获取intent传输过来的简历模板文件名*/
+        fileName=title=getIntent().getStringExtra(PostParameterName.INTENT_PUT_EXTRA_KEY_RESUME_TEMPLATE_FILENAME);
+        /*拼接简历模版URL*/
+        fileUrl=PostParameterName.DOWNLOAD_URL_RESUME_IMAGE_PREFIX+fileName;
+
         setContentView(R.layout.activity_intent_resume_file);
         toolbar = (Toolbar) findViewById(R.id.resume_toolbar);
         url = (EditText) findViewById(R.id.text_url);
@@ -63,7 +69,8 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
         switch (v.getId()) {
             case R.id.resume_file_download:
                 //从输入框获取远程文件地址，正式版请去除
-                fileUrl = url.getText().toString();
+                //fileUrl = url.getText().toString();
+                url.setText(fileUrl);
                 //动态权限申请
                 if (ContextCompat.checkSelfPermission(IntentResumeFileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(IntentResumeFileActivity.this, new String[]{ Manifest.permission. WRITE_EXTERNAL_STORAGE }, 1);

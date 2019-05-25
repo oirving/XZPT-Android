@@ -61,7 +61,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(TimeLineViewHolder holder, int position) {
+    public void onBindViewHolder(final TimeLineViewHolder holder, int position) {
 
         final TimeLineModel timeLineModel = mFeedList.get(position);
 
@@ -88,9 +88,11 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
         holder.mCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, ActivityWebView.class);
-                intent.putExtra("URL",timeLineModel.getURL());
-                mContext.startActivity(intent);
+                if(timeLineModel.getmLocation() != null){
+                    Intent intent = new Intent(mContext, ActivityWebView.class);
+                    intent.putExtra("URL",timeLineModel.getURL());
+                    mContext.startActivity(intent);
+                }
                 //Toast.makeText(mContext, "你点击了" + timeLineModel.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

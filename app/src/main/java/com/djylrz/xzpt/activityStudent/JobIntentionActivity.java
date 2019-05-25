@@ -169,7 +169,7 @@ public class JobIntentionActivity extends BaseActivity implements View.OnClickLi
                                 Log.d(TAG, "onResponse: 返回"+response.toString());
                                 Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
 
-                                Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH;mm:ss").create();
+                                Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
                                 final TempResponseData<User> postResult = gson.fromJson(response.toString(), jsonType);
                                 Log.d(TAG, "onResponse: "+postResult.getResultCode());

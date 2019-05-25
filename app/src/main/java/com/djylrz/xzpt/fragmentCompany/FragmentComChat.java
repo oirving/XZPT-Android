@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.fragmentCompany;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,18 +13,16 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activity.DefaultMessagesActivity;
 import com.djylrz.xzpt.bean.ChatUser;
 import com.djylrz.xzpt.bean.Dialog;
-import com.djylrz.xzpt.bean.DialogsFixtures;
 import com.djylrz.xzpt.bean.Message;
-import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.HttpUtil;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.xiaomi.mimc.bean.ChatMsg;
 import com.djylrz.xzpt.xiaomi.mimc.bean.ContactResponseData;
+import com.djylrz.xzpt.xiaomi.mimc.bean.Msg;
 import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,17 +35,21 @@ import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
 import com.vondear.rxtool.view.RxToast;
 import com.xiaomi.mimc.MIMCGroupMessage;
 import com.xiaomi.mimc.MIMCMessage;
-import com.xiaomi.mimc.MIMCOnlineStatusListener;
 import com.xiaomi.mimc.MIMCServerAck;
 import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimc.common.MIMCConstant;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.text.ParseException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -59,6 +62,7 @@ public class FragmentComChat extends Fragment
     private DialogsList dialogsList;
     protected ImageLoader imageLoader;
     protected DialogsListAdapter<Dialog> dialogsAdapter;
+    private HashMap<String, Integer> unReadMessageCountMap = new HashMap<>();
 
     @Nullable
     @Override
@@ -126,7 +130,11 @@ public class FragmentComChat extends Fragment
                 String content = new String(bytes);
                 Log.d(TAG, "获取消息列表成功: " + content);
                 //解析会话列表json
-                ParseJson(content);
+                try {
+                    ParseJson(content);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -138,7 +146,7 @@ public class FragmentComChat extends Fragment
     @Override
     public void onDialogClick(Dialog dialog) {
         Toast.makeText(getContext(), "点击了消息项", Toast.LENGTH_SHORT).show();
-        DefaultMessagesActivity.open(getContext());
+        DefaultMessagesActivity.open(getContext(),dialog.getId());
         //onRefreshDialogList();
     }
 
@@ -153,9 +161,8 @@ public class FragmentComChat extends Fragment
       *@Author: mingjun
       *@Date: 2019/5/22 下午 4:29
       */
-    public void ParseJson(String json){
+    public void ParseJson(String json) throws UnsupportedEncodingException {
         GsonBuilder builder = new GsonBuilder();
-
         Gson gson =builder.create();
         Type jsonType = new TypeToken<ContactResponseData<List<Data<LastMessage>>>>() {}.getType();
         final ContactResponseData<List<Data<LastMessage>>> postResult = gson.fromJson(json, jsonType);
@@ -169,8 +176,29 @@ public class FragmentComChat extends Fragment
                 users.add(chatUser);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Message message = null;
-                message = new Message(content.getLastMessage().getFromUuid(),chatUser,content.getLastMessage().getPayload(),new Date(Long.parseLong(content.getTimestamp())));
-                Dialog dialog = new Dialog(content.getLastMessage().getSequence(),content.getLastMessage().getFromAccount(),"",users,message,1);
+                //需要对Payload进行base64解密
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    //解析json消息体
+                    String payload = new String(Base64.getDecoder().decode(content.getLastMessage().getPayload().replace("\r\n", "")));
+                    Log.d(TAG, "ParseJson: " + payload);
+                    Log.d(TAG, "unParseJson: " + content.getLastMessage().getPayload());
+
+                    String regExp = "\"payload\":\"(.*)\"";
+                    Pattern pattern;
+                    Matcher matcher;
+                    pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
+                    matcher = pattern.matcher(payload);
+                    if(matcher.find ()){
+                        String lastMessageBase64 = matcher.group(1);
+                        String lastMessage = new String(Base64.getDecoder().decode(lastMessageBase64));
+                        message = new Message(content.getLastMessage().getFromUuid(),chatUser,new String(lastMessage),new Date(Long.parseLong(content.getTimestamp())));
+                    }else{
+                        message = new Message(content.getLastMessage().getFromUuid(),chatUser,"消息已损坏",new Date(Long.parseLong(content.getTimestamp())));
+                    }
+                }else{
+                    message = new Message(content.getLastMessage().getFromUuid(),chatUser,"消息已损坏",new Date(Long.parseLong(content.getTimestamp())));
+                }
+                Dialog dialog = new Dialog(content.getLastMessage().getFromAccount(),content.getLastMessage().getFromAccount(),"",users,message,0);
                 dialogsAdapter.upsertItem(dialog);
             }
         }
@@ -188,18 +216,21 @@ public class FragmentComChat extends Fragment
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-//
-//                mDatas.add(chatMsg);
-//                mAdapter.notifyDataSetChanged();
-//                mRecyclerView.scrollToPosition(mAdapter.getItemCount() - 1);
                 ArrayList<ChatUser> users = new ArrayList<>();
                 ChatUser chatUser = new ChatUser(chatMsg.getMsg().getMsgId(),chatMsg.getFromAccount(),"",true);
                 users.add(chatUser);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Message message = null;
-                message = new Message(chatMsg.getMsg().getMsgId(),chatUser,chatMsg.getMsg().getPayload().toString(),new Date(chatMsg.getMsg().getTimestamp()));
-                Dialog dialog = new Dialog(chatMsg.getMsg().getMsgId(),chatMsg.getFromAccount(),"",users,message,1);
+                message = new Message(chatMsg.getMsg().getMsgId(),chatUser,new String(chatMsg.getMsg().getPayload()),new Date(chatMsg.getMsg().getTimestamp()));
+                if(unReadMessageCountMap.get(chatMsg.getFromAccount()) == null){
+                    unReadMessageCountMap.put(chatMsg.getFromAccount(),1);
+                }else{
+                    unReadMessageCountMap.put(chatMsg.getFromAccount(),unReadMessageCountMap.get(chatMsg.getFromAccount())+1);
+                }
+                Dialog dialog = new Dialog(chatMsg.getFromAccount(),chatMsg.getFromAccount(),"",users,message,unReadMessageCountMap.get(chatMsg.getFromAccount()));
+
                 dialogsAdapter.upsertItem(dialog);
+                dialogsAdapter.updateItemById(dialog);
                 Log.d(TAG, "receive new message: " + chatMsg.getFromAccount() + " " + chatMsg.getMsg().getMsgId());
             }
         });
@@ -439,4 +470,5 @@ class LastMessage{
     public void setBizType(String bizType) {
         this.bizType = bizType;
     }
+
 }
