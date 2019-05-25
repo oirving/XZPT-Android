@@ -23,6 +23,7 @@ public class PostParameterName {
     public static final String POST_URL_GET_HOT_RECRUIMENT=HOST +"/user/gethotspot?token=";//&keyWord=  获取热度招聘信息
 
 
+    public static final String POST_URL_GET_RESUME_TEMPLATE = HOST +"/getlistresumetemplate";//获取简历模版
     public static final String POST_URL_CREATE_RESUME = HOST + "/user/createresume?token=";//创建简历接口
     public static final String POST_URL_GET_LIST_RESUME = HOST + "/user/getlistresume?token=";//获取所有简历接口
     public static final String POST_URL_UPDATE_RESUME = HOST + "/user/updateresume?token=";//修改简历接口
@@ -66,4 +67,8 @@ public class PostParameterName {
 
     public static final int CHOOSE_RESUME_TO_DELIVER = 1;//Activity之间选择简历用于投递的跳转的结果
 
+    /*下载拼接链接*/
+    public static final String DOWNLOAD_URL_RESUME_IMAGE_PREFIX = HOST+"/file/";//简历模板缩略图
+    /*intent之间传递简历模板的key*/
+    public static final String INTENT_PUT_EXTRA_KEY_RESUME_TEMPLATE_FILENAME = "filename";
 }

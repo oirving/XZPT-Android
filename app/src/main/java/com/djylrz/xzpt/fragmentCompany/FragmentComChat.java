@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.fragmentCompany;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,16 +13,16 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.activity.DefaultMessagesActivity;
 import com.djylrz.xzpt.bean.ChatUser;
 import com.djylrz.xzpt.bean.Dialog;
-import com.djylrz.xzpt.bean.DialogsFixtures;
 import com.djylrz.xzpt.bean.Message;
 import com.djylrz.xzpt.utils.HttpUtil;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.xiaomi.mimc.bean.ChatMsg;
 import com.djylrz.xzpt.xiaomi.mimc.bean.ContactResponseData;
+import com.djylrz.xzpt.xiaomi.mimc.bean.Msg;
 import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,28 +31,38 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.dialogs.DialogsList;
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
+
+import com.vondear.rxtool.view.RxToast;
 import com.xiaomi.mimc.MIMCGroupMessage;
 import com.xiaomi.mimc.MIMCMessage;
 import com.xiaomi.mimc.MIMCServerAck;
 import com.xiaomi.mimc.MIMCUser;
 import com.xiaomi.mimc.common.MIMCConstant;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
 
 
 public class FragmentComChat extends Fragment
         implements DialogsListAdapter.OnDialogClickListener<Dialog>,
-        DialogsListAdapter.OnDialogLongClickListener<Dialog> ,
-        UserManager.OnHandleMIMCMsgListener{
+        DialogsListAdapter.OnDialogLongClickListener<Dialog> ,UserManager.OnHandleMIMCMsgListener{
     private static final String TAG = "FragmentComChat";
     private View mDecorView;
     private DialogsList dialogsList;
     protected ImageLoader imageLoader;
     protected DialogsListAdapter<Dialog> dialogsAdapter;
+    private HashMap<String, Integer> unReadMessageCountMap = new HashMap<>();
 
     @Nullable
     @Override
@@ -59,6 +70,8 @@ public class FragmentComChat extends Fragment
         mDecorView = inflater.inflate(R.layout.fragment9_com_chat, container, false);
         dialogsList = (DialogsList) mDecorView.findViewById(R.id.dialogsList);
         initAdapter();
+        // 设置处理MIMC消息监听器
+        UserManager.getInstance().setHandleMIMCMsgListener(this);
         return mDecorView;
     }
 
@@ -78,12 +91,12 @@ public class FragmentComChat extends Fragment
          adapter.addItem(int position, DIALOG dialog) - adds a new dialog to the specified position.
          adapter.upsertItem(DIALOG dialog) - adds one dialog to the end of the list if not exists, otherwise updates the existing dialog.
          */
-        dialogsAdapter.setItems(DialogsFixtures.getDialogs());
-
+        //dialogsAdapter.setItems(DialogsFixtures.getDialogs());
         dialogsAdapter.setOnDialogClickListener(this);
         dialogsAdapter.setOnDialogLongClickListener(this);
-
         dialogsList.setAdapter(dialogsAdapter);
+
+
     }
 
     //f如果对话框已更改，您可以通过调用按列表中的位置adapter.updateItem(int position, DIALOG item)更新它，
@@ -117,7 +130,11 @@ public class FragmentComChat extends Fragment
                 String content = new String(bytes);
                 Log.d(TAG, "获取消息列表成功: " + content);
                 //解析会话列表json
-                ParseJson(content);
+                try {
+                    ParseJson(content);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -129,7 +146,8 @@ public class FragmentComChat extends Fragment
     @Override
     public void onDialogClick(Dialog dialog) {
         Toast.makeText(getContext(), "点击了消息项", Toast.LENGTH_SHORT).show();
-        onRefreshDialogList();
+        DefaultMessagesActivity.open(getContext(),dialog.getId());
+        //onRefreshDialogList();
     }
 
     @Override
@@ -143,9 +161,8 @@ public class FragmentComChat extends Fragment
       *@Author: mingjun
       *@Date: 2019/5/22 下午 4:29
       */
-    public void ParseJson(String json){
+    public void ParseJson(String json) throws UnsupportedEncodingException {
         GsonBuilder builder = new GsonBuilder();
-
         Gson gson =builder.create();
         Type jsonType = new TypeToken<ContactResponseData<List<Data<LastMessage>>>>() {}.getType();
         final ContactResponseData<List<Data<LastMessage>>> postResult = gson.fromJson(json, jsonType);
@@ -153,7 +170,36 @@ public class FragmentComChat extends Fragment
         if(postResult.getCode().equals(200)){
             List<Data<LastMessage>>  dataList = postResult.getData();
             for (int i = 0; i < dataList.size(); ++i) {
-                Log.d(TAG, "data"+i+dataList.get(i));
+                Data<LastMessage> content = dataList.get(i);
+                ArrayList<ChatUser> users = new ArrayList<>();
+                ChatUser chatUser = new ChatUser(content.getLastMessage().getFromUuid(),content.getLastMessage().getFromAccount(),"",true);
+                users.add(chatUser);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Message message = null;
+                //需要对Payload进行base64解密
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    //解析json消息体
+                    String payload = new String(Base64.getDecoder().decode(content.getLastMessage().getPayload().replace("\r\n", "")));
+                    Log.d(TAG, "ParseJson: " + payload);
+                    Log.d(TAG, "unParseJson: " + content.getLastMessage().getPayload());
+
+                    String regExp = "\"payload\":\"(.*)\"";
+                    Pattern pattern;
+                    Matcher matcher;
+                    pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
+                    matcher = pattern.matcher(payload);
+                    if(matcher.find ()){
+                        String lastMessageBase64 = matcher.group(1);
+                        String lastMessage = new String(Base64.getDecoder().decode(lastMessageBase64));
+                        message = new Message(content.getLastMessage().getFromUuid(),chatUser,new String(lastMessage),new Date(Long.parseLong(content.getTimestamp())));
+                    }else{
+                        message = new Message(content.getLastMessage().getFromUuid(),chatUser,"消息已损坏",new Date(Long.parseLong(content.getTimestamp())));
+                    }
+                }else{
+                    message = new Message(content.getLastMessage().getFromUuid(),chatUser,"消息已损坏",new Date(Long.parseLong(content.getTimestamp())));
+                }
+                Dialog dialog = new Dialog(content.getLastMessage().getFromAccount(),content.getLastMessage().getFromAccount(),"",users,message,0);
+                dialogsAdapter.upsertItem(dialog);
             }
         }
     }
@@ -163,189 +209,113 @@ public class FragmentComChat extends Fragment
       *@Param: [chatMsg]
       *@Return: void
       *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:51
+      *@Date: 2019/5/23 下午 5:42
       */
-
     @Override
-    public void onHandleMessage(ChatMsg chatMsg) {
+    public void onHandleMessage(final ChatMsg chatMsg) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<ChatUser> users = new ArrayList<>();
+                ChatUser chatUser = new ChatUser(chatMsg.getMsg().getMsgId(),chatMsg.getFromAccount(),"",true);
+                users.add(chatUser);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Message message = null;
+                message = new Message(chatMsg.getMsg().getMsgId(),chatUser,new String(chatMsg.getMsg().getPayload()),new Date(chatMsg.getMsg().getTimestamp()));
+                if(unReadMessageCountMap.get(chatMsg.getFromAccount()) == null){
+                    unReadMessageCountMap.put(chatMsg.getFromAccount(),1);
+                }else{
+                    unReadMessageCountMap.put(chatMsg.getFromAccount(),unReadMessageCountMap.get(chatMsg.getFromAccount())+1);
+                }
+                Dialog dialog = new Dialog(chatMsg.getFromAccount(),chatMsg.getFromAccount(),"",users,message,unReadMessageCountMap.get(chatMsg.getFromAccount()));
 
+                dialogsAdapter.upsertItem(dialog);
+                dialogsAdapter.updateItemById(dialog);
+                Log.d(TAG, "receive new message: " + chatMsg.getFromAccount() + " " + chatMsg.getMsg().getMsgId());
+            }
+        });
     }
 
-    /**
-      *@Description: 处理群消息
-      *@Param: [chatMsg]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:51
-      */
     @Override
     public void onHandleGroupMessage(ChatMsg chatMsg) {
 
     }
 
-    /**
-      *@Description: 处理登录状态
-      *@Param: [status]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:51
-      */
+
+
+    //处理登录状态改变
     @Override
     public void onHandleStatusChanged(MIMCConstant.OnlineStatus status) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //刷新会话列表
+                onRefreshDialogList();
+                RxToast.info("聊天功能初始化成功->用户token为：" + UserManager.getInstance().getUser().getToken());            }
+        });
 
     }
 
-    /**
-      *@Description: 处理服务端消息确认
-      *@Param: [serverAck]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:51
-      */
     @Override
     public void onHandleServerAck(MIMCServerAck serverAck) {
 
     }
 
-    /**
-      *@Description: 处理创建群
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:51
-      */
     @Override
     public void onHandleCreateGroup(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理查询群信息
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:52
-      */
     @Override
     public void onHandleQueryGroupInfo(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理查询已加入的群信息
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:52
-      */
     @Override
     public void onHandleQueryGroupsOfAccount(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理加入群
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:52
-      */
     @Override
     public void onHandleJoinGroup(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理非群主退群
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:52
-      */
     @Override
     public void onHandleQuitGroup(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理群主踢人出群
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:52
-      */
     @Override
     public void onHandleKickGroup(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理群主更新群信息
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:53
-      */
     @Override
     public void onHandleUpdateGroup(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理群主销毁群
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:54
-      */
     @Override
     public void onHandleDismissGroup(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理拉取单聊消息
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:54
-      */
     @Override
     public void onHandlePullP2PHistory(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理拉取群聊消息
-      *@Param: [json, isSuccess]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:54
-      */
     @Override
     public void onHandlePullP2THistory(String json, boolean isSuccess) {
 
     }
 
-    /**
-      *@Description: 处理发送消息超时
-      *@Param: [message]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:54
-      */
     @Override
     public void onHandleSendMessageTimeout(MIMCMessage message) {
 
     }
 
-    /**
-      *@Description: 处理发送群消息超时
-      *@Param: [groupMessage]
-      *@Return: void
-      *@Author: mingjun
-      *@Date: 2019/5/22 下午 4:54
-      */
     @Override
     public void onHandleSendGroupMessageTimeout(MIMCGroupMessage groupMessage) {
 
@@ -380,6 +350,7 @@ public class FragmentComChat extends Fragment
     public void onHandleQueryUnlimitedGroupOnlineUsers(String json, boolean isSuccess) {
 
     }
+
 }
 class Data<T>{
     /*
@@ -458,7 +429,7 @@ class LastMessage{
     private String fromAccount;
     private String payload;///消息体需base64解码
     private String sequence;//sequence主要用来做消息的排序和去重，全局唯一
-    private String bizType;//消息的扩展字段，参考历史消息页面
+    private String bizType;//可用于表示消息类型扩展字段（可选）
 
     public String getFromUuid() {
         return fromUuid;
@@ -499,4 +470,5 @@ class LastMessage{
     public void setBizType(String bizType) {
         this.bizType = bizType;
     }
+
 }
