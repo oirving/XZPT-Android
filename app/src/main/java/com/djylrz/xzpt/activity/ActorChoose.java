@@ -32,6 +32,7 @@ import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.vondear.rxtool.view.RxToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -171,6 +172,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                     }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    RxToast.error("无法连接到服务器，请检查网络连接");
                     Log.e("TAG", error.getMessage(), error);
                 }});
             VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
@@ -219,6 +221,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                     }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    RxToast.error("无法连接到服务器，请检查网络连接");
                     Log.e("TAG", error.getMessage(), error);
                 }});
             VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request

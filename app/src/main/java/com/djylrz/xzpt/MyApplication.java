@@ -53,6 +53,9 @@ public class MyApplication extends Application {
     //全局加载动画对话框
     public static RxDialogShapeLoading rxDialogShapeLoading;
 
+    //当前用户类型
+    public static int userType = 0;
+
 
     //全局用户id
     public static String userId = null;
@@ -236,5 +239,13 @@ public class MyApplication extends Application {
 
     public static void setUserId(String userId) {
         MyApplication.userId = userId;
+    }
+
+    public static int getUserType() {
+        return userType;
+    }
+
+    public static void setUserType(int userType) {
+        MyApplication.userType = userType;
     }
 }
