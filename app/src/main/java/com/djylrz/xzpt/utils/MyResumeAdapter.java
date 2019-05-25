@@ -35,8 +35,6 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
             super(v);
             myResumeListView = v;
             jobName = (TextView)v.findViewById(R.id.job_name);
-            resumeState = (TextView)v.findViewById(R.id.resume_state);
-            companyName = (TextView)v.findViewById(R.id.company_name);
             next = (ImageView)v.findViewById(R.id.next);
             delete = (ImageView) v.findViewById(R.id.delete);
         }
@@ -53,7 +51,7 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 MyResumeItem myResumeItem = myResumeItems.get(position);
-                //todo 跳转到BasicResumeActivity,填入对应该简历的信息 ->小榕
+                //todo 跳转到EditMyResumectivity,填入对应该简历的信息 ->小榕
                 Intent intent = new Intent(v.getContext(), EditMyResumeActivity.class);
                 v.getContext().startActivity(intent);
             }
@@ -65,17 +63,6 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         MyResumeItem myResumeItem = myResumeItems.get(position);
         holder.jobName.setText(myResumeItem.getJobName());
-        holder.companyName.setText(myResumeItem.getCompanyName());
-        holder.delete.setImageResource(myResumeItem.getDelete());
-        holder.resumeState.setText(myResumeItem.getResumeState());
-        switch (myResumeItem.getResumeState()) {
-            case "通过" :
-                holder.resumeState.setBackgroundColor(R.color.green);
-                break;
-            case "待处理":
-                holder.resumeState.setBackgroundColor(R.color.yellow);
-        }
-        holder.next.setImageResource(myResumeItem.getNext());
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -91,6 +78,7 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
                 if (onremoveListnner!=null) {
                     onremoveListnner.ondelect(position);
                     //todo 在数据库删除对应的简历 ->小榕
+                    holder.delete.setVisibility(View.INVISIBLE);
                 }
             }
         });

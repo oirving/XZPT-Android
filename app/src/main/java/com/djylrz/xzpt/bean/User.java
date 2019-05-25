@@ -9,27 +9,27 @@ import java.io.Serializable;
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private String userId;
-    private String telephone;
-    private String passwd;
-    private String userName;
-    private String headUrl;
-    private String email;
-    private long sex;
-    private String school;
-    private String specialty;
-    private long highestEducation;
-    private java.sql.Date startTime;
-    private java.sql.Date endTime;
-    private long workTime;
-    private long jobType;
-    private String presentCity;
-    private String expectedCity;
-    private long industryLabel;
-    private String stationLabel;
-    private String expectSalary;
+    private String userId;//用户id
+    private String telephone;//电话号码
+    private String passwd;//密码
+    private String userName;//姓名
+    private String headUrl;//头像地址
+    private String email;//邮箱
+    private long sex;//性别
+    private String school;//学校
+    private String specialty;//专业
+    private long highestEducation;//最高学历
+    private java.sql.Date startTime;//开始时间
+    private java.sql.Date endTime;//结束时间
+    private long workTime;//工作时间制度
+    private long jobType;//工作类型
+    private String presentCity;//居住城市
+    private String expectedCity;//期望城市
+    private long industryLabel;//行业标签
+    private String stationLabel;//岗位标签
+    private String expectSalary;//期望薪资
     private String token;
-    private long age;
+    private long age;//年龄
 
 
     public String getUserId() {

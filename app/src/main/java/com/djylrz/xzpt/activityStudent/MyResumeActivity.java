@@ -113,10 +113,8 @@ public class MyResumeActivity extends AppCompatActivity {
 //                                            myResumeList.clear();
 //                                            for (Resume resume : resumeList){
 //                                                //todo 简历表无创建简历时间，无岗位意向（求职意向中有）
-//                                                MyResumeItem resumeItem = new ResumeItem(Constants.RESUME_STATE[(int)resume.getResumeStatus()+1],
-//                                                        resume.getExpectWork(),
-//                                                        resume.getUserName(),
-//                                                        String.valueOf(resume.getResumeId()));
+//                                                MyResumeItem resumeItem = new MyResumeItem(
+//                                                        resume.getUserName());
 //                                                myResumeList.add(resumeItem);
 //                                            }
 //                                        }
@@ -128,7 +126,7 @@ public class MyResumeActivity extends AppCompatActivity {
 //                                    @Override
 //                                    public void run() {
 //                                        //todo 处理获得的所有简历
-//                                        adapter.setmResumeList(mResumeList);
+//                                        adapter.set
 //                                        adapter.setResumeList(resumeList);
 //                                        if (getIntent().getIntExtra("selectResume",0)==CHOOSE_RESUME_TO_DELIVER){//选择简历用于投体
 //                                            adapter.setForDeliver(true);
@@ -156,7 +154,7 @@ public class MyResumeActivity extends AppCompatActivity {
     public void initPage(){
         //todo 填入简历列表Item的基本信息,按照以下格式填入 ->小榕
         for(int i=0;i<5;i++) {
-            MyResumeItem myResumeItem = new MyResumeItem("算法工程师","待处理","公司名",R.drawable.right,R.drawable.delete_resume);
+            MyResumeItem myResumeItem = new MyResumeItem("算法工程师");
             myResumeList.add(myResumeItem);
         }
     }

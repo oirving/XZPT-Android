@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -22,6 +23,8 @@ import com.djylrz.xzpt.activity.BaseActivity;
 import com.djylrz.xzpt.bean.PostResult;
 import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.bean.User;
+import com.djylrz.xzpt.datePicker.CustomDatePicker;
+import com.djylrz.xzpt.datePicker.DateFormatUtils;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -51,10 +54,13 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
     private EditText school;//毕业院校
     private Spinner highestEducation;//最高学历
     private EditText major;//主修专业
-    private EditText startTime;//教育开始时间
-    private EditText endTime;//教育结束时间
     private ArrayAdapter<String> sexAdapter;
     private ArrayAdapter<String> highestEducationAdapter;
+    private TextView startTime;
+    private java.util.Date startDate;
+    private java.util.Date endDate;
+    private TextView endTime;
+    private CustomDatePicker startTimeDatePicker,endTimeDatePicker;
     private String[] sexArray=new String[]{"默认","男","女"};
     private String[] highestEducationArray=new String[]{"学历不限","大专","本科","硕士","博士及以上"};
 
@@ -74,8 +80,10 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         currentCity = (EditText) findViewById(R.id.info_currentcity);
         school = (EditText) findViewById(R.id.info_school);
         major = (EditText) findViewById(R.id.info_major);
-        startTime = (EditText) findViewById(R.id.info_start_time);
-        endTime = (EditText) findViewById(R.id.info_end_time);
+        startTime = (TextView) findViewById(R.id.info_start_time);
+        startTime.setOnClickListener(this);
+        endTime = (TextView) findViewById(R.id.info_end_time);
+        endTime.setOnClickListener(this);
         sex = (Spinner) findViewById(R.id.sex_spinner);
         highestEducation = (Spinner) findViewById(R.id.highestEducation);
         //性别下拉框
@@ -86,7 +94,6 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         sex.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(PersonalInformation.this,"性别"+sexArray[position], Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "性别："+position);
                 user.setSex(position);
             }
@@ -104,7 +111,6 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         highestEducation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(PersonalInformation.this,"最高学历："+highestEducationArray[position], Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "最高学历："+position);
                 user.setHighestEducation(position);
             }
@@ -116,20 +122,26 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         });
         Button next = (Button)findViewById(R.id.info_next_button);//保存按钮
         next.setOnClickListener(this);
-
+        initStartTimeDatePicker();
+        initEndTimeDatePicker();
         getStudentInfo();
-
-
-
         Log.d(TAG, "onCreate: ");
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.info_start_time:
+                // 日期格式为yyyy-MM-dd
+                startTimeDatePicker.show(startTime.getText().toString());
+                break;
+            case R.id.info_end_time:
+                // 日期格式为yyyy-MM-dd
+                endTimeDatePicker.show(endTime.getText().toString());
+                break;
             //保存按钮
             case R.id.info_next_button:
-                if (isYear(startTime.getText().toString())&&isYear(endTime.getText().toString())&&isPhone(phoneNum.getText().toString())) {
+                if (isPhone(phoneNum.getText().toString())) {
                     //保存参数
                     user.setUserName(name.getText().toString());//名字
                     user.setSpecialty(major.getText().toString());//专业
@@ -141,12 +153,19 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                     user.setTelephone(phoneNum.getText().toString());//电话，没有限定输入格式
 
                     Calendar calendar = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    try {
+                        startDate =  sdf.parse(startTime.getText().toString());
+                        endDate =  sdf.parse(endTime.getText().toString());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                     if (!startTime.getText().toString().equals("")){
-                        calendar.set(Calendar.YEAR,Integer.parseInt(startTime.getText().toString()));
+                        calendar.setTime(startDate);
                         user.setStartTime(new java.sql.Date(calendar.getTime().getTime()));//教育开始时间
                     }
                     if (!endTime.getText().toString().equals("")){
-                        calendar.set(Calendar.YEAR,Integer.parseInt(endTime.getText().toString()));
+                        calendar.setTime(endDate);
                         user.setEndTime(new java.sql.Date(calendar.getTime().getTime()));//教育结束时间，string->Date,没有限定输入格式                ;
                     }
 
@@ -190,26 +209,12 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(this,"电话或教育时间输入有误！",Toast.LENGTH_SHORT);
+                    Toast.makeText(this,"电话号码输入有误！",Toast.LENGTH_SHORT).show();
                 }
                 break;
-
             default:
                 break;
         }
-    }
-
-    private boolean isYear(String year){
-        // 指定日期格式为四位年/两位月份/两位日期，注意yyyy/MM/dd区分大小写；
-        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-        try {
-            // 设置lenient为false. 否则SimpleDateFormat会比较宽松地验证日期，比如2007/02/29会被接受，并转换成2007/03/01
-            format.setLenient(false);
-            format.parse(year);
-        } catch (ParseException e) {
-            return false;
-        }
-        return true;
     }
 
     public static boolean isPhone(String phone) {
@@ -238,14 +243,12 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
         sex.setSelection((int)user.getSex());
         Calendar calendar = Calendar.getInstance();
         if (user.getStartTime()!=null){
-            calendar.setTime(new Date(user.getStartTime().getTime()));
-            startTime.setText(calendar.get(Calendar.YEAR) + "");
+            startTime.setText(user.getStartTime() + "");
         }else{
             startTime.setText("");
         }
         if (user.getEndTime()!=null){
-            calendar.setTime(new Date(user.getEndTime().getTime()));
-            endTime.setText(calendar.get(Calendar.YEAR) + "");
+            endTime.setText(user.getEndTime() + "");
         }else{
             endTime.setText("");
         }
@@ -320,6 +323,59 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
             }
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        startTimeDatePicker.onDestroy();
+        endTimeDatePicker.onDestroy();
+    }
+
+    private void initStartTimeDatePicker() {
+        long beginTimestamp = DateFormatUtils.str2Long("2009-05-01", false);
+        long endTimestamp = System.currentTimeMillis();
+
+        startTime.setText(DateFormatUtils.long2Str(beginTimestamp, false));
+
+        // 通过时间戳初始化日期，毫秒级别
+        startTimeDatePicker = new CustomDatePicker(this, new CustomDatePicker.Callback() {
+            @Override
+            public void onTimeSelected(long timestamp) {
+                startTime.setText(DateFormatUtils.long2Str(timestamp, false));
+            }
+        }, beginTimestamp, endTimestamp);
+        // 不允许点击屏幕或物理返回键关闭
+        startTimeDatePicker.setCancelable(true);
+        // 不显示时和分
+        startTimeDatePicker.setCanShowPreciseTime(false);
+        // 不允许循环滚动
+        startTimeDatePicker.setScrollLoop(false);
+        // 不允许滚动动画
+        startTimeDatePicker.setCanShowAnim(false);
+    }
+
+    private void initEndTimeDatePicker() {
+        long beginTimestamp = DateFormatUtils.str2Long("2009-05-01", false);
+        long endTimestamp = DateFormatUtils.str2Long("2040-05-01", false);
+
+        endTime.setText(DateFormatUtils.long2Str(beginTimestamp, false));
+
+        // 通过时间戳初始化日期，毫秒级别
+        endTimeDatePicker = new CustomDatePicker(this, new CustomDatePicker.Callback() {
+            @Override
+            public void onTimeSelected(long timestamp) {
+                endTime.setText(DateFormatUtils.long2Str(timestamp, false));
+            }
+        }, beginTimestamp, endTimestamp);
+        // 不允许点击屏幕或物理返回键关闭
+        endTimeDatePicker.setCancelable(true);
+        // 不显示时和分
+        endTimeDatePicker.setCanShowPreciseTime(false);
+        // 不允许循环滚动
+        endTimeDatePicker.setScrollLoop(false);
+        // 不允许滚动动画
+        endTimeDatePicker.setCanShowAnim(false);
     }
 }
 
