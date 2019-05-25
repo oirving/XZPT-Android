@@ -9,6 +9,14 @@ public class MyResumeItem {
     private int delete;
     private Resume resume;
 
+    public Resume getResume() {
+        return resume;
+    }
+
+    public void setResume(Resume resume) {
+        this.resume = resume;
+    }
+
     public MyResumeItem(Resume resume){
         this.resume=resume;
         this.jobName=resume.getExpectWork();

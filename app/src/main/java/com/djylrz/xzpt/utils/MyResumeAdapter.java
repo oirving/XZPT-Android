@@ -3,6 +3,7 @@ package com.djylrz.xzpt.utils;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activityStudent.EditMyResumeActivity;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
 public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHolder> {
+
+    private static final String TAG = "MyResumeAdapter";
 
     private List<MyResumeItem> myResumeItems;
     private onRemoveListener onRemoveListener;
@@ -82,9 +89,38 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
             //删除的事件
             public void onClick(View v) {
                 if (onRemoveListener !=null) {
-                    onRemoveListener.onDelete(position);
                     //todo 在数据库删除对应的简历 ->小榕
-                    holder.delete.setVisibility(View.INVISIBLE);
+                    //holder.delete.setVisibility(View.INVISIBLE);
+
+                    final int position = holder.getAdapterPosition();
+                    MyResumeItem myResumeItem = myResumeItems.get(position);
+                    long resumeID = myResumeItem.getResume().getResumeId();
+                    String token = v.getContext().getSharedPreferences("token",0).getString(PostParameterName.STUDENT_TOKEN,null);
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                            PostParameterName.POST_URL_DELETE_RESUME+token+
+                                    "&"+PostParameterName.REQUEST_RESUME_ID+"="+resumeID,
+                            new JSONObject(),
+                            new com.android.volley.Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    Log.d(TAG, "onResponse: 返回"+response.toString());
+                                    try {
+                                        if (response.getString(PostParameterName.RESPOND_RESULTCODE).equals("200")){
+                                            Log.d(TAG, "onResponse: 删除简历成功");
+                                            //remove(position) notifyDataSetChanged()
+                                            onRemoveListener.onDelete(position);
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }, new com.android.volley.Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("TAG", error.getMessage(), error);
+                        }});
+                    VolleyNetUtil.getInstance().setRequestQueue(v.getContext());
+                    VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
                 }
             }
         });

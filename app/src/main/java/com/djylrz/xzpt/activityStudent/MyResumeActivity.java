@@ -124,7 +124,7 @@ public class MyResumeActivity extends AppCompatActivity {
                                             for (Resume resume : resumeList){
                                                 //简历表无创建简历时间，无岗位意向（求职意向中有）
                                                 MyResumeItem resumeItem = new MyResumeItem(
-                                                        resume.getUserName());
+                                                        resume);
                                                 //todo 显示未投递的简历（已实现），测试先注释，测试完记得删掉
                                                 //if (((int)resume.getResumeStatus())==Constants.RESUME_STATE_NOT_DELIVERED){
                                                     myResumeList.add(resumeItem);
