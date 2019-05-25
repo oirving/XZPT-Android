@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,17 +18,11 @@ import com.djylrz.xzpt.activityStudent.JobIntentionActivity;
 import com.djylrz.xzpt.activityStudent.MyResumeActivity;
 import com.djylrz.xzpt.activityStudent.PersonalInformation;
 import com.djylrz.xzpt.utils.PostParameterName;
-import com.djylrz.xzpt.utils.UserInfoOptionAdapter;
-import com.djylrz.xzpt.utils.UserSelector;
 import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
 import com.xiaomi.mimc.MIMCUser;
 
 public class FragmentUser extends Fragment implements View.OnClickListener{
 
-    private RecyclerView userOption;
-    private UserInfoOptionAdapter adapter;
-    private LinearLayoutManager linearLayoutManager;
-    private UserSelector myResume,jobInention,focusCompany,help,logout;
     private LinearLayout meLayoutQuit;//退出登录
     private LinearLayout meLayoutImfornation;//个人信息
     private LinearLayout meLayoutMyResume;//我的简历

@@ -11,24 +11,24 @@ public class Resume implements Serializable {
 
     private static final long serialVersionUID = 1;
 
-    private long resumeId;
-    private String userId;
-    private String telephone;
-    private String userName;
-    private String headUrl;
-    private String email;
-    private long sex;
-    private String presentCity;
-    private String expectedCity;
-    private String school;
-    private String speciality;
-    private java.sql.Date startTime;
-    private java.sql.Date endTime;
-    private long highestEducation;
-    private String certificate;
-    private String projectExperience;
-    private String practicalExperience;
-    private String expectWork;
+    private long resumeId;//简历id
+    private String userId;//用户id
+    private String telephone;//电话
+    private String userName;//姓名
+    private String headUrl;//头像URL
+    private String email;//邮箱
+    private long sex;//性别
+    private String presentCity;//现居城市
+    private String expectedCity;//期望工作城市
+    private String school;//学校
+    private String speciality;//专业
+    private java.sql.Date startTime;//教育开始时间
+    private java.sql.Date endTime;//教育结束时间
+    private long highestEducation;//学位
+    private String certificate;//获奖证书
+    private String projectExperience;//项目经历
+    private String practicalExperience;//实习经历
+    private String expectWork;//期望职位
 
     public String getExpectWork() {
         return expectWork;
