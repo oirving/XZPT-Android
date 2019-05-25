@@ -22,7 +22,6 @@ import com.djylrz.xzpt.activity.BaseActivity;
 import com.djylrz.xzpt.bean.Company;
 import com.djylrz.xzpt.bean.PostResult;
 import com.djylrz.xzpt.bean.TempResponseData;
-import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.R;
 import com.google.gson.Gson;
