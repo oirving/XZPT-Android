@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,12 +66,22 @@ public class FragmentComChat extends Fragment
     private HashMap<String, Integer> unReadMessageCountMap = new HashMap<>();
     private String userName;
     private String headUrl;
+    private Toolbar toolbar;
+
+    public static FragmentComChat getInstance(String title) {
+        FragmentComChat fcc = new FragmentComChat();
+        return fcc;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mDecorView = inflater.inflate(R.layout.fragment9_com_chat, container, false);
         dialogsList = (DialogsList) mDecorView.findViewById(R.id.dialogsList);
+        toolbar = mDecorView.findViewById(R.id.message_toolbar);
+        if(MyApplication.getUserType() == 1){
+            toolbar.setVisibility(View.GONE);
+        }
         initAdapter();
         // 设置处理MIMC消息监听器
         UserManager.getInstance().setHandleMIMCMsgListener(this);
@@ -151,9 +162,19 @@ public class FragmentComChat extends Fragment
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        MIMCUser user = UserManager.getInstance().getUser();
+        if(user != null){
+            onRefreshDialogList();
+        }
+    }
+
+    @Override
     public void onDialogClick(Dialog dialog) {
         //Toast.makeText(getContext(), "点击了消息项", Toast.LENGTH_SHORT).show();
-        DefaultMessagesActivity.open(getContext(), dialog.getId(),dialog.getUsers().get(0).getName(),dialog.getUsers().get(0).getAvatar());
+        DefaultMessagesActivity.open(getContext(), dialog.getId(), dialog.getUsers().get(0).getName(), dialog.getUsers().get(0).getAvatar());
+        unReadMessageCountMap.put(dialog.getId(), 0);
         //onRefreshDialogList();
     }
 
@@ -202,7 +223,7 @@ public class FragmentComChat extends Fragment
                         }.getType();
                         try {
                             final TempResponseData<ChatDTO> postResult = gson.fromJson(content, jsonType);
-                            if(postResult.getResultCode()==200){//获取成功
+                            if (postResult.getResultCode() == 200) {//获取成功
                                 //Log.d(TAG, "onSuccess: name:" + postResult.getResultObject().getUserName() + "，headUrl:" + postResult.getResultObject().getHeadUrl());
                                 userName = postResult.getResultObject().getUserName();
                                 headUrl = postResult.getResultObject().getHeadUrl();
@@ -231,14 +252,17 @@ public class FragmentComChat extends Fragment
                                 } else {
                                     message = new Message(dialogContent.getLastMessage().getFromAccount(), chatUser, "消息已损坏", new Date(Long.parseLong(dialogContent.getTimestamp())));
                                 }
-
-                                Dialog dialog = new Dialog(dialogContent.getLastMessage().getFromAccount(), userName, headUrl, users, message, 0);
+                                int count = 0;
+                                if (unReadMessageCountMap.get(dialogContent.getLastMessage().getFromAccount()) != null) {
+                                    count = unReadMessageCountMap.get(dialogContent.getLastMessage().getFromAccount());
+                                }
+                                Dialog dialog = new Dialog(dialogContent.getLastMessage().getFromAccount(), userName, headUrl, users, message, count);
                                 dialogsAdapter.upsertItem(dialog);
-                            }else{
+                            } else {
                                 userName = "该用户不存在";
                                 headUrl = "";
                             }
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             userName = "该用户不存在";
                             headUrl = "";
                         }
@@ -273,7 +297,6 @@ public class FragmentComChat extends Fragment
                 ArrayList<ChatUser> users = new ArrayList<>();
                 ChatUser chatUser = new ChatUser(chatMsg.getMsg().getMsgId(), chatMsg.getFromAccount(), "", true);
                 users.add(chatUser);
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Message message = null;
                 message = new Message(chatMsg.getFromAccount(), chatUser, new String(chatMsg.getMsg().getPayload()), new Date(chatMsg.getMsg().getTimestamp()));
                 if (unReadMessageCountMap.get(chatMsg.getFromAccount()) == null) {

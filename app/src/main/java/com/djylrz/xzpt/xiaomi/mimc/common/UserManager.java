@@ -96,15 +96,28 @@ public class UserManager {
                             Type jsonType = new TypeToken<TempResponseData<ChatDTO>>() {
                             }.getType();
                             final TempResponseData<ChatDTO> postResult = gson.fromJson(content, jsonType);
-                            Log.d(TAG, "onSuccess: name:" + postResult.getResultObject().getUserName() + "，headUrl:" + postResult.getResultObject().getHeadUrl());
-                            if (onHandleMIMCMsgListener != null) {
-                                Log.d(TAG, "onSuccess: 向会话列表更新消息");
-                                onHandleMIMCMsgListener.onHandleMessage(chatMsg, postResult.getResultObject().getUserName(), postResult.getResultObject().getHeadUrl());
+                            if(postResult.getResultCode()==200){
+                                Log.d(TAG, "onSuccess: name:" + postResult.getResultObject().getUserName() + "，headUrl:" + postResult.getResultObject().getHeadUrl());
+                                if (onHandleMIMCMsgListener != null) {
+                                    Log.d(TAG, "onSuccess: 向会话列表更新消息");
+                                    onHandleMIMCMsgListener.onHandleMessage(chatMsg, postResult.getResultObject().getUserName(), postResult.getResultObject().getHeadUrl());
+                                }
+                                if (OnHandleMessageToMessageActivityListener != null) {
+                                    Log.d(TAG, "onSuccess: 向聊天界面更新消息");
+                                    OnHandleMessageToMessageActivityListener.onHandleMessage(chatMsg,postResult.getResultObject().getUserName(), postResult.getResultObject().getHeadUrl());
+                                }
+                            }else{
+                                if (onHandleMIMCMsgListener != null) {
+                                    Log.d(TAG, "onSuccess: 向会话列表更新消息");
+                                    onHandleMIMCMsgListener.onHandleMessage(chatMsg, "", "");
+                                }
+                                if (OnHandleMessageToMessageActivityListener != null) {
+                                    Log.d(TAG, "onSuccess: 向聊天界面更新消息");
+                                    OnHandleMessageToMessageActivityListener.onHandleMessage(chatMsg,"", "");
+                                }
+
                             }
-                            if (OnHandleMessageToMessageActivityListener != null) {
-                                Log.d(TAG, "onSuccess: 向聊天界面更新消息");
-                                OnHandleMessageToMessageActivityListener.onHandleMessage(chatMsg,postResult.getResultObject().getUserName(), postResult.getResultObject().getHeadUrl());
-                            }
+
                         }
                         @Override
                         public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
