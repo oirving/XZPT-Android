@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -15,7 +14,7 @@
         android:background="@color/colorPrimary"
         android:theme="@style/ToolbarTheme"
         android:titleTextColor="@color/white"
-        app:title="在线简历"
+        app:title="预览"
         app:titleTextColor="@color/white">
 
     </android.support.v7.widget.Toolbar>
@@ -53,14 +52,6 @@
                             android:text="李达康"
                             android:textSize="30dp"
                             android:textColor="@color/colorDark"
-                            />
-                        <ImageView
-                            android:layout_marginLeft="5dp"
-                            android:id="@+id/edit_imageview"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:src="@drawable/edit"
-                            android:layout_gravity="center"
                             />
                     </LinearLayout>
                     <TextView
@@ -143,13 +134,9 @@
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
-                        <ImageView
-                            android:id="@+id/job_intention_next"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/right" />
                     </LinearLayout>
+
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -186,7 +173,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="1dp"
                     android:background="@color/white"
                     >
                     <TextView
@@ -199,23 +185,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginBottom="15dp"
                         />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="right"
-                        >
-                        <ImageView
-                            android:id="@+id/practice_next"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/right"
-                            android:layout_gravity="center"
-                            android:layout_marginRight="15dp"
-                            android:layout_marginLeft="15dp"
-                            />
-                    </LinearLayout>
                 </LinearLayout>
-
+                <TextView
+                    android:id="@+id/practice_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -238,22 +214,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginBottom="15dp"
                         />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="right"
-                        >
-                        <ImageView
-                            android:id="@+id/project_next"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/right"
-                            android:layout_gravity="center"
-                            android:layout_marginRight="15dp"
-                            android:layout_marginLeft="15dp"
-                            />
-                    </LinearLayout>
                 </LinearLayout>
+                <TextView
+                    android:id="@+id/project_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -301,7 +268,7 @@
                             android:textSize="18sp"
                             android:textStyle="bold" />
                         <TextView
-                            android:id="@+id/speciality"
+                            android:id="@+id/degree"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="7dp"
@@ -310,14 +277,6 @@
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             android:textStyle="bold" />
-
-                        <ImageView
-                            android:id="@+id/education_next"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="15dp"
-                            android:src="@drawable/right" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -359,35 +318,16 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginBottom="15dp"
                             />
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="right"
-                            >
-                            <ImageView
-                                android:id="@+id/awards_next"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/right"
-                                android:layout_gravity="center"
-                                android:layout_marginRight="15dp"
-                                android:layout_marginLeft="15dp"
-                                />
-                        </LinearLayout>
                     </LinearLayout>
-
+                    <TextView
+                        android:id="@+id/_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        />
                 </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-    <Button
-        android:id="@+id/preview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorButton"
-        android:text="预览"
-        android:textColor="@color/white"
-        android:textSize="20dp"
-        />
 </LinearLayout>

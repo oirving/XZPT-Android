@@ -31,22 +31,19 @@
                 android:textSize="20sp" />
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
-    <LinearLayout
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
+        >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#F0F3F6">
-
-            <ScrollView
+            android:orientation="vertical">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbars="none">
-
-
+                android:background="#F0F3F6">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -89,8 +86,7 @@
                             <TextView
                                 android:id="@+id/me_tv_delivery"
                                 style="@style/usertext"
-                                android:text="投递记录
-" />
+                                android:text="投递记录" />
 
                             <ImageView style="@style/img_arrow" />
 
@@ -135,13 +131,8 @@
                             <ImageView style="@style/img_arrow" />
 
                         </LinearLayout>
-
                         <View style="@style/bg_line" />
-
-
-
                     </LinearLayout>
-
 
                     <LinearLayout style="@style/wrap_layout">
                         <!-- 上圆角-->
@@ -174,10 +165,8 @@
                         <LinearLayout
                             android:id="@+id/me_layout_about"
                             style="@style/bottom_layout">
-
                             <TextView
                                 style="@style/usertext"
-
                                 android:text="关于我们" />
 
                             <ImageView style="@style/img_arrow" />
@@ -185,73 +174,8 @@
 
                     </LinearLayout>
                 </LinearLayout>
-            </ScrollView>
-
+            </LinearLayout>
         </LinearLayout>
-
-    </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
-    <!--<?xml version="1.0" encoding="utf-8"?>-->
-    <!--<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent">-->
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:orientation="vertical">-->
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="130dp"-->
-    <!--android:background="@color/colorPrimary">-->
-
-    <!--<ImageButton-->
-    <!--android:layout_width="100dp"-->
-    <!--android:layout_height="100dp"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:src="@drawable/fzu" />-->
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="vertical">-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/user_name_textview"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_marginTop="20dp"-->
-    <!--android:layout_marginRight="30dp"-->
-    <!--android:gravity="right"-->
-    <!--android:text="小 李"-->
-    <!--android:textColor="@android:color/white"-->
-    <!--android:textSize="40dp" />-->
-
-    <!--<Button-->
-    <!--android:id="@+id/perfect_info_button"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="right"-->
-    <!--android:layout_marginRight="20dp"-->
-    <!--android:background="@android:color/transparent"-->
-    <!--android:text="完善信息 >"-->
-    <!--android:textColor="@android:color/white"-->
-    <!--android:textSize="20dp" />-->
-
-    <!--</LinearLayout>-->
-
-
-    <!--</LinearLayout>-->
-
-    <!--<android.support.v7.widget.RecyclerView-->
-    <!--android:id="@+id/user_option_list"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent">-->
-
-    <!--</android.support.v7.widget.RecyclerView>-->
-
-    <!--</LinearLayout>-->
-
-    <!--</android.support.constraint.ConstraintLayout>-->

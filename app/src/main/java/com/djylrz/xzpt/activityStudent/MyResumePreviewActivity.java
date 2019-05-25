@@ -1,10 +1,8 @@
 package com.djylrz.xzpt.activityStudent;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -30,95 +28,43 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 
-public class EditMyResumeActivity extends AppCompatActivity implements View.OnClickListener{
+public class MyResumePreviewActivity extends AppCompatActivity {
     private TextView userName;//姓名
     private TextView basicInfo;//基本信息
-    private ImageView edit;//名字旁的编辑
     private ImageView headView;//头像
     private TextView expectPosition;//期望工作
     private TextView expectSalary;//薪水
     private TextView expectCity;//期望工作城市
     private TextView expectIndustry;//期望行业
-    private ImageView jobIntentionEdit;//前往工作意向编辑
-    private ImageView practiceEdit;//前往实习经历编辑
-    private ImageView projectEdit;//前往项目经历编辑
+    private TextView practice;//实习经历
+    private TextView projects;//项目经历
+    private TextView awards;//获奖证书
     private TextView school;//学校
     private TextView speciality;//专业
     private TextView time;//在校时间
-    private ImageView educationEdit;//前往教育经历编辑
-    private ImageView awardsEdit;//前往荣誉证书编辑
-    private Button preview;//预览
 
     private User user = new User();//用户实体对象
     private String token;
     private RequestQueue requestQueue;
-    private final String TAG = "EditMyResumeActivity";
+    private final String TAG = "MyResumePreviewActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_basic_resume);
+        setContentView(R.layout.activity_my_resume_preview);
         userName = (TextView)findViewById(R.id.user_name);
-        edit = (ImageView)findViewById(R.id.edit_imageview);
-        edit.setOnClickListener(this);
         basicInfo = (TextView)findViewById(R.id.basic_info);
         expectPosition = (TextView)findViewById(R.id.job_name);
         expectSalary = (TextView)findViewById(R.id.salary);
         expectCity = (TextView)findViewById(R.id.job_location);
         expectIndustry = (TextView)findViewById(R.id.job_industry);
-        jobIntentionEdit = (ImageView)findViewById(R.id.job_intention_next);
-        jobIntentionEdit.setOnClickListener(this);
-        practiceEdit = (ImageView)findViewById(R.id.practice_next);
-        practiceEdit.setOnClickListener(this);
-        projectEdit = (ImageView)findViewById(R.id.project_next);
-        projectEdit.setOnClickListener(this);
         school = (TextView)findViewById(R.id.school_name);
         speciality = (TextView)findViewById(R.id.speciality);
         time = (TextView)findViewById(R.id.education_time);
-        educationEdit = (ImageView)findViewById(R.id.education_next);
-        educationEdit.setOnClickListener(this);
-        awardsEdit = (ImageView)findViewById(R.id.awards_next);
-        awardsEdit.setOnClickListener(this);
-        preview = (Button)findViewById(R.id.preview);
-        preview.setOnClickListener(this);
+        practice = (TextView)findViewById(R.id.practice_textview);
+        projects = (TextView)findViewById(R.id.project_textview);
+        awards = (TextView)findViewById(R.id.awards_textview);
         getStudentInfo();
-    }
-
-    @Override
-    public void onClick(View v) {
-        Intent intent;
-        switch (v.getId()) {
-            //预览/下载
-            case R.id.preview:
-                intent = new Intent(EditMyResumeActivity.this,MyResumePreviewActivity.class);
-                startActivity(intent);
-                break;
-                //跳转到个人信息进行编辑
-            case R.id.edit_imageview:
-                intent = new Intent(EditMyResumeActivity.this,PersonalInformation.class);
-                startActivity(intent);
-                break;
-            case R.id.job_intention_next:
-                intent = new Intent(EditMyResumeActivity.this,JobIntentionActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.practice_next:
-                intent = new Intent(EditMyResumeActivity.this,EditPracticeActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.project_next:
-                intent = new Intent(EditMyResumeActivity.this,EditProjectActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.education_next:
-                intent = new Intent(EditMyResumeActivity.this,PersonalInformation.class);
-                startActivity(intent);
-                break;
-            case R.id.awards_next:
-                intent = new Intent(EditMyResumeActivity.this,EditAwardsActivity.class);
-                startActivity(intent);
-                break;
-        }
     }
     private void getStudentInfo(){
         //用户已经登录，查询个人信息并显示
@@ -179,16 +125,18 @@ public class EditMyResumeActivity extends AppCompatActivity implements View.OnCl
         }
     }
     //todo 初始化界面 ->小榕
-    public void initPage(User user/*Resume resume*/) {
+    public void initPage(User user/* Resume resume*/) {
         userName.setText(user.getUserName());
         basicInfo.setText(user.getPresentCity()+"-"+String.valueOf(user.getAge())+"-"+user.getHighestEducation());
         //expectPosition.setText(resume.getExpectWork());
         expectSalary.setText(user.getExpectSalary());
-       // expectCity.setText(resume.getExpectedCity());
+        // expectCity.setText(resume.getExpectedCity());
 //        expectIndustry.setText(); todo 填入行业 ->小榕
+//        practice.setText(resume.getPracticalExperience());
+//        projects.setText(resume.getProjectExperience());
+//        awards.setText(resume.getCertificate());
         school.setText(user.getSchool());
         speciality.setText(user.getSpecialty());
         time.setText(user.getStartTime()+"-"+user.getEndTime());
     }
-
 }
