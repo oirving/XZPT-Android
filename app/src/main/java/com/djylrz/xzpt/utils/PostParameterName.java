@@ -9,6 +9,8 @@ public class PostParameterName {
 
     public static final String FILE = "file";//登录之后获取用户信息存到本地SharedPreferences的key
 
+    public static final String POST_URL_GET_USER_HEAD_NAME_BY_ID = HOST + "/chat/getuserinfo?token=";//根据用户id获取头像和用户名
+
     public static final String POST_URL_LOGIN = HOST+"/user/login";//学生登录接口
     public static final String POST_URL_LOGIN_WITH_TOKEN = HOST + "/user/vertifytoken?token=";//学生token登录
     public static final String POST_URL_REGISTER = HOST+"/user/register?code=";//用户注册接口
