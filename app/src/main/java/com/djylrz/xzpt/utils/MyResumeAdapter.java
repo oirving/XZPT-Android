@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.utils;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -21,12 +22,24 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import static com.djylrz.xzpt.utils.PostParameterName.CHOOSE_RESUME_TO_DELIVER;
+
 public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHolder> {
 
     private static final String TAG = "MyResumeAdapter";
 
     private List<MyResumeItem> myResumeItems;
     private onRemoveListener onRemoveListener;
+
+    private boolean forDeliver = false;
+
+    public boolean isForDeliver() {
+        return forDeliver;
+    }
+
+    public void setForDeliver(boolean forDeliver) {
+        this.forDeliver = forDeliver;
+    }
 
     public MyResumeAdapter(List<MyResumeItem> myResumeItems) {
         this.myResumeItems = myResumeItems;
@@ -70,8 +83,15 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
                 intent.putExtra(Constants.INTENT_PUT_EXTRA_KEY_CREATE_OR_EDIT_RESUME,Constants.EDIT_RESUME);
                 //使用intent填入对应的简历信息
                 intent.putExtra("editResume",myResumeItem.getResume());
+                intent.putExtra("resumeID",myResumeItem.getResume().getResumeId());
                 Toast.makeText(v.getContext(), Constants.EDIT_RESUME, Toast.LENGTH_SHORT).show();
-                v.getContext().startActivity(intent);
+                if (forDeliver){
+                    ((Activity)v.getContext()).setResult(CHOOSE_RESUME_TO_DELIVER,intent);//选择简历用于投递
+                    ((Activity)v.getContext()).finish();//选择并投递
+
+                }else{
+                    v.getContext().startActivity(intent);
+                }
             }
         });
         return holder;

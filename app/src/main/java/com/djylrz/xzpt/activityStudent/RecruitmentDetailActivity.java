@@ -112,7 +112,7 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
         super.onActivityResult(requestCode, resultCode, data);
         switch(resultCode){
             case CHOOSE_RESUME_TO_DELIVER:{
-                //Log.d(TAG, "onActivityResult: 返回了！"+data.getLongExtra("resumeID",0);
+                //Log.d(TAG, "onActivityResult: 返回了！"+data.getLongExtra("resumeID",0));
                 //token,resumeID,recruitmentID
                 long resumeID = data.getLongExtra("resumeID",0);
 

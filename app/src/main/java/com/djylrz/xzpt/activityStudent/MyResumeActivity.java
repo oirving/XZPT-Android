@@ -36,6 +36,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.djylrz.xzpt.utils.PostParameterName.CHOOSE_RESUME_TO_DELIVER;
 import static com.vondear.rxtool.RxTool.getContext;
 
 
@@ -167,13 +168,11 @@ public class MyResumeActivity extends AppCompatActivity {
                                         if (myResumeList.size()==0){
                                             Toast.makeText(MyResumeActivity.this, "无未投递简历", Toast.LENGTH_SHORT).show();
                                         }
-//                                        //todo 处理选择投递的简历
-//                                        adapter.set
-//                                        adapter.setResumeList(resumeList);
-//                                        if (getIntent().getIntExtra("selectResume",0)==CHOOSE_RESUME_TO_DELIVER){//选择简历用于投体
-//                                            adapter.setForDeliver(true);
-//                                        }
-//                                        recyclerView.setAdapter(adapter);
+                                        //todo 处理选择投递的简历
+                                        if (getIntent().getIntExtra("selectResume",0)==CHOOSE_RESUME_TO_DELIVER){//选择简历用于投体
+                                            adapter.setForDeliver(true);
+                                        }
+                                        recyclerView.setAdapter(adapter);
                                     }
                                 });
                             }
