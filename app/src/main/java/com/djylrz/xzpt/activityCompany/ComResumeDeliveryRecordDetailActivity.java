@@ -24,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.activity.DefaultMessagesActivity;
 import com.djylrz.xzpt.bean.Resume;
 import com.djylrz.xzpt.bean.ResumeDelivery;
 import com.djylrz.xzpt.bean.TempResponseData;
@@ -63,6 +64,7 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
     private Resume resume;//用于接收json的简历对象
     private Button btnRefuse;//拒绝按钮
     private Button btnNext;//下一步按钮
+    private Button btnChat;//发起聊天按钮
     private BoomMenuButton bmbNext;//弹出式选择器
     private String strNext[]={"面试待安排","进入一面","进入二面","进入终面","通过面试"};//弹出式菜单文字
     private int nextNum = 0;//用户点击哪一个next菜单
@@ -78,6 +80,7 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
         requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
         btnRefuse = (Button)findViewById(R.id.btn_refuse);
         btnNext = (Button)findViewById(R.id.btn_next);
+        btnChat = (Button)findViewById(R.id.btn_message);
         //设置标题栏
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setTitle("简历详情");
@@ -100,7 +103,9 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
         btnNext.setText("下一步");
         btnNext.setTextColor(getResources().getColor(R.color.colorPrimary));
         btnNext.setOnClickListener(this);
-
+        btnChat.setText("发起聊天");
+        btnChat.setTextColor(getResources().getColor(R.color.colorPrimary));
+        btnChat.setOnClickListener(this);
         //设置弹出式选择器
         bmbNext = (BoomMenuButton) findViewById(R.id.bmb_next);
         bmbNext.setButtonEnum(ButtonEnum.Ham);//设置弹出样式
@@ -328,6 +333,9 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                 break;
             case R.id.btn_next:
                 bmbNext.boom();
+                break;
+            case R.id.btn_message:
+                DefaultMessagesActivity.open(this,resumeDeliveryRecordVO.getUserId() , resumeDeliveryRecordVO.getUserName(), "");
                 break;
         }
 
