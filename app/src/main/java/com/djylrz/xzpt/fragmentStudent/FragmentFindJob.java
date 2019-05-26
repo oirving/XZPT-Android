@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.bean.Message;
 import com.djylrz.xzpt.bean.PageData;
 import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.bean.User;
@@ -65,7 +66,7 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
         mDecorView = inflater.inflate(R.layout.fragment3_find_job,container,false);
         for (String title : mTitles) {
             if(title.equals("联系")){
-                mFragments.add(FragmentComChat.getInstance(title));
+                mFragments.add(MessageCardFragment.getInstance(title));
             }else{
                 mFragments.add(RecommendCardFragment.getInstance(title));
             }

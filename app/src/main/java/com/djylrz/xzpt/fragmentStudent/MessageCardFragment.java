@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.fragmentCompany;
+package com.djylrz.xzpt.fragmentStudent;
 
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -18,11 +18,11 @@ import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activity.DefaultMessagesActivity;
 import com.djylrz.xzpt.bean.ChatUser;
-import com.djylrz.xzpt.bean.Data;
 import com.djylrz.xzpt.bean.Dialog;
-import com.djylrz.xzpt.bean.LastMessage;
 import com.djylrz.xzpt.bean.Message;
 import com.djylrz.xzpt.bean.TempResponseData;
+import com.djylrz.xzpt.bean.Data;
+import com.djylrz.xzpt.bean.LastMessage;
 import com.djylrz.xzpt.utils.HttpUtil;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.xiaomi.mimc.bean.ChatDTO;
@@ -56,7 +56,7 @@ import java.util.regex.Pattern;
 import cz.msebera.android.httpclient.Header;
 
 
-public class FragmentComChat extends Fragment
+public class MessageCardFragment extends Fragment
         implements DialogsListAdapter.OnDialogClickListener<Dialog>,
         DialogsListAdapter.OnDialogLongClickListener<Dialog>, UserManager.OnHandleMIMCMsgListener {
     private static final String TAG = "FragmentComChat";
@@ -67,22 +67,17 @@ public class FragmentComChat extends Fragment
     private HashMap<String, Integer> unReadMessageCountMap = new HashMap<>();
     private String userName;
     private String headUrl;
-    private Toolbar toolbar;
 
-    public static FragmentComChat getInstance(String title) {
-        FragmentComChat fcc = new FragmentComChat();
-        return fcc;
+    public static MessageCardFragment getInstance(String title) {
+        MessageCardFragment mcf = new MessageCardFragment();
+        return mcf;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mDecorView = inflater.inflate(R.layout.fragment9_com_chat, container, false);
-        dialogsList = (DialogsList) mDecorView.findViewById(R.id.dialogsList);
-        toolbar = mDecorView.findViewById(R.id.message_toolbar);
-        if(MyApplication.getUserType() == 1){
-            toolbar.setVisibility(View.GONE);
-        }
+        mDecorView = inflater.inflate(R.layout.fragment_message_card, container, false);
+        dialogsList = (DialogsList) mDecorView.findViewById(R.id.dialogsList_student);
         initAdapter();
         // 设置处理MIMC消息监听器
         UserManager.getInstance().setHandleMIMCMsgListener(this);
@@ -166,7 +161,7 @@ public class FragmentComChat extends Fragment
     public void onResume() {
         super.onResume();
         MIMCUser user = UserManager.getInstance().getUser();
-        if(user != null){
+        if (user != null) {
             onRefreshDialogList();
         }
     }
@@ -432,6 +427,4 @@ public class FragmentComChat extends Fragment
     public interface messageCallBack {
         public void getNewMessage(Message message);
     }
-
 }
-
