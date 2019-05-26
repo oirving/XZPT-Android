@@ -2,9 +2,12 @@ package com.djylrz.xzpt.fragmentStudent;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,6 +24,7 @@ import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
+import com.djylrz.xzpt.utils.MyDividerItemDecoration;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.StudentRecruitmentAdapter;
 import com.djylrz.xzpt.utils.VolleyNetUtil;
@@ -76,6 +80,10 @@ public class RecommendCardFragment extends Fragment {
         recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
+        Drawable drawable = ContextCompat.getDrawable(getContext(),R.drawable.divider_shape);
+        MyDividerItemDecoration dec = new MyDividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
+        dec.setDrawable(drawable);
+        recyclerView.addItemDecoration(dec);
         // 设置下拉刷新
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
