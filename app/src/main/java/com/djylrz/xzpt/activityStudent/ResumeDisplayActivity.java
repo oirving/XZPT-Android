@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
     private ProgressBar progressBar_download;//进度条
     private DownloadManager mDownloadManager;//下载文件
     private long mRequestId;
+    private Button create;//生成
     private DownloadObserver mDownloadObserver;
     private String mFileUrl = "", mFileName, fileName;//文件url，由文件url截取的文件名 ，上个页面传过来用于显示的文件名
 
@@ -80,6 +82,13 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
             }
             startDownload();
         }
+        create.setOnClickListener(new View.OnClickListener() {
+            //todo 填入信息生成简历到本地 ->小榕
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(),"生成",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
@@ -119,6 +128,7 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
         tv_title = (TextView) findViewById(R.id.title);
         progressBar_download = (ProgressBar) findViewById(R.id.progressBar_download);
         rl_tbsView = (RelativeLayout) findViewById(R.id.rl_tbsView);
+        create = (Button) findViewById(R.id.create);
     }
 
     /**
