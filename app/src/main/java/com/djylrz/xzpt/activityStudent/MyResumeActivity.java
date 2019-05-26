@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.activityStudent;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -11,6 +12,8 @@ import android.support.v7.widget.RecyclerView;
 
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -42,6 +45,7 @@ public class MyResumeActivity extends AppCompatActivity {
     private List<MyResumeItem> myResumeList = new ArrayList<>();
     private List<Resume> resumeList = new ArrayList<>();
     private RecyclerView recyclerView;
+    private ImageView addResume;
     private MyResumeAdapter adapter;  /**
      * Fragment中初始化Toolbar
      * @param toolbar
@@ -69,6 +73,15 @@ public class MyResumeActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new MyResumeAdapter(myResumeList);
         recyclerView.setAdapter(adapter);
+        addResume = (ImageView)findViewById(R.id.add_resume);
+        addResume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //todo 添加一份简历，跳转到简历编辑页面,不可变的基本信息可以先填入 ->小榕
+                Intent intent = new Intent(MyResumeActivity.this,EditMyResumeActivity.class);
+                startActivity(intent);
+            }
+        });
         initPage();
         //删除item
         //todo 删除的事件在MyResumeAdapter.java里做

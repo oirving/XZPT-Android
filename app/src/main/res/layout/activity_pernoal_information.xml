@@ -241,6 +241,7 @@
                         android:layout_width="100dp"
                         android:layout_height="50dp"
                         android:clickable="true"
+                        android:text="    "
                          />
 
                     <TextView
@@ -254,6 +255,7 @@
                         android:layout_width="100dp"
                         android:layout_height="50dp"
                         android:clickable="true"
+                        android:text="    "
                         />
 
                 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.activityStudent;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -39,6 +41,7 @@ public class MyResumePreviewActivity extends AppCompatActivity {
     private TextView practice;//实习经历
     private TextView projects;//项目经历
     private TextView awards;//获奖证书
+    private Button saveResume;//保存按钮
     private TextView school;//学校
     private TextView speciality;//专业
     private TextView time;//在校时间
@@ -64,6 +67,14 @@ public class MyResumePreviewActivity extends AppCompatActivity {
         practice = (TextView)findViewById(R.id.practice_textview);
         projects = (TextView)findViewById(R.id.project_textview);
         awards = (TextView)findViewById(R.id.awards_textview);
+        saveResume = (Button)findViewById(R.id.save_resume);
+        saveResume.setOnClickListener(new View.OnClickListener() {
+            //todo 新建一份简历时，预览后点击保存就保存到已有简历列表 ->小榕
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(),"saveResume",Toast.LENGTH_SHORT).show();
+            }
+        });
         getStudentInfo();
     }
     private void getStudentInfo(){
