@@ -91,7 +91,7 @@ public class DefaultMessagesActivity extends AppCompatActivity
         //设置标题栏
         toolbar.bringToFront();//标题栏置顶
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setTitle("聊天");
+        toolbar.setTitle("与["+userName+"]聊天");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
