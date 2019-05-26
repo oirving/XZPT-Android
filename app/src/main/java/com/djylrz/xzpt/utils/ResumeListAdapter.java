@@ -28,15 +28,15 @@ import static com.djylrz.xzpt.utils.PostParameterName.CHOOSE_RESUME_TO_DELIVER;
 public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.ViewHolder> {
     private static final String TAG = "ResumeListAdapter";
 
-    public List<ResumeItem> getmResumeList() {
+    public List<DeliveryRecordItem> getmResumeList() {
         return mResumeList;
     }
 
-    public void setmResumeList(List<ResumeItem> mResumeList) {
+    public void setmResumeList(List<DeliveryRecordItem> mResumeList) {
         this.mResumeList = mResumeList;
     }
 
-    private List<ResumeItem> mResumeList;
+    private List<DeliveryRecordItem> mResumeList;
 
     public List<Resume> getResumeList() {
         return resumeList;
@@ -58,29 +58,27 @@ public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.Vi
         this.forDeliver = forDeliver;
     }
 
-    public ResumeListAdapter(List<ResumeItem> resumeList) {
-        mResumeList = resumeList;
+    public ResumeListAdapter(List<DeliveryRecordItem> mResumeList) {
+        this.mResumeList = mResumeList;
     }
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        View resumeListView;
+        View deliveryRecordView;
+        ImageView delete;
         TextView resumeState;
-        ImageView resumeEdit;
-        TextView resumePosition;
-        TextView resumeUserName;
-        TextView resumeTime;
-        ImageView deleteResume;
+        TextView companyName;
+        TextView jobName;
+        TextView username;
 
         public ViewHolder(View v) {
             super(v);
-            resumeListView = v;
-            resumeState = (TextView) v.findViewById(R.id.resume_state_textview);
-            resumeEdit = (ImageView) v.findViewById(R.id.resume_edit_imageview);
-            resumePosition = (TextView) v.findViewById(R.id.resume_position_textview);
-            resumeUserName = (TextView) v.findViewById(R.id.resume_username_textview);
-            resumeTime = (TextView) v.findViewById(R.id.resume_time_textview);
-            deleteResume = (ImageView)v.findViewById(R.id.delete_resume);
+            deliveryRecordView = v;
+            delete = (ImageView)v.findViewById(R.id.delete_resume);
+            resumeState = (TextView)v.findViewById(R.id.resume_state_textview);
+            companyName = (TextView)v.findViewById(R.id.company_name);
+            jobName = (TextView)v.findViewById(R.id.job_name);
+            username = (TextView)v.findViewById(R.id.resume_username_textview);
         }
     }
 
@@ -90,12 +88,12 @@ public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.Vi
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.myresume_items,parent,false);
         final ViewHolder holder = new ViewHolder(v);
-        holder.resumeListView.setOnClickListener(new View.OnClickListener() {
+        holder.deliveryRecordView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                ResumeItem resumeItem = mResumeList.get(position);
-                Toast.makeText(v.getContext(),"clicked "+resumeItem.getPosition() ,Toast.LENGTH_SHORT).show();
+                DeliveryRecordItem resumeItem = mResumeList.get(position);
+                Toast.makeText(v.getContext(),"clicked "+resumeItem.getJobName() ,Toast.LENGTH_SHORT).show();
                 //todo 我的简历点击后跳转到具体的简历页面 ->小榕
                 Intent intent = new Intent(v.getContext(), ResumeModelDetailsActivity.class);
                 intent.putExtra("resume",resumeList.get(position));//传递简历信息
@@ -111,12 +109,12 @@ public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.Vi
 
             }
         });
-        holder.deleteResume.setOnClickListener(new View.OnClickListener() {
+        holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 final int position = holder.getAdapterPosition();
-                ResumeItem resumeItem = mResumeList.get(position);
-                Toast.makeText(v.getContext(),"clicked "+resumeItem.getPosition() ,Toast.LENGTH_SHORT).show();
+                DeliveryRecordItem resumeItem = mResumeList.get(position);
+                Toast.makeText(v.getContext(),"clicked "+resumeItem.getJobName() ,Toast.LENGTH_SHORT).show();
                 //todo 删除简历 ->小榕
                 long resumeID = resumeList.get(position).getResumeId();
 
@@ -152,13 +150,13 @@ public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ResumeItem resumeItem = mResumeList.get(position);
-        holder.resumeState.setText(resumeItem.getState());
-        holder.resumeTime.setText(resumeItem.getTime());
-        holder.resumePosition.setText(resumeItem.getPosition());
-        holder.resumeUserName.setText(resumeItem.getUserName());
-        holder.resumeEdit.setImageResource(resumeItem.getEditImage());
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+        DeliveryRecordItem deliveryRecordItem = mResumeList.get(i);
+        viewHolder.username.setText(deliveryRecordItem.getUserName());
+        viewHolder.jobName.setText(deliveryRecordItem.getJobName());
+        viewHolder.companyName.setText(deliveryRecordItem.getCompanyName());
+        viewHolder.resumeState.setText(deliveryRecordItem.getState());
+        viewHolder.delete.setImageResource(deliveryRecordItem.getDelete());
     }
 
     @Override
