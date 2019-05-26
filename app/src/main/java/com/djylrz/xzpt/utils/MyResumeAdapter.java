@@ -65,7 +65,7 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 MyResumeItem myResumeItem = myResumeItems.get(position);
-                //todo 跳转到EditMyResumeActivity,填入对应该简历的信息 ->小榕
+                //跳转到EditMyResumeActivity,填入对应该简历的信息
                 Intent intent = new Intent(v.getContext(), EditMyResumeActivity.class);
                 intent.putExtra(Constants.INTENT_PUT_EXTRA_KEY_CREATE_OR_EDIT_RESUME,Constants.EDIT_RESUME);
                 //使用intent填入对应的简历信息
@@ -94,7 +94,7 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
             //删除的事件
             public void onClick(View v) {
                 if (onRemoveListener !=null) {
-                    //todo 在数据库删除对应的简历 ->小榕
+                    //在数据库删除对应的简历
                     //holder.delete.setVisibility(View.INVISIBLE);
 
                     final int position = holder.getAdapterPosition();

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/gray"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/gray">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/creat_or_edit_resume_toolbar"
@@ -32,13 +32,15 @@
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:layout_marginTop="2dp"
-                >
+                style="@style/resume_item_style_paddings"
+                android:orientation="horizontal">
                 <LinearLayout
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
                     android:layout_marginLeft="10dp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_gravity="center"
@@ -52,46 +54,51 @@
                             android:layout_height="wrap_content"
                             android:text="李达康"
                             android:textSize="30dp"
-                            android:textColor="@color/colorDark"
-                            />
+                            android:textColor="@color/colorDark"/>
                         <ImageView
                             android:layout_marginLeft="5dp"
                             android:id="@+id/edit_imageview"
                             android:layout_width="15dp"
                             android:layout_height="15dp"
                             android:src="@drawable/edit"
-                            android:layout_gravity="center"
-                            />
+                            android:layout_gravity="center"/>
                     </LinearLayout>
+
                     <TextView
                         android:layout_marginTop="3dp"
-                        android:id="@+id/basic_info"
+                        android:id="@+id/basic_info_sex"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="应届生-21岁-本科"
-                        />
+                        android:text="male"/>
+                    <TextView
+                            android:layout_marginTop="3dp"
+                            android:id="@+id/basic_info_phone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="xxx-xxxx-xxxx"/>
+                    <TextView
+                            android:layout_marginTop="3dp"
+                            android:id="@+id/basic_info_email"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="xxxxxxxxx@xxxxxx.xxxxx"/>
+
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    >
-                    <ImageView
-                        android:id="@+id/head_image"
-                        android:layout_width="90dp"
-                        android:layout_height="90dp"
-                        android:src="@mipmap/tab_contact_unselect"
-                        android:layout_marginRight="15dp"
-                        />
-                </LinearLayout>
+                <ImageView
+                    android:id="@+id/head_image"
+                    android:layout_weight="0"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/tab_contact_unselect"
+                    android:layout_marginRight="15dp"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="3dp"
+                style="@style/resume_item_style_paddings"
                 >
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -106,8 +113,7 @@
                         android:textSize="20dp"
                         android:textColor="@color/colorDark"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginBottom="15dp"
-                        />
+                        android:layout_marginBottom="15dp"/>
                 </LinearLayout>
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     xmlns:tools="http://schemas.android.com/tools"
@@ -172,7 +178,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="5dp"
                             android:textColor="@color/gray_text"
-                            android:text="job_industry" />
+                            tools:text="job_industry" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -180,7 +186,9 @@
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white">
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    style="@style/resume_item_style_paddings">
 
                 <TextView
                         android:layout_width="wrap_content"
@@ -191,65 +199,72 @@
                         android:text="教育经历"
                         android:textSize="20dp"
                         android:textColor="@color/colorDark"/>
-            </LinearLayout>
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                          xmlns:tools="http://schemas.android.com/tools"
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:background="@color/white"
-                          android:orientation="vertical"
-            >
                 <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginBottom="10dp"
-                        android:orientation="horizontal">
-                    <TextView
-                            android:id="@+id/school_name"
+                        android:background="@color/white"
+                        android:orientation="vertical">
+                    <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:text="school_name"
-                            android:textColor="@color/black"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-                    <TextView
-                            android:id="@+id/speciality"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="7dp"
-                            android:layout_width="0dp"
-                            android:text="speciality"
-                            android:textColor="@color/black"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                    <ImageView
-                            android:id="@+id/education_next"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center"
+                            android:layout_marginTop="10dp"
                             android:layout_marginLeft="15dp"
-                            android:src="@drawable/right" />
-                </LinearLayout>
+                            android:layout_marginRight="15dp"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="horizontal">
+                        <TextView
+                                android:id="@+id/school_name"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text="school_name"
+                                android:textColor="@color/black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        <TextView
+                                android:id="@+id/speciality"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="7dp"
+                                android:layout_width="wrap_content"
+                                android:text="speciality"
+                                android:textColor="@color/black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        <TextView
+                                android:id="@+id/highest_education"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="7dp"
+                                android:layout_width="0dp"
+                                android:text="highestEducation"
+                                android:textColor="@color/black"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
 
-                <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginRight="15dp"
-                        android:orientation="horizontal">
+                        <ImageView
+                                android:id="@+id/education_next"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="15dp"
+                                android:src="@drawable/right" />
+                    </LinearLayout>
 
-                    <TextView
-                            android:id="@+id/education_time"
-                            android:layout_width="wrap_content"
+                    <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="5dp"
-                            android:textColor="@color/gray_text"
-                            android:text="education_time" />
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginRight="15dp"
+                            android:orientation="horizontal">
+
+                        <TextView
+                                android:id="@+id/education_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dp"
+                                android:textColor="@color/gray_text"
+                                android:text="education_time" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -258,14 +273,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginBottom="3dp"
-                >
+                style="@style/resume_item_style_paddings">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="1dp"
-                    android:background="@color/white"
-                    >
+                    android:background="@color/white">
                     <TextView
                         android:layout_marginTop="15dp"
                         android:layout_width="wrap_content"
@@ -274,13 +286,11 @@
                         android:textSize="20dp"
                         android:textColor="@color/colorDark"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginBottom="15dp"
-                        />
+                        android:layout_marginBottom="15dp"/>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:gravity="right"
-                        >
+                        android:gravity="right">
                         <ImageView
                             android:id="@+id/practice_next"
                             android:layout_width="20dp"
@@ -288,8 +298,7 @@
                             android:src="@drawable/right"
                             android:layout_gravity="center"
                             android:layout_marginRight="15dp"
-                            android:layout_marginLeft="15dp"
-                            />
+                            android:layout_marginLeft="15dp"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -297,7 +306,11 @@
                         android:id="@+id/practice_text_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/white"/>
+                        android:background="@color/white"
+                        android:paddingTop="10dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="10dp"/>
 
             </LinearLayout>
 
@@ -305,8 +318,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginBottom="3dp"
-                >
+                style="@style/resume_item_style_paddings">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -319,13 +331,11 @@
                         android:textSize="20dp"
                         android:textColor="@color/colorDark"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginBottom="15dp"
-                        />
+                        android:layout_marginBottom="15dp"/>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:gravity="right"
-                        >
+                        android:gravity="right">
                         <ImageView
                             android:id="@+id/project_next"
                             android:layout_width="20dp"
@@ -333,8 +343,7 @@
                             android:src="@drawable/right"
                             android:layout_gravity="center"
                             android:layout_marginRight="15dp"
-                            android:layout_marginLeft="15dp"
-                            />
+                            android:layout_marginLeft="15dp"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -342,50 +351,58 @@
                         android:id="@+id/project_text_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/white"/>
+                        android:background="@color/white"
+                        android:paddingTop="10dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="10dp"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    style="@style/resume_item_style_paddings">
                 <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_marginTop="3dp"
-                >
+                        android:background="@color/white"
+                        android:orientation="horizontal">
+                    <TextView
+                            android:layout_marginTop="15dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="荣誉证书"
+                            android:textSize="20dp"
+                            android:textColor="@color/colorDark"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginBottom="15dp"/>
                     <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginBottom="1dp"
-                            android:background="@color/white"
-                            android:orientation="horizontal">
-                        <TextView
-                                android:layout_marginTop="15dp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="荣誉证书"
-                                android:textSize="20dp"
-                                android:textColor="@color/colorDark"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginBottom="15dp"/>
-                        <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="right">
-                            <ImageView
-                                    android:id="@+id/awards_next"
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:src="@drawable/right"
-                                    android:layout_gravity="center"
-                                    android:layout_marginRight="15dp"
-                                    android:layout_marginLeft="15dp"
-                            />
-                        </LinearLayout>
+                            android:gravity="right">
+                        <ImageView
+                                android:id="@+id/awards_next"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/right"
+                                android:layout_gravity="center"
+                                android:layout_marginRight="15dp"
+                                android:layout_marginLeft="15dp"/>
                     </LinearLayout>
-                    <TextView
-                            android:id="@+id/awards_text_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@color/white"/>
-
                 </LinearLayout>
+                <TextView
+                        android:id="@+id/awards_text_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingTop="10dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="10dp"
+                        tools:text="XXXXXXXX"/>
+
             </LinearLayout>
 
         </LinearLayout>
@@ -397,6 +414,5 @@
         android:background="@color/colorButton"
         android:text="预览"
         android:textColor="@color/white"
-        android:textSize="20dp"
-        />
+        android:textSize="20dp"/>
 </LinearLayout>

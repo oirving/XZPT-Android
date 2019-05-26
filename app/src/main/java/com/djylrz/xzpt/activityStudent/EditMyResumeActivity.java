@@ -2,6 +2,7 @@ package com.djylrz.xzpt.activityStudent;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PostResult;
 import com.djylrz.xzpt.bean.Resume;
@@ -25,6 +27,7 @@ import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.Constants;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.VolleyNetUtil;
+import com.djylrz.xzpt.xiaomi.mimc.common.Constant;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -40,13 +43,16 @@ import java.sql.Timestamp;
 public class EditMyResumeActivity extends AppCompatActivity implements View.OnClickListener{
     private final String TAG = "EditMyResumeActivity";
     private TextView userName;//姓名
-    private TextView basicInfo;//基本信息
+    private TextView basicInfoPhone;//电话号码
+    private TextView basicInfoEmail;//邮件
+    private TextView basicInfoSex;//性别
     private ImageView edit;//名字旁的编辑
     private ImageView headView;//头像
     private TextView expectPosition;//期望工作
     private TextView expectSalary;//薪水
     private TextView expectCity;//期望工作城市
-    private TextView expectIndustry;//期望行业
+    //private TextView expectIndustry;//期望行业
+    private TextView highestEducation;//最高学历
     private ImageView jobIntentionEdit;//前往工作意向编辑
     private ImageView practiceEdit;//前往实习经历编辑
     private ImageView projectEdit;//前往项目经历编辑
@@ -80,14 +86,19 @@ public class EditMyResumeActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic_resume);
         //获取布局控件
+        headView = (ImageView)findViewById(R.id.head_image);
         userName = (TextView)findViewById(R.id.user_name);
         edit = (ImageView)findViewById(R.id.edit_imageview);
         edit.setOnClickListener(this);
-        basicInfo = (TextView)findViewById(R.id.basic_info);
+        basicInfoPhone = (TextView)findViewById(R.id.basic_info_phone);
+        basicInfoEmail = (TextView)findViewById(R.id.basic_info_email);//邮件
+        basicInfoSex = (TextView)findViewById(R.id.basic_info_sex);//性别
+
         expectPosition = (TextView)findViewById(R.id.job_name);
-        expectSalary = (TextView)findViewById(R.id.salary);
+        //expectSalary = (TextView)findViewById(R.id.salary);
         expectCity = (TextView)findViewById(R.id.job_location);
-        expectIndustry = (TextView)findViewById(R.id.job_industry);
+        //expectIndustry = (TextView)findViewById(R.id.job_industry);
+        highestEducation = (TextView)findViewById(R.id.highest_education);
         jobIntentionEdit = (ImageView)findViewById(R.id.job_intention_next);
         jobIntentionEdit.setOnClickListener(this);
         practiceEdit = (ImageView)findViewById(R.id.practice_next);
@@ -120,6 +131,8 @@ public class EditMyResumeActivity extends AppCompatActivity implements View.OnCl
             case Constants.EDIT_RESUME:
                 resumeToEdit=(Resume)getIntent().getSerializableExtra("editResume");
                 getResume();
+//                initEditResume(resumeToEdit);
+//                initPage();
                 break;
             case Constants.CREATE_RESUME:
                 getStudentInfo();
@@ -241,22 +254,28 @@ public class EditMyResumeActivity extends AppCompatActivity implements View.OnCl
 
         }
     }
-    //todo 初始化界面 ->小榕
+    //初始化界面
     private void initPage() {
         //把获取到的信息展示出来
         String awards = sharedPreferences.getString("award", null);
         String project = sharedPreferences.getString("project", null);
         String practice = sharedPreferences.getString("practice", null);
 
+        Uri imageUri = Uri.parse(PostParameterName.DOWNLOAD_URL_RESUME_IMAGE_PREFIX + user.getHeadUrl());
+        Glide.with(getApplicationContext()).load(imageUri).into(headView);
         userName.setText(user.getUserName());
-        basicInfo.setText((user.getPresentCity()+"-"+user.getAge()+"-"+user.getHighestEducation()));
+        basicInfoPhone.setText(user.getTelephone());
+
+        basicInfoEmail.setText(user.getEmail());//邮件
+        basicInfoSex.setText(Constants.SEX[(int)user.getSex()]);//性别
         expectPosition.setText(user.getStationLabel());
-        expectSalary.setText(user.getExpectSalary());
+        //expectSalary.setText(user.getExpectSalary());
         expectCity.setText(user.getExpectedCity());
-        expectIndustry.setText(Constants.INDUSTRY_LABEL[(int) user.getIndustryLabel()]);
+        //expectIndustry.setText(Constants.INDUSTRY_LABEL[(int) user.getIndustryLabel()]);
+        highestEducation.setText(Constants.EDUCATION_LEVEL[(int)user.getHighestEducation()]);
         school.setText(user.getSchool());
         speciality.setText(user.getSpecialty());
-        time.setText((user.getStartTime()+"-"+user.getEndTime()));
+        time.setText((user.getStartTime()+"    "+user.getEndTime()));
 
         awardsTextView.setText(awards != null ? awards : "");
         projectTextView.setText(project != null ? project : "");
@@ -305,7 +324,7 @@ public class EditMyResumeActivity extends AppCompatActivity implements View.OnCl
         String token = getSharedPreferences("token", 0).getString(PostParameterName.STUDENT_TOKEN, null);
 
         //网络处理
-        Log.d(TAG, "createResume: edit Resume URL is " + PostParameterName.POST_URL_GET_RESUME + token +
+        Log.d(TAG, "getResume:Resume URL is " + PostParameterName.POST_URL_GET_RESUME + token +
                 "&" + PostParameterName.REQUEST_RESUME_ID + "=" + resumeToEdit.getResumeId());
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_RESUME + token +
@@ -321,12 +340,12 @@ public class EditMyResumeActivity extends AppCompatActivity implements View.OnCl
                                     JSONObject resumeObject = response.getJSONObject("resultObject");
 
                                     GsonBuilder builder = new GsonBuilder();
+                                    builder.setDateFormat("yyyy-MM-dd HH:mm:ss");
                                     builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
                                         public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
                                             return new Timestamp(json.getAsJsonPrimitive().getAsLong());
                                         }
                                     });
-                                    Gson gson = builder.create();
 
                                     //解析resume
                                     Type jsonType = new TypeToken<Resume>() {
@@ -345,8 +364,8 @@ public class EditMyResumeActivity extends AppCompatActivity implements View.OnCl
                                 }
                                 break;
                                 default: {
-                                    Toast.makeText(EditMyResumeActivity.this, "更新简历失败", Toast.LENGTH_SHORT).show();
-                                    Log.d(TAG, "更新简历失败" + response.getString(PostParameterName.RESPOND_RESULTCODE));
+                                    Toast.makeText(EditMyResumeActivity.this, "获取简历失败", Toast.LENGTH_SHORT).show();
+                                    Log.d(TAG, "获取简历失败" + response.getString(PostParameterName.RESPOND_RESULTCODE));
                                 }
 
                             }
@@ -389,19 +408,22 @@ public class EditMyResumeActivity extends AppCompatActivity implements View.OnCl
         editor.putString("practice", resume.getPracticalExperience());
         editor.commit();
     }
+
+
+
     private void editResume() {
         Log.d(TAG, "editResume: RESUME ID is " + resumeToEdit.getResumeId());
         //获取用户token
         String token = getSharedPreferences("token", 0).getString(PostParameterName.STUDENT_TOKEN, null);
 
-        //todo 获取修改后的信息
+        //获取修改后的信息
         getCurrentDataForEditOrCreateResume(resumeToEdit);
 
 
         //网络处理
         try {
-            Log.d(TAG, "createResume: edit Resume " + gson.toJson(resumeToEdit));
-            Log.d(TAG, "createResume: edit Resume URL is " + PostParameterName.POST_URL_UPDATE_RESUME + token +
+            Log.d(TAG, "editResume: edit Resume " + gson.toJson(resumeToEdit));
+            Log.d(TAG, "editResume: edit Resume URL is " + PostParameterName.POST_URL_UPDATE_RESUME + token +
                     "&" + PostParameterName.REQUEST_RESUME_ID + "=" + resumeToEdit.getResumeId());
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_UPDATE_RESUME + token +
                     "&" + PostParameterName.REQUEST_RESUME_ID + "=" + resumeToEdit.getResumeId(),
@@ -470,9 +492,9 @@ public class EditMyResumeActivity extends AppCompatActivity implements View.OnCl
                                         case "200": {
                                             //跳转到我的简历界面
                                             Toast.makeText(EditMyResumeActivity.this, "创建简历成功", Toast.LENGTH_SHORT).show();
-                                            //并打开MyResumeActivity
-                                            Intent intent5 = new Intent(EditMyResumeActivity.this, MyResumeActivity.class);
-                                            startActivity(intent5);
+//                                            //并打开MyResumeActivity
+//                                            Intent intent5 = new Intent(EditMyResumeActivity.this, MyResumeActivity.class);
+//                                            startActivity(intent5);
                                             finish();
                                         }
                                         break;
