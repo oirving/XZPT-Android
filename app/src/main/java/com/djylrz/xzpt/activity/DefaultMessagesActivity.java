@@ -16,7 +16,6 @@ import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.ChatUser;
 import com.djylrz.xzpt.bean.Message;
-import com.djylrz.xzpt.bean.MessagesFixtures;
 import com.djylrz.xzpt.utils.HttpUtil;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.xiaomi.mimc.bean.ChatMsg;
@@ -26,7 +25,6 @@ import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.messages.MessageInput;
@@ -133,8 +131,7 @@ public class DefaultMessagesActivity extends AppCompatActivity
 
     @Override
     public void onAddAttachments() {
-        messagesAdapter.addToStart(
-                MessagesFixtures.getImageMessage(), true);
+
     }
 
     private void initAdapter() {
