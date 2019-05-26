@@ -6,17 +6,36 @@
     android:orientation="vertical"
     android:background="@color/gray"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/my_resume_toolbar"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:theme="@style/ToolbarTheme"
-        android:titleTextColor="@color/white"
-        app:title="我的简历"
-        app:titleTextColor="@color/white">
+        android:orientation="horizontal">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/my_resume_toolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:theme="@style/ToolbarTheme"
+            android:titleTextColor="@color/white"
+            app:title="我的简历"
+            app:titleTextColor="@color/white"
+            >
+        </android.support.v7.widget.Toolbar>
+        <LinearLayout
+            android:gravity="right"
+            android:background="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    </android.support.v7.widget.Toolbar>
+            <ImageView
+                android:id="@+id/add_resume"
+                android:layout_width="30dp"
+                android:layout_height="27dp"
+                android:layout_gravity="center|right"
+                android:layout_marginRight="15dp"
+                android:src="@drawable/ic_add_white_24dp" />
+        </LinearLayout>
+    </LinearLayout>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
