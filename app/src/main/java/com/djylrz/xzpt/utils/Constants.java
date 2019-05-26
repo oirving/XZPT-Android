@@ -31,14 +31,21 @@ public class Constants {
     public static final String[] WORK_TIME =  {"默认","955","965","956","996"};
 
     public static final String[] RESUME_STATE = {"拒绝","未投递","已投递","已查看", "面试待安排", "一面", "二面", "终面", "通过"};//获取到的简历状态+1，RESUME_STATE[state+1],因为拒绝为-1
-    public static int RESUME_STATE_REJECTED = 0;
-    public static int RESUME_STATE_NOT_DELIVERED = 1;
-    public static int RESUME_STATE_DELIVERED = 2;
-    public static int RESUME_STATE_CHECKED = 3;
-    public static int RESUME_STATE_WAIT_INTERVIEW = 4;
-    public static int RESUME_STATE_FIRST_INTERVIEW = 5;
-    public static int RESUME_STATE_SECOND_INTERVIEW = 6;
-    public static int RESUME_STATE_FINAL_INTERVIEW = 7;
-    public static int RESUME_STATE_PASS = 8;
+    public static final int RESUME_STATE_REJECTED = 0;
+    public static final int RESUME_STATE_NOT_DELIVERED = 1;
+    public static final int RESUME_STATE_DELIVERED = 2;
+    public static final int RESUME_STATE_CHECKED = 3;
+    public static final int RESUME_STATE_WAIT_INTERVIEW = 4;
+    public static final int RESUME_STATE_FIRST_INTERVIEW = 5;
+    public static final int RESUME_STATE_SECOND_INTERVIEW = 6;
+    public static final int RESUME_STATE_FINAL_INTERVIEW = 7;
+    public static final int RESUME_STATE_PASS = 8;
 
+    //标题栏文字
+    public static final String CREATE_RESUME = "创建简历";
+    public static final String EDIT_RESUME = "编辑简历";
+    //区分是创建新简历还是编辑已有简历的intent的key
+    public static final String INTENT_PUT_EXTRA_KEY_CREATE_OR_EDIT_RESUME = "createOrEdit";
+    //保存编辑或创建
+    public static final String EDIT_OR_CREATE_RESUME_SAVE_BUTTON = "保存";
 }

@@ -79,6 +79,9 @@ public class MyResumeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //todo 添加一份简历，跳转到简历编辑页面,不可变的基本信息可以先填入 ->小榕
                 Intent intent = new Intent(MyResumeActivity.this,EditMyResumeActivity.class);
+                intent.putExtra(Constants.INTENT_PUT_EXTRA_KEY_CREATE_OR_EDIT_RESUME,Constants.CREATE_RESUME);
+                Toast.makeText(v.getContext(), Constants.CREATE_RESUME, Toast.LENGTH_SHORT).show();
+
                 startActivity(intent);
             }
         });

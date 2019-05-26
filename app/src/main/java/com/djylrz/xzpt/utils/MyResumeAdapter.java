@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.djylrz.xzpt.R;
@@ -64,8 +65,12 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 MyResumeItem myResumeItem = myResumeItems.get(position);
-                //todo 跳转到EditMyResumectivity,填入对应该简历的信息 ->小榕
+                //todo 跳转到EditMyResumeActivity,填入对应该简历的信息 ->小榕
                 Intent intent = new Intent(v.getContext(), EditMyResumeActivity.class);
+                intent.putExtra(Constants.INTENT_PUT_EXTRA_KEY_CREATE_OR_EDIT_RESUME,Constants.EDIT_RESUME);
+                //使用intent填入对应的简历信息
+                intent.putExtra("editResume",myResumeItem.getResume());
+                Toast.makeText(v.getContext(), Constants.EDIT_RESUME, Toast.LENGTH_SHORT).show();
                 v.getContext().startActivity(intent);
             }
         });
