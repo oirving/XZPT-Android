@@ -16,7 +16,6 @@ import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.ChatUser;
 import com.djylrz.xzpt.bean.Message;
-import com.djylrz.xzpt.bean.MessagesFixtures;
 import com.djylrz.xzpt.utils.HttpUtil;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.xiaomi.mimc.bean.ChatMsg;
@@ -26,7 +25,6 @@ import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.messages.MessageInput;
@@ -91,7 +89,7 @@ public class DefaultMessagesActivity extends AppCompatActivity
         //设置标题栏
         toolbar.bringToFront();//标题栏置顶
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setTitle("聊天");
+        toolbar.setTitle("与["+userName+"]聊天");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,8 +131,7 @@ public class DefaultMessagesActivity extends AppCompatActivity
 
     @Override
     public void onAddAttachments() {
-        messagesAdapter.addToStart(
-                MessagesFixtures.getImageMessage(), true);
+
     }
 
     private void initAdapter() {

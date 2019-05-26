@@ -7,21 +7,30 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:actionMenuTextColor">@color/colorTextWhite</item>
-        <item name="actionMenuTextColor">@color/colorTextWhite</item> <!--menu字体颜色-->
+        <item name="actionMenuTextColor">@color/white</item> <!--menu字体颜色-->
         <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
     </style>
 
-    <style name="ToolbarTheme" parent="Theme.AppCompat.Light">
+    <style name="ToolbarTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- 设置 toolbar 溢出菜单的文字的颜色 -->
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/colorDark</item>
         <item name="actionMenuTextColor">@color/white</item>
         <item name="colorButtonNormal">@color/white</item>
         <item name="colorControlNormal">@color/white</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
     </style>
 
     <style name="ToolbarPopupTheme" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
         <item name="android:colorBackground">#ffffff</item>  <!-- 设置背景颜色-->
         <item name="overlapAnchor">false</item>  <!--设置不覆盖锚点-->
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">20dp</item>
     </style>
 
     <style name="DialogTheme" parent="@android:style/Theme.Dialog">

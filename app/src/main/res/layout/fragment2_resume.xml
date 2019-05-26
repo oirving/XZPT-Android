@@ -14,7 +14,10 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@color/colorPrimary"
-            app:titleTextColor="@color/white">
+            app:titleTextColor="@color/white"
+            app:theme="@style/ToolbarTheme"
+
+            >
 
             <TextView
                 android:id="@+id/resume_toolbar_tv"

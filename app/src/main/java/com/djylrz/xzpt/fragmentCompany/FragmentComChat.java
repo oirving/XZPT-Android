@@ -109,7 +109,6 @@ public class FragmentComChat extends Fragment
          adapter.addItem(int position, DIALOG dialog) - adds a new dialog to the specified position.
          adapter.upsertItem(DIALOG dialog) - adds one dialog to the end of the list if not exists, otherwise updates the existing dialog.
          */
-        //dialogsAdapter.setItems(DialogsFixtures.getDialogs());
         dialogsAdapter.setOnDialogClickListener(this);
         dialogsAdapter.setOnDialogLongClickListener(this);
         dialogsList.setAdapter(dialogsAdapter);
@@ -328,7 +327,7 @@ public class FragmentComChat extends Fragment
             public void run() {
                 //刷新会话列表
                 onRefreshDialogList();
-                RxToast.info("聊天功能初始化成功->用户token为：" + UserManager.getInstance().getUser().getToken());
+                RxToast.info("聊天功能初始化成功->企业token为：" + UserManager.getInstance().getUser().getToken());
             }
         });
 

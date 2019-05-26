@@ -102,7 +102,7 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
             case R.id.chat:
                 //聊天功能
 //                finish();
-                DefaultMessagesActivity.open(this, compantId, "user", "");
+                DefaultMessagesActivity.open(this, compantId, recruitment.getCompanyName(), "");
                 break;
         }
     }
