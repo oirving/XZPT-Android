@@ -75,4 +75,7 @@ public class PostParameterName {
     public static final String DOWNLOAD_URL_RESUME_IMAGE_PREFIX = HOST+"/file/";//简历模板缩略图
     /*intent之间传递简历模板的key*/
     public static final String INTENT_PUT_EXTRA_KEY_RESUME_TEMPLATE_FILENAME = "filename";
+
+    public static final String POST_URL_INTERVIEW_SKILL_PAGE = HOST + "/interviewskill/page";//获取分页面试指导
+    public static final String GET_URL_INTERVIEW_SKILL_ARTICLE = HOST + "/interviewskill/article?id=";//获取详细面试指导
 }

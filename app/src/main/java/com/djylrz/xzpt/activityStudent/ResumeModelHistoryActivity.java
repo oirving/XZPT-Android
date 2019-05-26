@@ -39,5 +39,12 @@ public class ResumeModelHistoryActivity extends AppCompatActivity {
             ResumeModelItem resumeModelItem = new ResumeModelItem(R.drawable.resumemodel2);
             resumeModelIHistorytemList.add(resumeModelItem);
         }
+        //todo 没有把简历模版resumeTemplate赋给ResumeModeItem
+        //todo 需要从后端获取导出的简历的缩略图和导出的简历的下载链接
+        //todo 导出简历接口接收模版文件名，返回生成简历word文件路径
+        //todo 获取简历模版导出历史记录——后端接口无
+
+        //todo 历史记录接口接收用户ID，返回已经生成的所有简历的下载链接和简历所应用的模版的缩略图链接，查看的时候需要重新下载
+        //todo 历史记录查看所有本地已经下载的简历，因为导出过的简历都会下载到本地，因此查看无需下载
     }
 }

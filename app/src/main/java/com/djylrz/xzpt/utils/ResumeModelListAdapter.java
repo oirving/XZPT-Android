@@ -74,8 +74,10 @@ public class ResumeModelListAdapter extends RecyclerView.Adapter<ResumeModelList
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ResumeModelItem resumeModelItem = mResumeModelList.get(position);
         //holder.resumeModel.setImageResource(resumeModelItem.getResumeModel());
-        Uri imageUri = Uri.parse(PostParameterName.DOWNLOAD_URL_RESUME_IMAGE_PREFIX+resumeModelItem.getResumeTemplate().getImgFileName());
-        Glide.with(holder.resumeModelListView.getContext()).load(imageUri).into(holder.resumeModel);
+        if (resumeModelItem.getResumeTemplate()!=null) {
+            Uri imageUri = Uri.parse(PostParameterName.DOWNLOAD_URL_RESUME_IMAGE_PREFIX + resumeModelItem.getResumeTemplate().getImgFileName());
+            Glide.with(holder.resumeModelListView.getContext()).load(imageUri).into(holder.resumeModel);
+        }
     }
 
     @Override

@@ -14,6 +14,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +23,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activity.ActivityWebView;
-import com.djylrz.xzpt.utils.ImageCarousel;
-import com.djylrz.xzpt.utils.ImageInfo;
-import com.djylrz.xzpt.utils.InterviewTipsAdapter;
-import com.djylrz.xzpt.utils.InterviewTipsItem;
+import com.djylrz.xzpt.bean.PageData;
+import com.djylrz.xzpt.utils.*;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.drawable.ScalingUtils;
@@ -37,9 +40,20 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tencent.smtt.sdk.TbsReaderView.TAG;
 
 public class FragmentTips extends Fragment {
 
@@ -77,10 +91,70 @@ public class FragmentTips extends Fragment {
     }
 
     private void initTips() {
-        for (int i=0;i<7;i++) {
+        /*for (int i=0;i<7;i++) {
             //todo 按照这个格式把有的数据填入,title,url：点击后跳转的url ->
             tips.add(new InterviewTipsItem("如何冷静面对面试官","https://baijiahao.baidu.com/s?id=1608574900105467287&wfr=spider&for=pc"));
+        }*/
+        PageData pageData = new PageData();
+        pageData.setCurrentPage(1);
+        pageData.setPageSize(10);
+
+        try {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                    PostParameterName.POST_URL_INTERVIEW_SKILL_PAGE,
+                    new JSONObject(new Gson().toJson(pageData)),
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG, "onResponse: 返回"+response.toString());
+                            try {
+                                switch (response.getString(PostParameterName.RESPOND_RESULTCODE)){
+                                    case "200":{
+                                        JSONObject pageDataResultObject = response.getJSONObject("resultObject");
+
+                                        GsonBuilder builder = new GsonBuilder();
+                                        builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
+                                            public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
+                                                return new Timestamp(json.getAsJsonPrimitive().getAsLong());
+                                            }
+                                        });
+                                        Gson gson = builder
+                                                .setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+
+                                        //解析pageData
+                                        Type jsonType = new TypeToken<PageData<InterviewSkill>>() {}.getType();
+                                        final PageData<InterviewSkill> resumePageData = gson.fromJson(pageDataResultObject.toString(),jsonType);
+
+                                        //获取到ResumeList
+                                        List<InterviewSkill> interviewSkills= resumePageData.getContentList();
+                                        tips.clear();
+                                        for (InterviewSkill interviewSkill : interviewSkills){
+                                            //简历表无创建简历时间，无岗位意向（求职意向中有）
+                                            InterviewTipsItem interviewTipsItem = new InterviewTipsItem(
+                                                    interviewSkill);
+                                            tips.add(interviewTipsItem);
+                                            interviewTipsAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("TAG Response failed", error.getMessage(), error);
+                }});
+
+            VolleyNetUtil.getInstance().setRequestQueue(getContext()
+            );//获取requestQueue
+            VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
     }
 
     /**
