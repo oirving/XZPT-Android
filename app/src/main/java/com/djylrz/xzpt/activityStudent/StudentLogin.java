@@ -29,6 +29,7 @@ import com.djylrz.xzpt.utils.PostParameterName;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.vondear.rxtool.view.RxToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,13 +37,11 @@ import org.json.JSONObject;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.lang.reflect.Type;
-
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -65,24 +64,24 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_login);
-        id = (EditText)findViewById(R.id.student_input_name);//输入的账号
-        password = (EditText)findViewById(R.id.student_input_password);//输入的密码
+        id = (EditText) findViewById(R.id.student_input_name);//输入的账号
+        password = (EditText) findViewById(R.id.student_input_password);//输入的密码
 
         //todo 填入地址获取网络图片作为头像
         //bitmap = getHttpBitmap("");
-        headPortrait = (ImageView)findViewById(R.id.student_head_portrait);//头像
+        headPortrait = (ImageView) findViewById(R.id.student_head_portrait);//头像
         //headPortrait.setImageBitmap(bitmap);
 
-        Button login = (Button)findViewById(R.id.student_login_button);//登陆按钮
+        Button login = (Button) findViewById(R.id.student_login_button);//登陆按钮
         login.setOnClickListener(this);
 
-        Button forgetPassword = (Button)findViewById(R.id.student_forget_password_button);//忘记密码按钮
+        Button forgetPassword = (Button) findViewById(R.id.student_forget_password_button);//忘记密码按钮
         forgetPassword.setOnClickListener(this);
 
-        Button rigister = (Button)findViewById(R.id.student_register_button);//注册按钮
+        Button rigister = (Button) findViewById(R.id.student_register_button);//注册按钮
         rigister.setOnClickListener(this);
 
-        Button back = (Button)findViewById(R.id.student_back_button);//取消按钮
+        Button back = (Button) findViewById(R.id.student_back_button);//取消按钮
         back.setOnClickListener(this);
     }
 
@@ -93,9 +92,9 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
                 new LoginAsyncTask().execute();
                 break;
             case R.id.student_forget_password_button:
-                Intent forgetPassword = new Intent(StudentLogin.this,ForgetPasswordActivity.class);//跳到忘记密码
+                Intent forgetPassword = new Intent(StudentLogin.this, ForgetPasswordActivity.class);//跳到忘记密码
                 startActivity(forgetPassword);
-                Toast.makeText(StudentLogin.this,"忘记密码",Toast.LENGTH_SHORT).show();
+                Toast.makeText(StudentLogin.this, "忘记密码", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.student_register_button:
                 Intent rigister = new Intent(StudentLogin.this, Register.class);//跳到注册
@@ -109,6 +108,7 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
 
     /**
      * 加载本地图片
+     *
      * @param url
      * @return
      */
@@ -125,6 +125,7 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
 
     /**
      * 从服务器取图片
+     *
      * @param url
      * @return
      */
@@ -149,14 +150,16 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
         }
         return bitmap1;
     }
+
     //可以用于从其他活动接收账号和密码
     public static void actionStart(Context context, String id, String password) {
-        Intent intent = new Intent(context,StudentLogin.class);
-        intent.putExtra("id",id);
-        intent.putExtra("password",password);
+        Intent intent = new Intent(context, StudentLogin.class);
+        intent.putExtra("id", id);
+        intent.putExtra("password", password);
         context.startActivity(intent);
     }
-    class LoginAsyncTask extends AsyncTask<String, Integer, String>{
+
+    class LoginAsyncTask extends AsyncTask<String, Integer, String> {
 
         @Override
         protected String doInBackground(String... strings) {
@@ -164,12 +167,12 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
             user.setEmail(id.getText().toString());
             user.setPasswd(password.getText().toString());
 
-            Log.d(TAG, "doInBackground: GSON string is "+new Gson().toJson(user));
+            Log.d(TAG, "doInBackground: GSON string is " + new Gson().toJson(user));
 
             //创建一个OkHttpClient对象
             OkHttpClient okHttpClient = new OkHttpClient();
             //创建一个RequestBody(参数1：数据类型 参数2传递的jso串)nnnn
-            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),new Gson().toJson(user));
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), new Gson().toJson(user));
             //创建一个请求对象
             Request request = new Request.Builder()
                     .url(PostParameterName.POST_URL_LOGIN)
@@ -177,14 +180,14 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
                     .build();
             //发送请求获取响应
             try {
-                Response response=okHttpClient.newCall(request).execute();
+                Response response = okHttpClient.newCall(request).execute();
                 //判断请求是否成功
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     responseData = response.body().string();//该函数仅能有效调用一次！
-                    Log.d(TAG,"doInBackground: the response data is "+responseData);
-                }else{
+                    Log.d(TAG, "doInBackground: the response data is " + responseData);
+                } else {
                     Log.d(TAG, "doInBackground: POST FAILD");
-                    responseData="登录请求失败！";
+                    responseData = "登录请求失败！";
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -196,64 +199,71 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
         @Override
         protected void onPostExecute(String responseData) {
             super.onPostExecute(responseData);
-            if (responseData != null){
+            if (responseData != null) {
                 PostResult result = new Gson().fromJson(responseData, PostResult.class);
-                switch (result.getResultCode()){
-                    case "200":{
+                switch (result.getResultCode()) {
+                    case "200": {
                         //获取学生用户token，并保存到SharedPreferences
                         User user = new User();
                         user.setToken(result.getResultObject());
                         SharedPreferences companyToken = getSharedPreferences("token", 0);
                         SharedPreferences.Editor editor = companyToken.edit();
-                        editor.putString(PostParameterName.STUDENT_TOKEN,user.getToken());
+                        editor.putString(PostParameterName.STUDENT_TOKEN, user.getToken());
                         editor.commit();
                         //跳转到用户主界面
-                        Intent intent = new Intent(StudentLogin.this,MainActivity.class);
+                        Intent intent = new Intent(StudentLogin.this, MainActivity.class);
                         Log.d(TAG, "postLogin: 学生用户登录成功！");
                         MyApplication.setUserType(1);
                         getStudentInfo();
                         startActivity(intent);
                         finish();
-                    }break;
-                    case "2008":{
+                    }
+                    break;
+                    case "2008": {
                         //用户名密码有误
-                        Toast.makeText(StudentLogin.this,"用户名密码错误",Toast.LENGTH_SHORT).show();
-                    }break;
-                    default:{
+                        RxToast.error("用户名或密码错误！");
+//                        Toast.makeText(StudentLogin.this,"用户名密码错误",Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                    default: {
                         //未知错误
-                        Toast.makeText(StudentLogin.this,"登录失败，错误码："+result.getResultCode(),Toast.LENGTH_SHORT).show();
+                        RxToast.error("服务器罢工了，请稍后再试！错误码：" + result.getResultCode());
+//                        Toast.makeText(StudentLogin.this,"登录失败，错误码："+result.getResultCode(),Toast.LENGTH_SHORT).show();
                     }
                 }
-            }else{
+            } else {
+                RxToast.error("服务器连接失败，请检查网络连接！");
                 Log.d(TAG, "onPostExecute: response is empty");
             }
 
         }
     }
-    private void getStudentInfo(){
+
+    private void getStudentInfo() {
         //用户已经登录，查询个人信息并显示
         requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
-        SharedPreferences userToken = getSharedPreferences("token",0);
-        token = userToken.getString(PostParameterName.STUDENT_TOKEN,null);
-        if (token != null){
-            Log.d(TAG, "onCreate: TOKEN is "+token);
+        SharedPreferences userToken = getSharedPreferences("token", 0);
+        token = userToken.getString(PostParameterName.STUDENT_TOKEN, null);
+        if (token != null) {
+            Log.d(TAG, "onCreate: TOKEN is " + token);
 
             user.setToken(token);
 
             try {
-                Log.d(TAG, "onCreate: 获取个人信息，只填了token"+new Gson().toJson(user));
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_USER_BY_TOKEN+user.getToken(),new JSONObject(new Gson().toJson(user)),
+                Log.d(TAG, "onCreate: 获取个人信息，只填了token" + new Gson().toJson(user));
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_USER_BY_TOKEN + user.getToken(), new JSONObject(new Gson().toJson(user)),
                         new com.android.volley.Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                Log.d(TAG, "onResponse: 返回"+response.toString());
-                                Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
+                                Log.d(TAG, "onResponse: 返回" + response.toString());
+                                Type jsonType = new TypeToken<TempResponseData<User>>() {
+                                }.getType();
 
                                 Gson gson = new GsonBuilder()
                                         .setDateFormat("yyyy-MM-dd HH:mm:ss")
                                         .create();
                                 final TempResponseData<User> postResult = gson.fromJson(response.toString(), jsonType);
-                                Log.d(TAG, "onResponse: "+postResult.getResultCode());
+                                Log.d(TAG, "onResponse: " + postResult.getResultCode());
                                 user = postResult.getResultObject();
                                 user.setToken(token);
 
@@ -261,7 +271,7 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
                                 SharedPreferences sharedPreferences = getSharedPreferences("user", 0);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 try {
-                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：："+response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
+                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：：" + response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
                                     editor.putString("student", new Gson().toJson(user));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -285,7 +295,8 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("TAG", error.getMessage(), error);
-                    }});
+                    }
+                });
                 requestQueue.add(jsonObjectRequest);
             } catch (JSONException e) {
                 e.printStackTrace();
