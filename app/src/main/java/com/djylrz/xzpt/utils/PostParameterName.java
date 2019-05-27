@@ -85,4 +85,9 @@ public class PostParameterName {
     public static final String INTENT_PUT_EXTRA_KEY_RESUME_HISTORY_OR_CREATE = "createOrHistory";
     public static final String INTENT_PUT_EXTRA_VALUE_RESUME_HISTORY = "history";
     public static final String INTENT_PUT_EXTRA_VALUE_RESUME_CREATE = "create";
+    //获取简历生成记录
+    public static final String POST_URL_GET_GENERATED_RESUME_HISTORY = HOST + "/user/getlistresumerecord?token=";//todo 添加历史记录接口
+    //获取投递记录接口
+    public static final String POST_URL_GET_DELIVER_RESUME_HISTORY = HOST + "/user/getlistdeliveryrecordbyuserid?token=";//todo 添加投递记录接口
+
 }
