@@ -23,11 +23,13 @@ public class InterviewTipsAdapter extends RecyclerView.Adapter<InterviewTipsAdap
     static class ViewHolder extends RecyclerView.ViewHolder {
         View tipsListView;
         TextView title;//标题
+        TextView author;//作者
 
         public ViewHolder(View view) {
             super(view);
             tipsListView = view;
             title = (TextView) view.findViewById(R.id.interview_title);
+            author =(TextView)view.findViewById(R.id.interview_author);
         }
     }
 
@@ -58,6 +60,7 @@ public class InterviewTipsAdapter extends RecyclerView.Adapter<InterviewTipsAdap
     public void onBindViewHolder(@NonNull ViewHolder  viewHolder, int position) {
         InterviewTipsItem interviewTipsItem = interviewTipsItems.get(position);
         viewHolder.title.setText(interviewTipsItem.getTitle());
+        viewHolder.author.setText(interviewTipsItem.getInterviewSkill().getAuthor());
     }
 
     @Override

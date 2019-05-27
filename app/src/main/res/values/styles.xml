@@ -183,4 +183,9 @@
         <!-- 设置弹出菜单文字颜色 -->
         <item name="android:textColor">@color/black</item>
     </style>
+
+    <style name="resume_item_style_paddings">
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">3dp</item>
+    </style>
 </resources>
