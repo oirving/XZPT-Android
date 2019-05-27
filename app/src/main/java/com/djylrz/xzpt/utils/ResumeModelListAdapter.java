@@ -58,6 +58,8 @@ public class ResumeModelListAdapter extends RecyclerView.Adapter<ResumeModelList
                 ResumeModelItem resumeModelItem = mResumeModelList.get(position);
                 Intent intent = new Intent(v.getContext(),IntentResumeFileActivity.class);
                 intent.putExtra(PostParameterName.INTENT_PUT_EXTRA_KEY_RESUME_TEMPLATE_FILENAME,resumeModelItem.getResumeTemplate().getTemplateFileName());
+                intent.putExtra(PostParameterName.REQUEST_RESUME_TEMPLATE_PATH,resumeModelItem.getResumeTemplate().getTempFileName());
+                intent.putExtra(PostParameterName.INTENT_PUT_EXTRA_KEY_RESUME_HISTORY_OR_CREATE,resumeModelItem.getCreateOrHistory());
                 v.getContext().startActivity(intent);
                 //动态权限申请
 //                if (ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {

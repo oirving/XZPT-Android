@@ -9,6 +9,16 @@ public class ResumeModelItem {
 
     private ResumeTemplate resumeTemplate;
 
+    public String getCreateOrHistory() {
+        return createOrHistory;
+    }
+
+    public void setCreateOrHistory(String createOrHistory) {
+        this.createOrHistory = createOrHistory;
+    }
+
+    private String createOrHistory;
+
     public ResumeTemplate getResumeTemplate() {
         return resumeTemplate;
     }
