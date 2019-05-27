@@ -131,7 +131,6 @@ public class FragmentDate extends Fragment implements
         mRecyclerView.setLayoutManager(getLinearLayoutManager());
         mRecyclerView.setHasFixedSize(true);
 
-
         return view;
     }
 

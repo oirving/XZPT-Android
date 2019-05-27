@@ -11,6 +11,7 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.bean.TempResponseData;
@@ -36,6 +38,7 @@ import com.vondear.rxtool.RxTextTool;
 import com.vondear.rxtool.RxTool;
 import com.vondear.rxtool.view.RxToast;
 import com.vondear.rxui.view.dialog.RxDialogLoading;
+import com.vondear.rxui.view.dialog.RxDialogShapeLoading;
 import com.vondear.rxui.view.dialog.RxDialogSureCancel;
 
 import org.json.JSONObject;
@@ -57,6 +60,7 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
     private Button btnEdit;//编辑按钮
     private Button btnOp;//操作按钮（停招岗位为重新发布，在招岗位为结束招聘）
     private boolean flagModify = false;
+    //后续从服务器获取该数据
     private String[] mVals = new String[]
             {"C++", "Javascript", "金融", "直播", "电商", "Java", "移动互联网", "分布式", "C", "服务器端", "社交",
                     "带薪年假", "银行", "云计算", "MySQL", "Linux/Unix", "旅游", "绩效奖金", "工具软件", "大数据",
@@ -81,10 +85,7 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_com_recruitment_detail);
-        //获取传递过来的岗位信息
-        Intent intent = getIntent();
-        recruitment = (Recruitment) intent.getSerializableExtra("recruitment");
-
+        mContext = this;
         //获取布局控件
         toolbar = (Toolbar)findViewById(R.id.asa_toolbar);
         mTvAboutSpannable = (TextView)findViewById(R.id.tv_about_spannable);
@@ -100,13 +101,24 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
             public void onClick(View v) {
                 finish();
             }
-        });
+        });//获取传递过来的岗位信息
+        Intent intent = getIntent();
+        recruitment = (Recruitment) intent.getSerializableExtra("recruitment");
+        if(recruitment == null){
+            //开始加载动画
+            MyApplication.rxDialogShapeLoading = new RxDialogShapeLoading(mContext);
+            MyApplication.rxDialogShapeLoading.setLoadingText("正在加载中");
+            MyApplication.rxDialogShapeLoading.show();
+            recruitment = new Recruitment();
+            Long recruitmentId = intent.getLongExtra("recruitmentId",0);
+            recruitment.setRecruitmentId(recruitmentId);
+            getNewRecruitment();
+        }else{
+            initView();
+        }
+    }
 
-        //设置加载动画
-        rxDialogLoadingxx = new RxDialogLoading(this);
-        rxDialogLoadingxx.setLoadingText("拼命加载中");
-        rxDialogLoadingxx.setLoadingColor(R.color.colorPrimary);
-
+    private void initView() {
         //设置按钮
         if(recruitment.getValidate()==0){
             btnEdit.setText("编辑岗位");
@@ -121,12 +133,6 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         }
         btnEdit.setOnClickListener(this);
         btnOp.setOnClickListener(this);
-        initView();
-        mContext = this;
-        RxTool.init(this);
-    }
-
-    private void initView() {
         //行业标签数据
         List<String> data = new ArrayList<>();
         data.add("开发|测试|运维类");
@@ -367,6 +373,8 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    //结束加载动画
+                                    MyApplication.rxDialogShapeLoading.hide();
                                     if(postResult.getResultCode()==200){
                                         finish();
                                         Intent intent = new Intent(mContext, ComRecruitmentDetailActivity.class);
@@ -381,12 +389,15 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    //结束加载动画
+                    MyApplication.rxDialogShapeLoading.hide();
                     Log.e("TAG", error.getMessage(), error);
                     Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
                 }});
-
             requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
+            //结束加载动画
+            MyApplication.rxDialogShapeLoading.hide();
             Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }

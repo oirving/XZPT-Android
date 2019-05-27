@@ -13,6 +13,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activity.DefaultMessagesActivity;
 import com.djylrz.xzpt.bean.Resume;
@@ -89,6 +91,19 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+        toolbar.inflateMenu(R.menu.com_recruitment_detail_menu);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.add_menu_done:
+                        break;
+                    default:
+                        break;
+                }
+                return true;
             }
         });
         //设置加载动画
@@ -278,7 +293,10 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Toast.makeText(mContext, "这里应该跳转到职位详情页，还没写！", Toast.LENGTH_SHORT).show();
+                //跳转到详情页
+                Intent intent = new Intent(mContext, ComRecruitmentDetailActivity.class);
+                intent.putExtra("recruitmentId",resumeDeliveryRecordVO.getRecruitmentId());
+                startActivity(intent);
             }
 
             @Override

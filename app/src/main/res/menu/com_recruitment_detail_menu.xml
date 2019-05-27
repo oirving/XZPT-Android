@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/download_resume_infomation"
+        android:title="下载投递者信息至文件(csv)"
+        />
+</menu>
