@@ -109,7 +109,6 @@ public class FragmentComChat extends Fragment
          adapter.addItem(int position, DIALOG dialog) - adds a new dialog to the specified position.
          adapter.upsertItem(DIALOG dialog) - adds one dialog to the end of the list if not exists, otherwise updates the existing dialog.
          */
-        //dialogsAdapter.setItems(DialogsFixtures.getDialogs());
         dialogsAdapter.setOnDialogClickListener(this);
         dialogsAdapter.setOnDialogLongClickListener(this);
         dialogsList.setAdapter(dialogsAdapter);

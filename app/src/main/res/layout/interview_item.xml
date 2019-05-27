@@ -17,6 +17,7 @@
         android:textSize="17dp"
         />
     <TextView
+        android:id="@+id/interview_author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="待就业六人组"

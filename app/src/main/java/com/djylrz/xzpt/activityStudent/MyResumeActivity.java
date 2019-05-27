@@ -66,7 +66,7 @@ public class MyResumeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_resume);
-        //todo 从系统读取简历基本状态——to小榕
+        //从系统读取简历基本状态——to小榕
         //initResumeList();
         recyclerView = (RecyclerView)findViewById(R.id.resume_list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -77,14 +77,17 @@ public class MyResumeActivity extends AppCompatActivity {
         addResume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo 添加一份简历，跳转到简历编辑页面,不可变的基本信息可以先填入 ->小榕
+                //添加一份简历，跳转到简历编辑页面,不可变的基本信息可以先填入 ->小榕
                 Intent intent = new Intent(MyResumeActivity.this,EditMyResumeActivity.class);
+                intent.putExtra(Constants.INTENT_PUT_EXTRA_KEY_CREATE_OR_EDIT_RESUME,Constants.CREATE_RESUME);
+                Toast.makeText(v.getContext(), Constants.CREATE_RESUME, Toast.LENGTH_SHORT).show();
+
                 startActivity(intent);
             }
         });
         initPage();
         //删除item
-        //todo 删除的事件在MyResumeAdapter.java里做
+        //删除的事件在MyResumeAdapter.java里做
         adapter.setOnRemoveListener(new MyResumeAdapter.onRemoveListener() {
             @Override
             public void onDelete(int i) {
@@ -95,7 +98,14 @@ public class MyResumeActivity extends AppCompatActivity {
         });
     }
 
-   //获取所有的简历信息——》小榕
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        initResumeList();
+    }
+
+    //获取所有的简历信息——》小榕
     private void initResumeList() {
         SharedPreferences userToken = getSharedPreferences("token",0);
         String token = userToken.getString(PostParameterName.STUDENT_TOKEN,null);
@@ -124,26 +134,27 @@ public class MyResumeActivity extends AppCompatActivity {
                                                     return new Timestamp(json.getAsJsonPrimitive().getAsLong());
                                                 }
                                             });
-                                            Gson gson = builder.create();
+                                            Gson gson = builder
+                                                    .setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
                                             //解析pageData
                                             Type jsonType = new TypeToken<PageData<Resume>>() {}.getType();
-                                            final PageData<Resume> recruitmentPageData = gson.fromJson(pageDataResultObject.toString(),jsonType);
+                                            final PageData<Resume> resumePageData = gson.fromJson(pageDataResultObject.toString(),jsonType);
 
                                             //获取到ResumeList
-                                            resumeList = recruitmentPageData.getContentList();
+                                            resumeList = resumePageData.getContentList();
                                             Log.d(TAG, "onResponse: "+resumeList.size());
                                             myResumeList.clear();
                                             for (Resume resume : resumeList){
                                                 //简历表无创建简历时间，无岗位意向（求职意向中有）
                                                 MyResumeItem resumeItem = new MyResumeItem(
                                                         resume);
-                                                //todo 显示未投递的简历（已实现），测试先注释，测试完记得删掉
-                                                //if (((int)resume.getResumeStatus())==Constants.RESUME_STATE_NOT_DELIVERED){
+                                                //显示未投递的简历（已实现）
+                                                if (((int)resume.getResumeStatus())==Constants.RESUME_STATE_NOT_DELIVERED){
                                                     myResumeList.add(resumeItem);
-                                                //}
-                                                adapter.notifyDataSetChanged();
+                                                }
                                             }
+                                            adapter.notifyDataSetChanged();
                                         }
                                     }
                                 } catch (JSONException e) {

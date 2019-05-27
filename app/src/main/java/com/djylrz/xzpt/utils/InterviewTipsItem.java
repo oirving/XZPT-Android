@@ -1,9 +1,19 @@
 package com.djylrz.xzpt.utils;
 
 public class InterviewTipsItem {
-    String title;
-    String url;
-    public InterviewTipsItem(String title,String url) {
+    private String title;
+    private String url;
+
+    private InterviewSkill interviewSkill;
+
+    public InterviewTipsItem(InterviewSkill interviewSkill) {
+        this.interviewSkill = interviewSkill;
+
+        this.title = interviewSkill.getTitle();
+        this.url = PostParameterName.GET_URL_INTERVIEW_SKILL_ARTICLE+interviewSkill.getId();
+    }
+
+    public InterviewTipsItem(String title, String url) {
         this.title = title;
         this.url = url;
     }
@@ -22,5 +32,13 @@ public class InterviewTipsItem {
 
     public String getUrl() {
         return url;
+    }
+
+    public InterviewSkill getInterviewSkill() {
+        return interviewSkill;
+    }
+
+    public void setInterviewSkill(InterviewSkill interviewSkill) {
+        this.interviewSkill = interviewSkill;
     }
 }

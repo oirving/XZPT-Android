@@ -12,6 +12,8 @@ import com.djylrz.xzpt.activityStudent.RecruitmentDetailActivity;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Recruitment;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -24,6 +26,8 @@ public class StudentRecruitmentAdapter extends RecyclerView.Adapter<StudentRecru
 
     private List<Recruitment> mRecruitments;
     private int type;
+    DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
     static class ViewHolder extends RecyclerView.ViewHolder{
         View recruitmentView;
         TextView recruitmentName;
@@ -32,6 +36,8 @@ public class StudentRecruitmentAdapter extends RecyclerView.Adapter<StudentRecru
         TextView recruitmentLocation;
         TextView recruitmentDegree;
         TextView recruitmentWorkTime;
+        TextView recruitmentPublishTime;
+
         public ViewHolder(View view){
             super(view);
             recruitmentView = view;
@@ -41,6 +47,7 @@ public class StudentRecruitmentAdapter extends RecyclerView.Adapter<StudentRecru
             recruitmentLocation = (TextView) view.findViewById(R.id.recruitment_location);
             recruitmentDegree = (TextView) view.findViewById(R.id.recruitment_degree);
             recruitmentWorkTime = (TextView) view.findViewById(R.id.recruitment_work_time);
+            recruitmentPublishTime = (TextView)view.findViewById(R.id.recruitment_publish_time);
         }
     }
 
@@ -50,7 +57,7 @@ public class StudentRecruitmentAdapter extends RecyclerView.Adapter<StudentRecru
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.student_recruitement_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recruitment_item, parent, false);
         final ViewHolder holder = new ViewHolder(view);
         holder.recruitmentView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +83,8 @@ public class StudentRecruitmentAdapter extends RecyclerView.Adapter<StudentRecru
         holder.recruitmentLocation.setText(recruitment.getLocation());
         holder.recruitmentDegree.setText(recruitment.getDegree());
         holder.recruitmentWorkTime.setText(Constants.WORK_TIME[(int)recruitment.getWorkTime()]);
+        holder.recruitmentPublishTime.setText(df2.format(recruitment.getPublishTime()));
+
     }
 
     @Override
