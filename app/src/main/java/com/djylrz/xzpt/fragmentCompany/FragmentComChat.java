@@ -227,46 +227,45 @@ public class FragmentComChat extends Fragment
                                 //Log.d(TAG, "onSuccess: name:" + postResult.getResultObject().getUserName() + "，headUrl:" + postResult.getResultObject().getHeadUrl());
                                 userName = postResult.getResultObject().getUserName();
                                 headUrl = postResult.getResultObject().getHeadUrl();
-                                ChatUser chatUser = new ChatUser(dialogContent.getLastMessage().getFromAccount(), userName, headUrl, true);
-                                users.add(chatUser);
-                                Message message = null;
-                                //需要对Payload进行base64解密
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    //解析json消息体
-                                    String payload = new String(Base64.getDecoder().decode(dialogContent.getLastMessage().getPayload().replace("\r\n", "")));
-                                    Log.d(TAG, "ParseJson: " + payload);
-                                    Log.d(TAG, "unParseJson: " + dialogContent.getLastMessage().getPayload());
-
-                                    String regExp = "\"payload\":\"(.*)\"";
-                                    Pattern pattern;
-                                    Matcher matcher;
-                                    pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
-                                    matcher = pattern.matcher(payload);
-                                    if (matcher.find()) {
-                                        String lastMessageBase64 = matcher.group(1);
-                                        String lastMessage = new String(Base64.getDecoder().decode(lastMessageBase64));
-                                        message = new Message(dialogContent.getLastMessage().getFromAccount(), chatUser, new String(lastMessage), new Date(Long.parseLong(dialogContent.getTimestamp())));
-                                    } else {
-                                        message = new Message(dialogContent.getLastMessage().getFromAccount(), chatUser, "消息已损坏", new Date(Long.parseLong(dialogContent.getTimestamp())));
-                                    }
-                                } else {
-                                    message = new Message(dialogContent.getLastMessage().getFromAccount(), chatUser, "消息已损坏", new Date(Long.parseLong(dialogContent.getTimestamp())));
-                                }
-                                int count = 0;
-                                if (unReadMessageCountMap.get(dialogContent.getLastMessage().getFromAccount()) != null) {
-                                    count = unReadMessageCountMap.get(dialogContent.getLastMessage().getFromAccount());
-                                }
-                                Dialog dialog = new Dialog(dialogContent.getLastMessage().getFromAccount(), userName, headUrl, users, message, count);
-                                dialogsAdapter.upsertItem(dialog);
                             } else {
-                                userName = "该用户不存在";
+                                userName = "未知用户";
                                 headUrl = "";
                             }
                         } catch (Exception e) {
-                            userName = "该用户不存在";
+                            userName = "未知用户";
                             headUrl = "";
                         }
+                        ChatUser chatUser = new ChatUser(dialogContent.getLastMessage().getFromAccount(), userName, headUrl, true);
+                        users.add(chatUser);
+                        Message message = null;
+                        //需要对Payload进行base64解密
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            //解析json消息体
+                            String payload = new String(Base64.getDecoder().decode(dialogContent.getLastMessage().getPayload().replace("\r\n", "")));
+                            Log.d(TAG, "ParseJson: " + payload);
+                            Log.d(TAG, "unParseJson: " + dialogContent.getLastMessage().getPayload());
 
+                            String regExp = "\"payload\":\"(.*)\"";
+                            Pattern pattern;
+                            Matcher matcher;
+                            pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
+                            matcher = pattern.matcher(payload);
+                            if (matcher.find()) {
+                                String lastMessageBase64 = matcher.group(1);
+                                String lastMessage = new String(Base64.getDecoder().decode(lastMessageBase64));
+                                message = new Message(dialogContent.getLastMessage().getFromAccount(), chatUser, new String(lastMessage), new Date(Long.parseLong(dialogContent.getTimestamp())));
+                            } else {
+                                message = new Message(dialogContent.getLastMessage().getFromAccount(), chatUser, "消息已损坏", new Date(Long.parseLong(dialogContent.getTimestamp())));
+                            }
+                        } else {
+                            message = new Message(dialogContent.getLastMessage().getFromAccount(), chatUser, "消息已损坏", new Date(Long.parseLong(dialogContent.getTimestamp())));
+                        }
+                        int count = 0;
+                        if (unReadMessageCountMap.get(dialogContent.getLastMessage().getFromAccount()) != null) {
+                            count = unReadMessageCountMap.get(dialogContent.getLastMessage().getFromAccount());
+                        }
+                        Dialog dialog = new Dialog(dialogContent.getLastMessage().getFromAccount(), userName, headUrl, users, message, count);
+                        dialogsAdapter.upsertItem(dialog);
 
                     }
 

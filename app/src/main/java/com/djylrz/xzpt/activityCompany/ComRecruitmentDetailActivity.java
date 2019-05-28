@@ -1,12 +1,19 @@
 package com.djylrz.xzpt.activityCompany;
 
-import android.app.DownloadManager;
-import android.content.Context;
+import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Layout;
@@ -45,12 +52,19 @@ import com.vondear.rxui.view.dialog.RxDialogSureCancel;
 
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 
 public class ComRecruitmentDetailActivity extends AppCompatActivity implements View.OnClickListener {
     private Toolbar toolbar;//标题栏
@@ -62,6 +76,7 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
     private Button btnEdit;//编辑按钮
     private Button btnOp;//操作按钮（停招岗位为重新发布，在招岗位为结束招聘）
     private boolean flagModify = false;
+    private String tempFileName;
     //后续从服务器获取该数据
     private String[] mVals = new String[]
             {"C++", "Javascript", "金融", "直播", "电商", "Java", "移动互联网", "分布式", "C", "服务器端", "社交",
@@ -83,6 +98,24 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                     "团队建设", "美味晚餐", "领导好", "音频编解码", "弹性工作制", "年终奖丰厚", "Q版", "2D", "多媒体", "目标管理"
             };
     private static final String TAG = "ComRecruitmentDetailAct";
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    new AlertDialog.Builder(mContext).setTitle("文件下载完成").setMessage("文件存储路径：\n根目录/" + tempFileName + ".csv")
+                            .setCancelable(false)
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).create().show();
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +145,21 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.download_resume_infomation:
-                        getFileUrlAndDownload();
+                        if (ContextCompat.checkSelfPermission(ComRecruitmentDetailActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//提示弹窗
+                            new AlertDialog.Builder(mContext).setTitle("需要文件读写权限").setMessage("下载文件需要文件读写权限，请允许！")
+                                    .setCancelable(false)
+                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            ActivityCompat.requestPermissions(ComRecruitmentDetailActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                                            dialog.dismiss();
+                                            getFileUrlAndDownload();
+                                        }
+                                    }).create().show();
+                        } else {
+                            getFileUrlAndDownload();
+                        }
                         break;
                     default:
                         break;
@@ -561,20 +608,7 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                                 @Override
                                 public void run() {
                                     if (postResult.getResultCode() == 200) {
-                                        final DownloadManager dManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-                                        Uri uri = Uri.parse(PostParameterName.DOWNLOAD_URL_RESUME_IMAGE_PREFIX + filePath);
-                                        DownloadManager.Request request = new DownloadManager.Request(uri);
-                                        // 设置下载路径和文件名
-                                        request.setDestinationInExternalPublicDir("download", recruitment.getJobName()+"已投递者信息导出.csv");
-                                        request.setDescription("校招平台-求职者信息导出");
-                                        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                                        request.setMimeType("application/vnd.ms-excel");
-                                        // 设置为可被媒体扫描器找到
-                                        request.allowScanningByMediaScanner();
-                                        // 设置为可见和可管理
-                                        request.setVisibleInDownloadsUi(true);
-                                        // 获取此次下载的ID
-                                        final long refernece = dManager.enqueue(request);
+                                        downLoadFile(PostParameterName.DOWNLOAD_URL_RESUME_IMAGE_PREFIX + filePath, "[" + recruitment.getJobName() + "]岗位求职者信息");
                                     } else {
                                         RxToast.error("下载文件失败，请重试！");
                                     }
@@ -597,4 +631,61 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
             e.printStackTrace();
         }
     }
+
+    protected void downLoadFile(final String uri, final String fileName) {
+        //进度条
+        tempFileName = fileName;
+        final ProgressDialog pd;
+        pd = new ProgressDialog(this);
+        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        pd.setMessage("正在下载文件");
+        pd.setCancelable(false);
+        pd.show();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final File file = getFileFromServer(uri, pd, fileName);
+                    pd.dismiss(); //结束掉进度条对话框
+                    handler.sendEmptyMessage(1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    public static File getFileFromServer(String path, ProgressDialog pd, String fileName) throws Exception {
+        //如果相等的话表示当前的sdcard挂载在手机上并且是可用的
+        Log.d(TAG, "getFileFromServer: 开始下载");
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            URL url = new URL(path);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setRequestProperty("Accept-Encoding", "identity");
+            //获取到文件的大小
+            pd.setMax(conn.getContentLength());
+            InputStream is = conn.getInputStream();
+            File file = new File(Environment.getExternalStorageDirectory(), fileName + ".csv");
+            FileOutputStream fos = new FileOutputStream(file);
+            BufferedInputStream bis = new BufferedInputStream(is);
+            byte[] buffer = new byte[1024];
+            int len;
+            int total = 0;
+            while ((len = bis.read(buffer)) != -1) {
+                fos.write(buffer, 0, len);
+                total += len;
+                //获取当前下载量
+                pd.setProgress(total);
+                Log.d(TAG, "getFileFromServer: " + len);
+            }
+            fos.close();
+            bis.close();
+            is.close();
+            return file;
+        } else {
+            return null;
+        }
+    }
+
 }
