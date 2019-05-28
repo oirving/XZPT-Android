@@ -13,7 +13,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.activityStudent.EditMyResumeActivity;
 import com.djylrz.xzpt.activityStudent.IntentResumeFileActivity;
+import com.djylrz.xzpt.activityStudent.MyResumeActivity;
 import com.djylrz.xzpt.activityStudent.MyResumePreviewActivity;
 
 import java.util.List;
@@ -21,7 +23,8 @@ import java.util.List;
 public class DeliveryRecordAdapter extends RecyclerView.Adapter<DeliveryRecordAdapter.ViewHolder> {
     private List<DeliveryRecordItem> deliveryRecordItems;
     public DeliveryRecordAdapter(List<DeliveryRecordItem> deliveryRecordItems) {
-        deliveryRecordItems = deliveryRecordItems;
+
+        this.deliveryRecordItems = deliveryRecordItems;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -52,18 +55,24 @@ public class DeliveryRecordAdapter extends RecyclerView.Adapter<DeliveryRecordAd
         holder.deliveryRecordView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //todo 投递记录需要跳转到详细界面么？
+                /*
                 int position = holder.getAdapterPosition();
                 DeliveryRecordItem deliveryRecordItem = deliveryRecordItems.get(position);
-                Intent intent = new Intent(v.getContext(), MyResumePreviewActivity.class);
-                v.getContext().startActivity(intent);
+                Intent intent = new Intent(v.getContext(), EditMyResumeActivity.class);
+                intent.putExtra(Constants.INTENT_PUT_EXTRA_KEY_CREATE_OR_EDIT_RESUME,Constants.EDIT_RESUME);
+                intent.putExtra("resumeID",deliveryRecordItem.getResumeDelivery().getResumeId());
+                v.getContext().startActivity(intent);*/
             }
         });
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            //todo 补充删除事件 ->小榕
+        /*holder.delete.setOnClickListener(new View.OnClickListener() {
+            //用户不需要删除投递记录
             @Override
             public void onClick(View v) {
+                deliveryRecordItems.remove(holder.getAdapterPosition());
+                notifyDataSetChanged();
             }
-        });
+        });*/
         return holder;
     }
 
