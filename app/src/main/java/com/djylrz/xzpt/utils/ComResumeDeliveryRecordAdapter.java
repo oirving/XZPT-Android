@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.djylrz.xzpt.activityCompany.ComResumeDeliveryRecordDetailActivity;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.bean.ResumeDelivery;
 import com.djylrz.xzpt.vo.ResumeDeliveryRecordVO;
 
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
  * @create: 2019-04-28 01:00
  */
 public class ComResumeDeliveryRecordAdapter extends RecyclerView.Adapter<ComResumeDeliveryRecordAdapter.ViewHolder> {
-    private List<ResumeDeliveryRecordVO> mResumeDeliveryRecordVOList;
+    private List<ResumeDelivery> mResumeDeliveryList;
     private int type;
     private Context context;
     private static final String TAG = "ComResumeDeliveryRecord";
@@ -47,8 +48,8 @@ public class ComResumeDeliveryRecordAdapter extends RecyclerView.Adapter<ComResu
         }
     }
 
-    public ComResumeDeliveryRecordAdapter(List<ResumeDeliveryRecordVO> mRecruitments, int type, Context context) {
-        this.mResumeDeliveryRecordVOList = mRecruitments;
+    public ComResumeDeliveryRecordAdapter(List<ResumeDelivery> mRecruitments, int type, Context context) {
+        this.mResumeDeliveryList = mRecruitments;
         this.type = type;
         this.context = context;
     }
@@ -63,7 +64,7 @@ public class ComResumeDeliveryRecordAdapter extends RecyclerView.Adapter<ComResu
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                ResumeDeliveryRecordVO resumeDeliveryRecordVO = mResumeDeliveryRecordVOList.get(position);
+                ResumeDelivery resumeDeliveryRecordVO = mResumeDeliveryList.get(position);
                 //跳转到详情页
                 Intent intent = new Intent(context, ComResumeDeliveryRecordDetailActivity.class);
                 intent.putExtra("resumeDeliveryRecordVO",resumeDeliveryRecordVO);
@@ -76,7 +77,7 @@ public class ComResumeDeliveryRecordAdapter extends RecyclerView.Adapter<ComResu
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ResumeDeliveryRecordVO resumeDeliveryRecordVO = mResumeDeliveryRecordVOList.get(position);
+        ResumeDelivery resumeDeliveryRecordVO = mResumeDeliveryList.get(position);
         holder.resumeDeliveryRecordRecruitmentName.setText(resumeDeliveryRecordVO.getRecruitmentName());
         String resumeRecordType;
         switch ((int)resumeDeliveryRecordVO.getDeliveryStatus()){
@@ -117,6 +118,6 @@ public class ComResumeDeliveryRecordAdapter extends RecyclerView.Adapter<ComResu
 
     @Override
     public int getItemCount() {
-        return mResumeDeliveryRecordVOList.size();
+        return mResumeDeliveryList.size();
     }
 }

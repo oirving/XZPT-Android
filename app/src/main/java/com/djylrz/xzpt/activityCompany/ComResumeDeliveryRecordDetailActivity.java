@@ -31,7 +31,6 @@ import com.djylrz.xzpt.bean.Resume;
 import com.djylrz.xzpt.bean.ResumeDelivery;
 import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.utils.PostParameterName;
-import com.djylrz.xzpt.vo.ResumeDeliveryRecordVO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -61,7 +60,7 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
     private TextView mTvAboutSpannable;//RXTextView布局
     private ComResumeDeliveryRecordDetailActivity mContext;//上下文context
     private RequestQueue requestQueue;//请求队列
-    private ResumeDeliveryRecordVO resumeDeliveryRecordVO;//用于接收intent传过来的记录对象
+    private ResumeDelivery resumeDeliveryRecordVO;//用于接收intent传过来的记录对象
     private RxDialogLoading rxDialogLoading;//加载动画对话框
     private Resume resume;//用于接收json的简历对象
     private Button btnRefuse;//拒绝按钮
@@ -93,19 +92,7 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                 finish();
             }
         });
-        toolbar.inflateMenu(R.menu.com_recruitment_detail_menu);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.add_menu_done:
-                        break;
-                    default:
-                        break;
-                }
-                return true;
-            }
-        });
+
         //设置加载动画
         rxDialogLoading = new RxDialogLoading(this);
         rxDialogLoading.setLoadingText("数据加载中");
@@ -170,7 +157,7 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
 
         //获取传递过来的岗位信息
         Intent intent = getIntent();
-        resumeDeliveryRecordVO = (ResumeDeliveryRecordVO) intent.getSerializableExtra("resumeDeliveryRecordVO");
+        resumeDeliveryRecordVO = (ResumeDelivery) intent.getSerializableExtra("resumeDeliveryRecordVO");
         //根据resumeId获取简历详细信息
         //获取token
         SharedPreferences preferences = getSharedPreferences("token",0);

@@ -101,7 +101,22 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
             public void onClick(View v) {
                 finish();
             }
-        });//获取传递过来的岗位信息
+        });
+        //设置菜单
+        toolbar.inflateMenu(R.menu.com_recruitment_detail_menu);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.add_menu_done:
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+        //获取传递过来的岗位信息
         Intent intent = getIntent();
         recruitment = (Recruitment) intent.getSerializableExtra("recruitment");
         if(recruitment == null){
