@@ -13,6 +13,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,13 +24,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activity.DefaultMessagesActivity;
 import com.djylrz.xzpt.bean.Resume;
 import com.djylrz.xzpt.bean.ResumeDelivery;
 import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.utils.PostParameterName;
-import com.djylrz.xzpt.vo.ResumeDeliveryRecordVO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -59,7 +60,7 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
     private TextView mTvAboutSpannable;//RXTextView布局
     private ComResumeDeliveryRecordDetailActivity mContext;//上下文context
     private RequestQueue requestQueue;//请求队列
-    private ResumeDeliveryRecordVO resumeDeliveryRecordVO;//用于接收intent传过来的记录对象
+    private ResumeDelivery resumeDeliveryRecordVO;//用于接收intent传过来的记录对象
     private RxDialogLoading rxDialogLoading;//加载动画对话框
     private Resume resume;//用于接收json的简历对象
     private Button btnRefuse;//拒绝按钮
@@ -91,6 +92,7 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                 finish();
             }
         });
+
         //设置加载动画
         rxDialogLoading = new RxDialogLoading(this);
         rxDialogLoading.setLoadingText("数据加载中");
@@ -155,7 +157,7 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
 
         //获取传递过来的岗位信息
         Intent intent = getIntent();
-        resumeDeliveryRecordVO = (ResumeDeliveryRecordVO) intent.getSerializableExtra("resumeDeliveryRecordVO");
+        resumeDeliveryRecordVO = (ResumeDelivery) intent.getSerializableExtra("resumeDeliveryRecordVO");
         //根据resumeId获取简历详细信息
         //获取token
         SharedPreferences preferences = getSharedPreferences("token",0);
@@ -278,7 +280,10 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Toast.makeText(mContext, "这里应该跳转到职位详情页，还没写！", Toast.LENGTH_SHORT).show();
+                //跳转到详情页
+                Intent intent = new Intent(mContext, ComRecruitmentDetailActivity.class);
+                intent.putExtra("recruitmentId",resumeDeliveryRecordVO.getRecruitmentId());
+                startActivity(intent);
             }
 
             @Override

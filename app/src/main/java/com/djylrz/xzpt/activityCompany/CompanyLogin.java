@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
+
 
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
@@ -27,6 +27,7 @@ import com.djylrz.xzpt.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.vondear.rxtool.view.RxToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -143,33 +144,42 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
         protected void onPostExecute(String responseData) {
             super.onPostExecute(responseData);
             PostResult result = new Gson().fromJson(responseData,PostResult.class);
-            switch (result.getResultCode()){
-                case "200":{
-                    //获取企业token，并保存到SharedPreferences
-                    Company company = new Company();
-                    company.setToken(result.getResultObject());
-                    SharedPreferences companyToken = getSharedPreferences("token", 0);
-                    SharedPreferences.Editor editor = companyToken.edit();
-                    editor.putString(PostParameterName.TOKEN,company.getToken());
-                    editor.commit();
+            if (responseData != null) {
+                switch (result.getResultCode()) {
+                    case "200": {
+                        //获取企业token，并保存到SharedPreferences
+                        Company company = new Company();
+                        company.setToken(result.getResultObject());
+                        SharedPreferences companyToken = getSharedPreferences("token", 0);
+                        SharedPreferences.Editor editor = companyToken.edit();
+                        editor.putString(PostParameterName.TOKEN, company.getToken());
+                        editor.commit();
 
-                    //已经验证企业用户名密码正确，请在下面实现企业用户登录成功后的界面跳转
-                    //企业登录成功界面暂无
-                    Log.d(TAG, "onPostExecute: 企业用户登录成功！");
-                    getCompanyInfo();
-                    //跳转到企业首页
-                    Intent intent = new Intent(CompanyLogin.this, Main2Activity.class);
-                    startActivity(intent);
-                    finish();
-                }break;
-                case "2008":{
-                    //用户名密码有误
-                    Toast.makeText(CompanyLogin.this,"用户名密码错误",Toast.LENGTH_SHORT).show();
-                }break;
-                default:{
-                    //未知错误
-                    Toast.makeText(CompanyLogin.this,"登录失败，错误码："+result.getResultCode(),Toast.LENGTH_SHORT).show();
+                        //已经验证企业用户名密码正确，请在下面实现企业用户登录成功后的界面跳转
+                        //企业登录成功界面暂无
+                        Log.d(TAG, "onPostExecute: 企业用户登录成功！");
+                        getCompanyInfo();
+                        //跳转到企业首页
+                        Intent intent = new Intent(CompanyLogin.this, Main2Activity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                    break;
+                    case "2008": {
+                        //用户名密码有误
+                        RxToast.error("用户名或密码错误！");
+//                        Toast.makeText(CompanyLogin.this, "用户名密码错误", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                    default: {
+                        //未知错误
+                        RxToast.error("服务器罢工了，请稍后再试！错误码：" + result.getResultCode());
+//                        Toast.makeText(CompanyLogin.this, "登录失败，错误码：" + result.getResultCode(), Toast.LENGTH_SHORT).show();
+                    }
                 }
+            }else{
+                RxToast.error("服务器连接失败，请检查网络连接！");
+                Log.d(TAG, "onPostExecute: response is empty");
             }
 
         }

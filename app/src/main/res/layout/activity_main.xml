@@ -8,11 +8,14 @@
     tools:context=".activityStudent.MainActivity">
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/view_pager"
-        android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="0dp"
-        tools:ignore="MissingConstraints" />
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            tools:ignore="MissingConstraints"
+            app:layout_constraintBottom_toTopOf="@id/navigation"
+
+            app:layout_constraintTop_toTopOf="parent"/>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"

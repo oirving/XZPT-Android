@@ -31,6 +31,9 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
     //    private String fileUrl="http://123.207.239.170/test.docx";//远程文档地址，如下载失败请验证此链接是否还可用（那个时候可能我养不住服务器了）
     //todo 填写文档的地址 ->小榕
     private String fileUrl="https://serve.wangmingjun.top/app/xzpt/1.doc";//远程文档地址
+    private String templatePath;
+    private String createOrHistory;//判断是否显示create按钮
+
 
     /**
      * Fragment中初始化Toolbar
@@ -52,9 +55,11 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
         super.onCreate(savedInstanceState);
         /*获取intent传输过来的简历模板文件名*/
         fileName=title=getIntent().getStringExtra(PostParameterName.INTENT_PUT_EXTRA_KEY_RESUME_TEMPLATE_FILENAME);
+        templatePath = getIntent().getStringExtra(PostParameterName.REQUEST_RESUME_TEMPLATE_PATH);
+        createOrHistory = getIntent().getStringExtra(PostParameterName.INTENT_PUT_EXTRA_KEY_RESUME_HISTORY_OR_CREATE);
         /*拼接简历模版URL*/
         fileUrl=PostParameterName.DOWNLOAD_URL_RESUME_IMAGE_PREFIX+fileName;
-
+/*
         setContentView(R.layout.activity_intent_resume_file);
         toolbar = (Toolbar) findViewById(R.id.resume_toolbar);
         url = (EditText) findViewById(R.id.text_url);
@@ -62,7 +67,13 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
         resumeFileName = (TextView) findViewById(R.id.resume_file_name);
         resumeFileName.setText(fileName);
         btnFileBrowsing=findViewById(R.id.resume_file_download);
-        btnFileBrowsing.setOnClickListener(IntentResumeFileActivity.this);
+        btnFileBrowsing.setOnClickListener(IntentResumeFileActivity.this);*/
+        if (ContextCompat.checkSelfPermission(IntentResumeFileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(IntentResumeFileActivity.this, new String[]{ Manifest.permission. WRITE_EXTERNAL_STORAGE }, 1);
+        } else {
+            ResumeDisplayActivity.actionStart(IntentResumeFileActivity.this,fileUrl,fileName,templatePath,createOrHistory);
+            finish();
+        }
     }
     @Override
     public void onClick(View v) {
@@ -75,7 +86,7 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
                 if (ContextCompat.checkSelfPermission(IntentResumeFileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(IntentResumeFileActivity.this, new String[]{ Manifest.permission. WRITE_EXTERNAL_STORAGE }, 1);
                 } else {
-                    ResumeDisplayActivity.actionStart(IntentResumeFileActivity.this,fileUrl,fileName);
+                    ResumeDisplayActivity.actionStart(IntentResumeFileActivity.this,fileUrl,fileName,templatePath,createOrHistory);
                 }
                 break;
             default:
@@ -88,7 +99,7 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
         switch (requestCode) {
             case 1:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    ResumeDisplayActivity.actionStart(IntentResumeFileActivity.this,fileUrl,fileName);
+                    ResumeDisplayActivity.actionStart(IntentResumeFileActivity.this,fileUrl,fileName,templatePath,createOrHistory);
                 } else {
                     Toast.makeText(this, "你拒绝了权限申请，可能无法下载文件到本地哟！", Toast.LENGTH_SHORT).show();
                 }

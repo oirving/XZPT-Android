@@ -58,6 +58,7 @@ public class PostParameterName {
     public static final String REQUEST_KEYWORD = "keyWord";
     public static final String REQUEST_RESUME_ID = "resumeId";
     public static final String REQUEST_RECRUITMENT_ID = "recruitmentId";
+    public static final String REQUEST_RESUME_TEMPLATE_PATH = "templatePath";//根据模版生成简历的参数名
 
     public static final String RESPOND_RESULTCODE = "resultCode";
     public static final String RESPOND_RESULMSG = "resultMsg";
@@ -73,9 +74,20 @@ public class PostParameterName {
 
     /*下载拼接链接*/
     public static final String DOWNLOAD_URL_RESUME_IMAGE_PREFIX = HOST+"/file/";//简历模板缩略图
+    public static final String POST_URL_EXPORT_RESUME = HOST + "/user/exportresume?token=";//#REQUEST_RESUME_TEMPLATE_PATH#
     /*intent之间传递简历模板的key*/
     public static final String INTENT_PUT_EXTRA_KEY_RESUME_TEMPLATE_FILENAME = "filename";
 
     public static final String POST_URL_INTERVIEW_SKILL_PAGE = HOST + "/interviewskill/page";//获取分页面试指导
     public static final String GET_URL_INTERVIEW_SKILL_ARTICLE = HOST + "/interviewskill/article?id=";//获取详细面试指导
+
+    //ResumeDisplayActivity 用于判断是生成的简历的展示，还是简历模版的展示
+    public static final String INTENT_PUT_EXTRA_KEY_RESUME_HISTORY_OR_CREATE = "createOrHistory";
+    public static final String INTENT_PUT_EXTRA_VALUE_RESUME_HISTORY = "history";
+    public static final String INTENT_PUT_EXTRA_VALUE_RESUME_CREATE = "create";
+    //获取简历生成记录
+    public static final String POST_URL_GET_GENERATED_RESUME_HISTORY = HOST + "/user/getlistresumerecord?token=";//todo 添加历史记录接口
+    //获取投递记录接口
+    public static final String POST_URL_GET_DELIVER_RESUME_HISTORY = HOST + "/user/getlistdeliveryrecordbyuserid?token=";//todo 添加投递记录接口
+
 }

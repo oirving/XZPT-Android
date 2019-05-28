@@ -1,6 +1,7 @@
 package com.djylrz.xzpt.utils;
 
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.bean.ResumeDelivery;
 
 public class DeliveryRecordItem {
     String state;
@@ -9,7 +10,27 @@ public class DeliveryRecordItem {
     String userName;
     int delete;
 
-    public DeliveryRecordItem(String state ,String companyName ,String jobName ,String userName) {
+    public ResumeDelivery getResumeDelivery() {
+        return resumeDelivery;
+    }
+
+    public void setResumeDelivery(ResumeDelivery resumeDelivery) {
+        this.resumeDelivery = resumeDelivery;
+    }
+
+    private ResumeDelivery resumeDelivery;
+
+
+    public DeliveryRecordItem(ResumeDelivery resumeDelivery) {
+        this.resumeDelivery = resumeDelivery;
+        this.state=Constants.RESUME_STATE[(int)resumeDelivery.getDeliveryStatus()+1];
+        this.companyName=resumeDelivery.getCompanyName();
+        this.jobName=resumeDelivery.getRecruitmentName();
+        this.userName=resumeDelivery.getUserName();
+        this.delete=R.drawable.delete_resume;
+    }
+
+    public DeliveryRecordItem(String state , String companyName , String jobName , String userName) {
         this.companyName = companyName;
         this.jobName = jobName;
         this.state = state;

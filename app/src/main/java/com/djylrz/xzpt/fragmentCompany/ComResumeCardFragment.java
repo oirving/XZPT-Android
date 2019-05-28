@@ -18,12 +18,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PageData;
+import com.djylrz.xzpt.bean.ResumeDelivery;
 import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.ComResumeDeliveryRecordAdapter;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
 import com.djylrz.xzpt.utils.PostParameterName;
-import com.djylrz.xzpt.vo.ResumeDeliveryRecordVO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -44,7 +44,7 @@ import java.util.List;
 @SuppressLint("ValidFragment")
 public class ComResumeCardFragment extends Fragment {
     private String mTitle;
-    private List<ResumeDeliveryRecordVO> resumeDeliveryRecordVOList = new ArrayList<ResumeDeliveryRecordVO>();
+    private List<ResumeDelivery> resumeDeliveryList = new ArrayList<ResumeDelivery>();
     private int type = 9999;
     private ComResumeDeliveryRecordAdapter adapter;
     private LoadMoreWrapper loadMoreWrapper;
@@ -87,7 +87,7 @@ public class ComResumeCardFragment extends Fragment {
         //加载数据
         initRecruitments();
         LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
-        adapter = new ComResumeDeliveryRecordAdapter(resumeDeliveryRecordVOList,type,getContext());
+        adapter = new ComResumeDeliveryRecordAdapter(resumeDeliveryList,type,getContext());
         loadMoreWrapper = new LoadMoreWrapper(adapter);
         swipeRefreshLayout = v.findViewById(R.id.swipe_refresh_layout);
         recyclerView.setLayoutManager(layoutManager);
@@ -97,7 +97,7 @@ public class ComResumeCardFragment extends Fragment {
             @Override
             public void onRefresh() {
                 // 刷新数据
-                resumeDeliveryRecordVOList.clear();
+                resumeDeliveryList.clear();
                 currentPage = 1;
                 initRecruitments();
                 loadMoreWrapper.notifyDataSetChanged();
@@ -119,7 +119,7 @@ public class ComResumeCardFragment extends Fragment {
             @Override
             public void onLoadMore() {
                 loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING);
-                if (resumeDeliveryRecordVOList.size() < limitNum) {
+                if (resumeDeliveryList.size() < limitNum) {
                     initRecruitments();
                 } else {
                     // 显示加载到底的提示
@@ -156,12 +156,12 @@ public class ComResumeCardFragment extends Fragment {
                                 }
                             });
                             Gson gson =builder.create();
-                            Type jsonType = new TypeToken<TempResponseData<TempResponseResumeData<List<ResumeDeliveryRecordVO>> >>() {}.getType();
-                            final TempResponseData<TempResponseResumeData<List<ResumeDeliveryRecordVO>> > postResult = gson.fromJson(response.toString(), jsonType);
+                            Type jsonType = new TypeToken<TempResponseData<TempResponseResumeData<List<ResumeDelivery>> >>() {}.getType();
+                            final TempResponseData<TempResponseResumeData<List<ResumeDelivery>> > postResult = gson.fromJson(response.toString(), jsonType);
                             Log.d(TAG, "onResponse: "+postResult.getResultCode());
                             if(postResult.getResultCode().equals(200)){
-                                TempResponseResumeData<List<ResumeDeliveryRecordVO>>  resultObject = postResult.getResultObject();
-                                List<ResumeDeliveryRecordVO> resumeDeliveryRecordVOS = resultObject.getContentList();
+                                TempResponseResumeData<List<ResumeDelivery>>  resultObject = postResult.getResultObject();
+                                List<ResumeDelivery> resumeDeliveryRecordVOS = resultObject.getContentList();
                                 for (int i = 0; i < resumeDeliveryRecordVOS.size(); ++i) {
                                     int resumeRecordType = 0;
                                     switch ((int)resumeDeliveryRecordVOS.get(i).getDeliveryStatus()){
@@ -199,7 +199,7 @@ public class ComResumeCardFragment extends Fragment {
                                     Log.d(TAG, "onResponse: 当前的type为"+ resumeRecordType);
                                     if(type == resumeRecordType){
                                         Log.d(TAG, "onResponse: 进入if，当前的type为"+ resumeRecordType);
-                                        resumeDeliveryRecordVOList.add(resumeDeliveryRecordVOS.get(i));
+                                        resumeDeliveryList.add(resumeDeliveryRecordVOS.get(i));
                                     }
                                 }
                             }
@@ -211,7 +211,7 @@ public class ComResumeCardFragment extends Fragment {
                                         loadMoreWrapper.notifyDataSetChanged();
                                     }else{
                                         loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
-                                        limitNum = resumeDeliveryRecordVOList.size();
+                                        limitNum = resumeDeliveryList.size();
                                     }
                                 }
                             });
@@ -226,8 +226,8 @@ public class ComResumeCardFragment extends Fragment {
             e.printStackTrace();
         }
 //        for(int i = 0; i< 20 ; ++i){
-//            ResumeDeliveryRecordVO test1 = new ResumeDeliveryRecordVO("王铭君","待就业六人组PM","福州大学","软件工程",5);
-//            resumeDeliveryRecordVOList.add(test1);
+//            ResumeDelivery test1 = new ResumeDelivery("王铭君","待就业六人组PM","福州大学","软件工程",5);
+//            resumeDeliveryList.add(test1);
 //        }
     }
 }

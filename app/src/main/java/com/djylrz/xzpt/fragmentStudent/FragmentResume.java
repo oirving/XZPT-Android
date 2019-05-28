@@ -127,7 +127,9 @@ public class FragmentResume extends Fragment {
                                         JSONArray jsonArray = response.getJSONArray(PostParameterName.RESPOND_RESULTOBJECT);
                                         List<ResumeTemplate> resumeTemplateList = new Gson().fromJson(jsonArray.toString(),new TypeToken<List<ResumeTemplate>>(){}.getType());
                                         for (ResumeTemplate resumeTemplate:resumeTemplateList){
-                                            resumeModelItemList.add(new ResumeModelItem(resumeTemplate));
+                                            ResumeModelItem resumeModelItem = new ResumeModelItem(resumeTemplate);
+                                            resumeModelItem.setCreateOrHistory(PostParameterName.INTENT_PUT_EXTRA_VALUE_RESUME_CREATE);
+                                            resumeModelItemList.add(resumeModelItem);
                                         }
                                         resumeModelListAdapter = new ResumeModelListAdapter(resumeModelItemList);
                                         recyclerView.setAdapter(resumeModelListAdapter);
