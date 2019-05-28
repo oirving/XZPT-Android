@@ -158,6 +158,7 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
                         //已经验证企业用户名密码正确，请在下面实现企业用户登录成功后的界面跳转
                         //企业登录成功界面暂无
                         Log.d(TAG, "onPostExecute: 企业用户登录成功！");
+                        MyApplication.setUserType(0);
                         getCompanyInfo();
                         //跳转到企业首页
                         Intent intent = new Intent(CompanyLogin.this, Main2Activity.class);
@@ -211,11 +212,11 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
                                 company.setToken(token);
 
                                 //获取用户信息，存储到本地。
-                                SharedPreferences sharedPreferences = getSharedPreferences("company", 0);
+                                SharedPreferences sharedPreferences = getSharedPreferences("companyUser", 0);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 try {
                                     Log.d(TAG, "用户信息存储到本地SharedPreferences：："+response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
-                                    editor.putString("student", new Gson().toJson(company));
+                                    editor.putString("company", new Gson().toJson(company));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }

@@ -322,7 +322,7 @@ public class MessageCardFragment extends Fragment
             public void run() {
                 //刷新会话列表
                 onRefreshDialogList();
-                RxToast.info("聊天功能初始化成功->学生token为：" + UserManager.getInstance().getUser().getToken());
+                //RxToast.info("聊天功能初始化成功->学生token为：" + UserManager.getInstance().getUser().getToken());
             }
         });
 
