@@ -27,7 +27,7 @@ public class Recruitment implements Serializable {
     private long jobType;
     private String companyName;
     private Integer headCount;
-
+    private Integer count;
     //这两个仅仅用于在客户端显示标签为字符串，无其他用处
     private String station;
     private String industry;
@@ -217,5 +217,13 @@ public class Recruitment implements Serializable {
 
     public void setHeadCount(Integer headCount) {
         this.headCount = headCount;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

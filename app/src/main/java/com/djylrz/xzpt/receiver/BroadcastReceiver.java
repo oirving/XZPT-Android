@@ -1,11 +1,13 @@
 package com.djylrz.xzpt.receiver;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Message;
 import android.util.Log;
 
 import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.activityStudent.RecruitmentDetailActivity;
 import com.xiaomi.mipush.sdk.ErrorCode;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.xiaomi.mipush.sdk.MiPushCommandMessage;
@@ -54,6 +56,11 @@ public class BroadcastReceiver extends PushMessageReceiver {
 //        } else if(!TextUtils.isEmpty(message.getUserAccount())) {
 //            mUserAccount=message.getUserAccount();
 //        }
+        //跳转到岗位详情
+        Intent intent = new Intent(MyApplication.getContext(), RecruitmentDetailActivity.class);
+        intent.putExtra("recruitmentID",Long.parseLong(mMessage));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        MyApplication.getContext().startActivity(intent);
     }
     @Override
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {

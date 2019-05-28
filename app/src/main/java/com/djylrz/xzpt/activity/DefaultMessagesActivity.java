@@ -59,7 +59,8 @@ public class DefaultMessagesActivity extends AppCompatActivity
     public static void open(Context context, String senderId, String userName, String headUrl) {
         context.startActivity(new Intent(context, DefaultMessagesActivity.class).putExtra("senderId", senderId)
         .putExtra("userName",userName)
-        .putExtra("headUrl",headUrl));
+        .putExtra("headUrl",headUrl)
+        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     private MessagesList messagesList;

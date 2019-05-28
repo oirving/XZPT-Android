@@ -32,6 +32,7 @@ import com.cleveroad.adaptivetablelayout.OnItemLongClickListener;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.adapter.SampleLinkedTableAdapter;
 import com.djylrz.xzpt.bean.PostResult;
+import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.datasource.CsvFileDataSourceImpl;
 import com.djylrz.xzpt.datasource.UpdateFileCallback;
 import com.djylrz.xzpt.ui.dialogs.AddColumnDialog;
@@ -44,9 +45,13 @@ import com.djylrz.xzpt.utils.HttpUtil;
 import com.djylrz.xzpt.utils.PermissionHelper;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.vondear.rxtool.view.RxToast;
+
 import cz.msebera.android.httpclient.Header;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -89,6 +94,7 @@ public class TableLayoutFragment
     public final static int UPLOAD_FILE_FAIL = 3;
     public final static int IMPORT_RECRUITMENT_LIST_SUCCESS = 4;
     public final static int IMPORT_RECRUITMENT_LIST_FAIL = 5;
+    public final static int IMPORT_RECRUITMENT_LIST_FAIL_OVER_LIMIT = 6;
 
     private static final String EXTRA_CSV_FILE = "EXTRA_CSV_FILE";
     private static String[] PERMISSIONS_STORAGE = {
@@ -117,6 +123,15 @@ public class TableLayoutFragment
                 case UPLOAD_FILE_SUCCESS:
                     //请求导入文件
                     importRecruitments();
+                    break;
+                case IMPORT_RECRUITMENT_LIST_SUCCESS:
+                    RxToast.info("岗位批量发布成功！");
+                    break;
+                case IMPORT_RECRUITMENT_LIST_FAIL_OVER_LIMIT:
+                    RxToast.error("岗位发布失败，超出发布数量限制，请联系客服或者删除无用招聘信息！");
+                    break;
+                case IMPORT_RECRUITMENT_LIST_FAIL:
+                    RxToast.error("岗位发布失败，请重试！");
                     break;
             }
         }
@@ -517,7 +532,17 @@ public class TableLayoutFragment
         HttpUtil.post(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int i, Header[] headers, byte[] bytes) {
-                String content = new String(bytes);;
+                String content = new String(bytes);
+                Type jsonType = new TypeToken<TempResponseData<String>>() {}.getType();
+                final TempResponseData<String> postResult = new Gson().fromJson(content, jsonType);
+                if (postResult.getResultCode() == 200) {
+                    handler.sendEmptyMessage(IMPORT_RECRUITMENT_LIST_SUCCESS);
+                } else if(postResult.getResultCode() == 2022){
+                    handler.sendEmptyMessage(IMPORT_RECRUITMENT_LIST_FAIL_OVER_LIMIT);
+                }else{
+                    handler.sendEmptyMessage(IMPORT_RECRUITMENT_LIST_FAIL);
+                }
+
                 Log.d(TAG, "onSuccess: " + content);
             }
             @Override

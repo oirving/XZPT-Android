@@ -31,6 +31,7 @@ import com.lljjcoder.Interface.OnCityItemClickListener;
 import com.lljjcoder.bean.DistrictBean;
 import com.lljjcoder.bean.ProvinceBean;
 import com.lljjcoder.style.cityjd.JDCityPicker;
+import com.vondear.rxtool.view.RxToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -558,8 +559,11 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                                         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
                                         finish();
-                                    } else {
-                                        Toast.makeText(activity, "岗位发布失败，请重试！", Toast.LENGTH_SHORT).show();
+                                    } else if(postResult.getResultCode() == 2022){
+                                        RxToast.error("发布数量超过限制，请联系客服或删除无用招聘信息！");
+                                    }else{
+                                        RxToast.error("岗位发布失败，请重试！");
+//                                        Toast.makeText(activity, "岗位发布失败，请重试！", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });

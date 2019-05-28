@@ -97,6 +97,7 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
                 //todo 保存公司状态，投递简历时能投到对应的公司 ->小榕
                 Intent intent = new Intent(RecruitmentDetailActivity.this, MyResumeActivity.class);
                 intent.putExtra("selectResume",CHOOSE_RESUME_TO_DELIVER);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivityForResult(intent, 0);
                 break;
             case R.id.chat:
@@ -218,7 +219,11 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
 
         VolleyNetUtil.getInstance().setRequestQueue(getApplicationContext());//获取requestQueue
         VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
+    }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

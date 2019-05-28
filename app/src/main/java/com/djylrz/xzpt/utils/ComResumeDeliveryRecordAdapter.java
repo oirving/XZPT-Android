@@ -14,7 +14,6 @@ import android.widget.Toast;
 import com.djylrz.xzpt.activityCompany.ComResumeDeliveryRecordDetailActivity;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.ResumeDelivery;
-import com.djylrz.xzpt.vo.ResumeDeliveryRecordVO;
 
 import java.util.List;
 /**
