@@ -41,6 +41,7 @@ public class ActivitySVG extends ActivityBase {
         setContentView(R.layout.activity_svg);
         ButterKnife.bind(this);
         setSvg(ModelSVG.values()[4]);
+
         CheckUpdate();
     }
 
