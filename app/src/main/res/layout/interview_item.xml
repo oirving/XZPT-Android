@@ -4,24 +4,21 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/white"
-    android:layout_marginBottom="1sp"
+              style="@style/mid_layout"
     >
     <TextView
         android:id="@+id/interview_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="自我介绍"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="15dp"
         android:textColor="@color/colorDark"
-        android:textSize="17dp"
+        android:textSize="16dp"
         />
     <TextView
         android:id="@+id/interview_author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="12dp"
         android:text="待就业六人组"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="15dp"
         />
 </LinearLayout>
