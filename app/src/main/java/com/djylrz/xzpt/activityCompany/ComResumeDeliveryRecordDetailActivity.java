@@ -117,7 +117,10 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
         for (int i = 0; i < bmbNext.getButtonPlaceEnum().buttonNumber(); i++) {
             bmbNext.addBuilder(new HamButton.Builder()
                     .normalImageRes(R.drawable.fzu_logo).imagePadding(new Rect(10, 10, 10, 10))
-                    .normalText(strNext[i]).textSize(26).textGravity(Gravity.CENTER));
+                    .normalText(strNext[i])
+                    .textSize(26)
+                    .textGravity(Gravity.CENTER)
+                    .normalColorRes(R.color.colorPrimary).highlightedColorRes(R.color.colorSelector));
         }
         bmbNext.setOnBoomListener(new OnBoomListener() {
             @Override

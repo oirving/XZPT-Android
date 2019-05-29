@@ -48,4 +48,7 @@ public class Constants {
     public static final String INTENT_PUT_EXTRA_KEY_CREATE_OR_EDIT_RESUME = "createOrEdit";
     //保存编辑或创建
     public static final String EDIT_OR_CREATE_RESUME_SAVE_BUTTON = "保存";
+    public static final String USER_MANUAL_URL = "https://serve.wangmingjun.top/app/xzpt/user_manual.html";
+    public static final String USER_ABOUT_ME = "https://serve.wangmingjun.top/app/xzpt/about_me.html";
+
 }
