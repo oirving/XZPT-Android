@@ -310,7 +310,7 @@ public class FragmentComChat extends Fragment
                             count = unReadMessageCountMap.get(fromAccount);
                         }
                         Dialog dialog = new Dialog(fromAccount, userName, headUrl, users, message, count);
-                        dialogsAdapter.addItem(dialog);
+                        dialogsAdapter.upsertItem(dialog);
                     }
 
                     @Override
