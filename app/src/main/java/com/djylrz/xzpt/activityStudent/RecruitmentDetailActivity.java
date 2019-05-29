@@ -97,8 +97,9 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
                 //todo 保存公司状态，投递简历时能投到对应的公司 ->小榕
                 Intent intent = new Intent(RecruitmentDetailActivity.this, MyResumeActivity.class);
                 intent.putExtra("selectResume",CHOOSE_RESUME_TO_DELIVER);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivityForResult(intent, 0);
+                //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
                 break;
             case R.id.chat:
                 //聊天功能
@@ -113,7 +114,7 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
         super.onActivityResult(requestCode, resultCode, data);
         switch(resultCode){
             case CHOOSE_RESUME_TO_DELIVER:{
-                //Log.d(TAG, "onActivityResult: 返回了！"+data.getLongExtra("resumeID",0));
+                Log.d(TAG, "onActivityResult: 返回了！"+data.getLongExtra("resumeID",0));
                 //token,resumeID,recruitmentID
                 long resumeID = data.getLongExtra("resumeID",0);
 
