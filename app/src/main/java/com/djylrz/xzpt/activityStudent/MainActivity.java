@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.activityStudent;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -41,7 +42,7 @@ import java.util.List;
 
 public class MainActivity extends BaseActivity {
 
-    private  static final String TAG = "UserOption";
+    private static final String TAG = "UserOption";
 
     private ViewPager viewPager;
     private List<Fragment> fragmentList;
@@ -82,12 +83,11 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initView();
-        navigation= (BottomNavigationView) findViewById(R.id.navigation);
+        navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-    }
 
+    }
 
 
     /**
@@ -145,29 +145,30 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void getStudenInfo(){
+    private void getStudenInfo() {
         //用户已经登录，查询个人信息并显示
         VolleyNetUtil.getInstance().setRequestQueue(getApplicationContext());//获取requestQueue
-        SharedPreferences userToken = getSharedPreferences("token",0);
-        token = userToken.getString(PostParameterName.STUDENT_TOKEN,null);
-        if (token != null){
-            Log.d(TAG, "onCreate: TOKEN is "+token);
+        SharedPreferences userToken = getSharedPreferences("token", 0);
+        token = userToken.getString(PostParameterName.STUDENT_TOKEN, null);
+        if (token != null) {
+            Log.d(TAG, "onCreate: TOKEN is " + token);
             user.setToken(token);
 
             try {
-                Log.d(TAG, "onCreate: 获取个人信息，只填了token"+new Gson().toJson(user));
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_USER_BY_TOKEN+user.getToken(),new JSONObject(new Gson().toJson(user)),
+                Log.d(TAG, "onCreate: 获取个人信息，只填了token" + new Gson().toJson(user));
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_USER_BY_TOKEN + user.getToken(), new JSONObject(new Gson().toJson(user)),
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                Log.d(TAG, "onResponse: 返回"+response.toString());
-                                Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
+                                Log.d(TAG, "onResponse: 返回" + response.toString());
+                                Type jsonType = new TypeToken<TempResponseData<User>>() {
+                                }.getType();
 
                                 Gson gson = new GsonBuilder()
                                         .setDateFormat("yyyy-MM-dd HH:mm:ss")
                                         .create();
                                 final TempResponseData<User> postResult = gson.fromJson(response.toString(), jsonType);
-                                Log.d(TAG, "onResponse: "+postResult.getResultCode());
+                                Log.d(TAG, "onResponse: " + postResult.getResultCode());
                                 user = postResult.getResultObject();
                                 user.setToken(token);
 
@@ -175,7 +176,7 @@ public class MainActivity extends BaseActivity {
                                 SharedPreferences sharedPreferences = getSharedPreferences("user", 0);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 try {
-                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：："+response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
+                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：：" + response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
                                     editor.putString("student", new Gson().toJson(user));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -193,7 +194,8 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("TAG", error.getMessage(), error);
-                    }});
+                    }
+                });
                 VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
             } catch (JSONException e) {
                 e.printStackTrace();

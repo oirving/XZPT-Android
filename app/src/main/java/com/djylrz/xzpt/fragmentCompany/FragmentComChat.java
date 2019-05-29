@@ -1,7 +1,6 @@
 package com.djylrz.xzpt.fragmentCompany;
 
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,7 +35,6 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.dialogs.DialogsList;
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
-import com.vondear.rxtool.view.RxToast;
 import com.xiaomi.mimc.MIMCGroupMessage;
 import com.xiaomi.mimc.MIMCMessage;
 import com.xiaomi.mimc.MIMCServerAck;
@@ -46,7 +44,6 @@ import com.xiaomi.mimc.common.MIMCConstant;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -80,7 +77,7 @@ public class FragmentComChat extends Fragment
         mDecorView = inflater.inflate(R.layout.fragment9_com_chat, container, false);
         dialogsList = (DialogsList) mDecorView.findViewById(R.id.dialogsList);
         toolbar = mDecorView.findViewById(R.id.message_toolbar);
-        if(MyApplication.getUserType() == 1){
+        if (MyApplication.getUserType() == 1) {
             toolbar.setVisibility(View.GONE);
         }
         initAdapter();
@@ -165,7 +162,7 @@ public class FragmentComChat extends Fragment
     public void onResume() {
         super.onResume();
         MIMCUser user = UserManager.getInstance().getUser();
-        if(user != null){
+        if (user != null) {
             onRefreshDialogList();
         }
     }
@@ -239,24 +236,20 @@ public class FragmentComChat extends Fragment
                         users.add(chatUser);
                         Message message = null;
                         //需要对Payload进行base64解密
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            //解析json消息体
-                            String payload = new String(Base64.getDecoder().decode(dialogContent.getLastMessage().getPayload().replace("\r\n", "")));
-                            Log.d(TAG, "ParseJson: " + payload);
-                            Log.d(TAG, "unParseJson: " + dialogContent.getLastMessage().getPayload());
+                        //解析json消息体
+                        String payload = new String(android.util.Base64.decode(dialogContent.getLastMessage().getPayload(), android.util.Base64.DEFAULT));
+                        Log.d(TAG, "ParseJson: " + payload);
+                        Log.d(TAG, "unParseJson: " + dialogContent.getLastMessage().getPayload());
 
-                            String regExp = "\"payload\":\"(.*)\"";
-                            Pattern pattern;
-                            Matcher matcher;
-                            pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
-                            matcher = pattern.matcher(payload);
-                            if (matcher.find()) {
-                                String lastMessageBase64 = matcher.group(1);
-                                String lastMessage = new String(Base64.getDecoder().decode(lastMessageBase64));
-                                message = new Message(dialogContent.getLastMessage().getFromAccount(), chatUser, new String(lastMessage), new Date(Long.parseLong(dialogContent.getTimestamp())));
-                            } else {
-                                message = new Message(dialogContent.getLastMessage().getFromAccount(), chatUser, "消息已损坏", new Date(Long.parseLong(dialogContent.getTimestamp())));
-                            }
+                        String regExp = "\"payload\":\"(.*)\"";
+                        Pattern pattern;
+                        Matcher matcher;
+                        pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
+                        matcher = pattern.matcher(payload);
+                        if (matcher.find()) {
+                            String lastMessageBase64 = matcher.group(1);
+                            String lastMessage = new String(android.util.Base64.decode(lastMessageBase64, android.util.Base64.DEFAULT));
+                            message = new Message(dialogContent.getLastMessage().getFromAccount(), chatUser, new String(lastMessage), new Date(Long.parseLong(dialogContent.getTimestamp())));
                         } else {
                             message = new Message(dialogContent.getLastMessage().getFromAccount(), chatUser, "消息已损坏", new Date(Long.parseLong(dialogContent.getTimestamp())));
                         }

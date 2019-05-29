@@ -61,6 +61,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener {
     private Company company = new Company();//企业实体对象
     private String token;
     private RequestQueue requestQueue;
+    private String recruitmentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener {
         layoutCompany.setOnClickListener(this);
         layoutStu.setOnClickListener(this);
         btnStart.setOnClickListener(this);
+
         if (NetWorkUtils.isNetwork(this)) {
             //如果已存在token则直接登录
             if (userToken != null) {

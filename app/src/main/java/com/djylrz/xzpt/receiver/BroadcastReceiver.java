@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
+import com.djylrz.xzpt.activity.ActorChoose;
 import com.djylrz.xzpt.activityStudent.RecruitmentDetailActivity;
 import com.xiaomi.mipush.sdk.ErrorCode;
 import com.xiaomi.mipush.sdk.MiPushClient;
@@ -46,6 +47,7 @@ public class BroadcastReceiver extends PushMessageReceiver {
 //            mUserAccount=message.getUserAccount();
 //        }
     }
+
     @Override
     public void onNotificationMessageClicked(Context context, MiPushMessage message) {
         mMessage = message.getContent();
@@ -60,8 +62,14 @@ public class BroadcastReceiver extends PushMessageReceiver {
         Intent intent = new Intent(MyApplication.getContext(), RecruitmentDetailActivity.class);
         intent.putExtra("recruitmentID",Long.parseLong(mMessage));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        MyApplication.getContext().startActivity(intent);
+        if (mMessage != null){
+//            Intent intent = new Intent(MyApplication.getContext(), ActorChoose.class);
+//            intent.putExtra("recruitmentID", Long.parseLong(mMessage));
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            MyApplication.getContext().startActivity(intent);
+        }
     }
+
     @Override
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
         mMessage = message.getContent();
@@ -73,6 +81,7 @@ public class BroadcastReceiver extends PushMessageReceiver {
 //            mUserAccount=message.getUserAccount();
 //        }
     }
+
     //onCommandResult用来接收客户端向服务器发送命令消息后返回的响应
     @Override
     public void onCommandResult(Context context, MiPushCommandMessage message) {
@@ -107,6 +116,7 @@ public class BroadcastReceiver extends PushMessageReceiver {
             }
         }
     }
+
     //onReceiveRegisterResult用来接受客户端向服务器发送注册命令消息后返回的响应
     @Override
     public void onReceiveRegisterResult(Context context, MiPushCommandMessage message) {
@@ -127,10 +137,10 @@ public class BroadcastReceiver extends PushMessageReceiver {
                 //MiPushClient.setAlias(this, 用户唯一id, null);
                 //设置userAccount
                 //MiPushClient.setUserAccount(this, account, null);
-            }else {
+            } else {
                 log = context.getString(R.string.register_fail);
             }
-        }else {
+        } else {
             log = message.getReason();
         }
         Message msg = Message.obtain();

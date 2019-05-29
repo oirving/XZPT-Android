@@ -2,7 +2,6 @@ package com.djylrz.xzpt.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -39,7 +38,6 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -58,9 +56,8 @@ public class DefaultMessagesActivity extends AppCompatActivity
 
     public static void open(Context context, String senderId, String userName, String headUrl) {
         context.startActivity(new Intent(context, DefaultMessagesActivity.class).putExtra("senderId", senderId)
-        .putExtra("userName",userName)
-        .putExtra("headUrl",headUrl)
-        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                .putExtra("userName", userName)
+                .putExtra("headUrl", headUrl));
     }
 
     private MessagesList messagesList;
@@ -90,7 +87,7 @@ public class DefaultMessagesActivity extends AppCompatActivity
         //设置标题栏
         toolbar.bringToFront();//标题栏置顶
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setTitle("与["+userName+"]聊天");
+        toolbar.setTitle("与[" + userName + "]聊天");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,10 +98,10 @@ public class DefaultMessagesActivity extends AppCompatActivity
         imageLoader = new ImageLoader() {
             @Override
             public void loadImage(ImageView imageView, String url, Object payload) {
-                if(url == null || url.equals("")){
+                if (url == null || url.equals("")) {
                     Glide.with(DefaultMessagesActivity.this).load(R.drawable.avatar_default).into(imageView);
-                }else{
-                    Glide.with(DefaultMessagesActivity.this).load(PostParameterName.HOST+"/file/"+url).into(imageView);
+                } else {
+                    Glide.with(DefaultMessagesActivity.this).load(PostParameterName.HOST + "/file/" + url).into(imageView);
                 }
             }
         };
@@ -122,7 +119,7 @@ public class DefaultMessagesActivity extends AppCompatActivity
         messagesAdapter.addToStart(new Message(senderId, chatUser, input.toString()), true);
         UserManager userManager = UserManager.getInstance();
         MIMCUser user = userManager.getUser();
-        if (user != null){
+        if (user != null) {
             userManager.sendMsg(receiverId, input.toString().getBytes(), Constant.TEXT);
         }
 //        ChatUser chatUser2 = new ChatUser(receiverId,"name","avatar",true);
@@ -190,6 +187,7 @@ public class DefaultMessagesActivity extends AppCompatActivity
             }
         });
     }
+
     private void onRefreshMessageList() {
         //清空原有message列表数据
         messagesAdapter.clear();
@@ -212,7 +210,7 @@ public class DefaultMessagesActivity extends AppCompatActivity
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        HttpUtil.post(PostParameterName.GET_URL_WEEK_GET_MESSAGE_LIST_BETWEEN_TWO_PERSON,jsonObject, new JsonHttpResponseHandler() {
+        HttpUtil.post(PostParameterName.GET_URL_WEEK_GET_MESSAGE_LIST_BETWEEN_TWO_PERSON, jsonObject, new JsonHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 Log.d("json", "onFailure: " + errorResponse.toString());
@@ -222,13 +220,14 @@ public class DefaultMessagesActivity extends AppCompatActivity
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d("json", "onSuccess: " + response.toString());
                 try {
-                    ParseJson( response.toString());
+                    ParseJson(response.toString());
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }
         });
     }
+
     public void ParseJson(String json) throws UnsupportedEncodingException {
         ArrayList<Message> messages = new ArrayList<>();
         GsonBuilder builder = new GsonBuilder();
@@ -239,35 +238,31 @@ public class DefaultMessagesActivity extends AppCompatActivity
         Log.d(MyApplication.TAG, "onResponse: code" + postResult.getCode());
         if (postResult.getCode().equals(200)) {
             List<MessageofData> messageofDataList = postResult.getData().getMessages();
-            for(int i = 0; i < messageofDataList.size(); ++i){
+            for (int i = 0; i < messageofDataList.size(); ++i) {
                 MessageofData messageofData = messageofDataList.get(i);
                 //需要对Payload进行base64解密
                 ChatUser chatUser;
-                if(messageofData.getFromAccount().equals(receiverId)){
+                if (messageofData.getFromAccount().equals(receiverId)) {
                     chatUser = new ChatUser(messageofData.getFromAccount(), userName, headUrl, true);
-                }else{
+                } else {
                     chatUser = new ChatUser("0", "user", "avatar", true);
                 }
-                Log.d(MyApplication.TAG, "ParseJson: :form:"+messageofData.getFromAccount()+"--> to:"+messageofData.getToAccount());
+                Log.d(MyApplication.TAG, "ParseJson: :form:" + messageofData.getFromAccount() + "--> to:" + messageofData.getToAccount());
                 Message message;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    //解析json消息体
-                    String payload = new String(Base64.getDecoder().decode(messageofData.getPayload().replace("\r\n", "")));
-                    String regExp = "\"payload\":\"(.*)\"";
-                    Pattern pattern;
-                    Matcher matcher;
-                    pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
-                    matcher = pattern.matcher(payload);
-                    if (matcher.find()) {
-                        String lastMessageBase64 = matcher.group(1);
-                        String lastMessage = new String(Base64.getDecoder().decode(lastMessageBase64));
-                        if(messageofData.getFromAccount().equals(receiverId)){
-                            message = new Message(messageofData.getFromAccount(), chatUser, new String(lastMessage));
-                        }else{
-                            message = new Message("0", chatUser, new String(lastMessage));
-                        }
+                //解析json消息体
+                String payload = new String(android.util.Base64.decode(messageofData.getPayload(), android.util.Base64.DEFAULT));
+                String regExp = "\"payload\":\"(.*)\"";
+                Pattern pattern;
+                Matcher matcher;
+                pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
+                matcher = pattern.matcher(payload);
+                if (matcher.find()) {
+                    String lastMessageBase64 = matcher.group(1);
+                    String lastMessage = new String(android.util.Base64.decode(lastMessageBase64, android.util.Base64.DEFAULT));
+                    if (messageofData.getFromAccount().equals(receiverId)) {
+                        message = new Message(messageofData.getFromAccount(), chatUser, new String(lastMessage));
                     } else {
-                        message = new Message(messageofData.getFromAccount(), chatUser, "消息已损坏");
+                        message = new Message("0", chatUser, new String(lastMessage));
                     }
                 } else {
                     message = new Message(messageofData.getFromAccount(), chatUser, "消息已损坏");
@@ -275,10 +270,11 @@ public class DefaultMessagesActivity extends AppCompatActivity
                 messages.add(message);
             }
         }
-        messagesAdapter.addToEnd(messages,true);
+        messagesAdapter.addToEnd(messages, true);
     }
 }
-class Data<T>{
+
+class Data<T> {
     /*
     "appId": $appId,
             "messages": [
@@ -332,7 +328,8 @@ class Data<T>{
         this.timestamp = timestamp;
     }
 }
-class MessageofData{
+
+class MessageofData {
     /*
                 "messages": [
     {
