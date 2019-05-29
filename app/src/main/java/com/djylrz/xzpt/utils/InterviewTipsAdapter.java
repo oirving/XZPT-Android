@@ -62,7 +62,10 @@ public class InterviewTipsAdapter extends RecyclerView.Adapter<InterviewTipsAdap
         viewHolder.title.setText(interviewTipsItem.getTitle());
         viewHolder.author.setText(interviewTipsItem.getInterviewSkill().getAuthor());
     }
-
+    public void clear() {
+        interviewTipsItems.clear();
+        notifyDataSetChanged();
+    }
     @Override
     public int getItemCount() {
         return interviewTipsItems.size();

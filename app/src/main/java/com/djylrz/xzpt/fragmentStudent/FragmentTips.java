@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,12 +20,10 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activity.ActivityWebView;
 import com.djylrz.xzpt.bean.PageData;
@@ -40,6 +37,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.github.jdsjlzx.recyclerview.LRecyclerView;
+import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -53,9 +52,12 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.jdsjlzx.interfaces.OnLoadMoreListener;
+import com.github.jdsjlzx.interfaces.OnRefreshListener;
+
 import static com.tencent.smtt.sdk.TbsReaderView.TAG;
 
-public class FragmentTips extends Fragment {
+public class FragmentTips extends Fragment implements OnRefreshListener,OnLoadMoreListener{
 
     // 图片轮播控件
     private ViewPager mViewPager;
@@ -64,8 +66,9 @@ public class FragmentTips extends Fragment {
     private ImageCarousel imageCarousel;
     private List<View> dots;//小点
     private List<InterviewTipsItem> tips = new ArrayList<>();//每条技巧
-    private RecyclerView tipsList;
     private InterviewTipsAdapter interviewTipsAdapter;
+    public LRecyclerView lRecyclerView;
+    private LRecyclerViewAdapter lRecyclerViewAdapter;
     // 图片数据，包括图片标题、图片链接、数据、点击要打开的网站（点击打开的网页或一些提示指令）
     private List<ImageInfo> imageInfoList;
 
@@ -97,7 +100,7 @@ public class FragmentTips extends Fragment {
         }*/
         PageData pageData = new PageData();
         pageData.setCurrentPage(1);
-        pageData.setPageSize(10);
+        pageData.setPageSize(20);
 
         try {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -164,11 +167,19 @@ public class FragmentTips extends Fragment {
         mViewPager = view.findViewById(R.id.viewPager);
         mTvPagerTitle = view.findViewById(R.id.tv_pager_title);
         mLineLayoutDot = view.findViewById(R.id.lineLayout_dot);
-        tipsList = (RecyclerView) view.findViewById(R.id.interviewer_tips);
+//        tipsList = (RecyclerView) view.findViewById(R.id.interviewer_tips);
+        lRecyclerView = view.findViewById(R.id.interviewer_tips);
+        lRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         interviewTipsAdapter = new InterviewTipsAdapter(tips);
-        tipsList.setAdapter(interviewTipsAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
-        tipsList.setLayoutManager(linearLayoutManager);
+        lRecyclerViewAdapter = new LRecyclerViewAdapter(interviewTipsAdapter);
+        lRecyclerView.setAdapter(lRecyclerViewAdapter);
+        lRecyclerView.setHeaderViewColor(R.color.colorPrimary, R.color.gallery_dark_gray, android.R.color.white);
+        lRecyclerView.setFooterViewColor(R.color.colorPrimary, R.color.gallery_dark_gray, android.R.color.white);
+        lRecyclerView.setFooterViewHint("拼命加载中", "只有这么多啦", "网络不给力啊，点击再试一次吧");
+        lRecyclerView.setLoadMoreEnabled(true);
+        lRecyclerView.setHasFixedSize(true);
+        lRecyclerView.setOnRefreshListener(this);
+        lRecyclerView.setOnLoadMoreListener(this);
     }
 
     private void imageStart(View view) {
@@ -283,4 +294,13 @@ public class FragmentTips extends Fragment {
         return dots;
     }
 
+    @Override
+    public void onLoadMore() {
+
+    }
+
+    @Override
+    public void onRefresh() {
+
+    }
 }
