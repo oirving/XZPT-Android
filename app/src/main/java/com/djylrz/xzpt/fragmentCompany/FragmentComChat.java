@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -65,6 +66,8 @@ public class FragmentComChat extends Fragment
     private String userName;
     private String headUrl;
     private Toolbar toolbar;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    ;
 
     public static FragmentComChat getInstance(String title) {
         FragmentComChat fcc = new FragmentComChat();
@@ -77,6 +80,27 @@ public class FragmentComChat extends Fragment
         mDecorView = inflater.inflate(R.layout.fragment9_com_chat, container, false);
         dialogsList = (DialogsList) mDecorView.findViewById(R.id.dialogsList);
         toolbar = mDecorView.findViewById(R.id.message_toolbar);
+        swipeRefreshLayout = mDecorView.findViewById(R.id.swipe_refresh_layout_com_chat);
+        // 设置下拉刷新
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // 刷新数据
+                MIMCUser user = UserManager.getInstance().getUser();
+                if (user != null) {
+                    onRefreshDialogList();
+                }
+                // 延时1s关闭下拉刷新
+                swipeRefreshLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+                }, 1000);
+            }
+        });
         if (MyApplication.getUserType() == 1) {
             toolbar.setVisibility(View.GONE);
         }

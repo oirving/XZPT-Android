@@ -17,10 +17,16 @@
         app:title="消息"
         app:titleTextColor="@color/white"></android.support.v7.widget.Toolbar>
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout_com_chat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
     <com.stfalcon.chatkit.dialogs.DialogsList
         android:id="@+id/dialogsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="50dp"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>
