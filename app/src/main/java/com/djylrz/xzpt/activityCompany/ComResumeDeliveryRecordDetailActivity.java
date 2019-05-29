@@ -53,6 +53,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity implements View.OnClickListener{
@@ -173,13 +174,20 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                         public void onResponse(JSONObject response) {
                             Log.d(TAG, "onResponse: 返回"+response.toString());
                             GsonBuilder builder = new GsonBuilder();
-                            builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-                                @Override
-                                public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                                    return new Date(json.getAsJsonPrimitive().getAsLong());
+//                            builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+//                                @Override
+//                                public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+//                                    return new Date(json.getAsJsonPrimitive().getAsLong());
+//                                }
+//                            });
+//                            Gson gson =builder.create();
+                            builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
+                                public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
+                                    return new Timestamp(json.getAsJsonPrimitive().getAsLong());
                                 }
                             });
-                            Gson gson =builder.create();
+                            Gson gson = builder
+                                    .setDateFormat("yyyy-MM-dd HH:mm:ss").create();
                             Type jsonType = new TypeToken<TempResponseData<Resume>>() {}.getType();
                             final TempResponseData<Resume> postResult = gson.fromJson(response.toString(), jsonType);
                             Log.d(TAG, "onResponse: "+postResult.getResultCode());

@@ -264,8 +264,7 @@ public class FragmentComChat extends Fragment
 
                     @Override
                     public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-                        String content = new String(bytes);
-                        Log.d(TAG, "onFailure: " + content);
+                        Log.d(TAG, "onFailure: 获取用户名称和头像失败" );
                     }
                 });
 
