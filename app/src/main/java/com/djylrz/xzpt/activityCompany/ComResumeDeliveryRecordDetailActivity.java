@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.DimenRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Layout;
@@ -55,6 +56,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity implements View.OnClickListener{
     private Toolbar toolbar;//标题栏
@@ -72,6 +74,18 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
     private int nextNum = 0;//用户点击哪一个next菜单
     private static final String TAG = "ComResumeDeliveryRecord";
     private ResumeDelivery resumeDelivery;//用于发送json的简历投递记录对象
+    private int colorArray[]={
+            R.color.course_color1,
+            R.color.course_color2,
+            R.color.course_color3,
+            R.color.course_color4,
+            R.color.course_color5,
+            R.color.course_color6,
+            R.color.course_color7,
+            R.color.course_color8,
+            R.color.course_color9,
+            R.color.course_color10,
+            R.color.course_color11,};
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -101,26 +115,26 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
 
         //设置按钮
         btnRefuse.setText("拒绝");
-        btnRefuse.setTextColor(getResources().getColor(R.color.red));
         btnRefuse.setOnClickListener(this);
         btnNext.setText("下一步");
-        btnNext.setTextColor(getResources().getColor(R.color.colorPrimary));
         btnNext.setOnClickListener(this);
         btnChat.setText("发起聊天");
-        btnChat.setTextColor(getResources().getColor(R.color.colorPrimary));
         btnChat.setOnClickListener(this);
         //设置弹出式选择器
         bmbNext = (BoomMenuButton) findViewById(R.id.bmb_next);
+        bmbNext.setDimColor(0);
         bmbNext.setButtonEnum(ButtonEnum.Ham);//设置弹出样式
         bmbNext.setPiecePlaceEnum(PiecePlaceEnum.HAM_5);
         bmbNext.setButtonPlaceEnum(ButtonPlaceEnum.HAM_5);
         for (int i = 0; i < bmbNext.getButtonPlaceEnum().buttonNumber(); i++) {
             bmbNext.addBuilder(new HamButton.Builder()
-                    .normalImageRes(R.drawable.fzu_logo).imagePadding(new Rect(10, 10, 10, 10))
-                    .normalText(strNext[i])
-                    .textSize(26)
-                    .textGravity(Gravity.CENTER)
-                    .normalColorRes(R.color.colorPrimary).highlightedColorRes(R.color.colorSelector));
+                    .normalImageRes(R.drawable.next)
+                    .imagePadding(new Rect(10,10,10,10))
+                    .normalText(strNext[i]).textSize(26).textGravity(Gravity.CENTER_VERTICAL)
+                    .normalColorRes(colorArray[i])
+                    .highlightedColorRes(colorArray[(i+1)])
+            .shadowColor(Color.parseColor("#000000")));
+
         }
         bmbNext.setOnBoomListener(new OnBoomListener() {
             @Override

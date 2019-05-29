@@ -392,7 +392,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener {
     private void studentLogin() {
         Intent student = new Intent(ActorChoose.this, StudentLogin.class);
         startActivity(student);
-        finish();
+        //finish();
         Toast.makeText(ActorChoose.this, "学生用户", Toast.LENGTH_SHORT).show();
     }
 
@@ -400,7 +400,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener {
     private void companyLogin() {
         Intent company = new Intent(ActorChoose.this, CompanyLogin.class);
         startActivity(company);
-        finish();
+        //finish();
         Toast.makeText(ActorChoose.this, "企业用户", Toast.LENGTH_SHORT).show();
     }
 }

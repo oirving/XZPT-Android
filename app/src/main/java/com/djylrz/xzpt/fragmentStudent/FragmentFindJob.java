@@ -198,6 +198,7 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
                                             JSONObject responsePageData = response.getJSONObject("resultObject");
 
                                             GsonBuilder builder = new GsonBuilder();
+                                            builder.setDateFormat("yyyy-MM-dd HH:mm:ss");
                                             builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
                                                 public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
                                                     return new Timestamp(json.getAsJsonPrimitive().getAsLong());
@@ -212,7 +213,9 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
 
                                             //获取到RecruitmentList
                                             recruitments = recruitmentPageData.getContentList();
-                                            Log.d(TAG, "onResponse: "+recruitments.size());
+                                            if (recruitments!=null){
+                                                Log.d(TAG, "onResponse: "+recruitments.size());
+                                            }
                                         }break;
                                         default:{
                                             Log.d(TAG, "获取招聘信息失败"+response.getString(PostParameterName.RESPOND_RESULTCODE));
@@ -222,23 +225,29 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
+                                if (recruitments!=null){
+                                    final List<Recruitment> finalRecruitments = recruitments;
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (finalRecruitments.size()!=0){
+                                                Toast.makeText(getContext(), "获取招聘信息成功", Toast.LENGTH_SHORT).show();
+                                                for(int i = 0; i < 2; ++i){
+                                                    RecommendCardFragment recommendCardFragment = (RecommendCardFragment)recommendCardFragmentList.get(i);
+                                                    recommendCardFragment.updateAdapter(finalRecruitments);
+                                                }
+                                            }else{
+                                                Toast.makeText(getContext(), "无符合关键词的招聘信息！", Toast.LENGTH_SHORT).show();
 
-                                final List<Recruitment> finalRecruitments = recruitments;
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(getContext(), "获取招聘信息成功", Toast.LENGTH_SHORT).show();
-                                        //todo 更新页面——尚未实现下拉刷新
-                                        finalRecruitments.size();
-                                        for(int i = 0; i < 2; ++i){
-                                            RecommendCardFragment recommendCardFragment = (RecommendCardFragment)recommendCardFragmentList.get(i);
-                                            recommendCardFragment.updateAdapter(finalRecruitments);
-                                        }
+                                            }
+                                            //todo 更新页面——尚未实现下拉刷新
 //                                        for(Fragment fragment:recommendCardFragmentList){
 //                                            RecommendCardFragment recommendCardFragment = (RecommendCardFragment)fragment;
 //                                        }
-                                    }
-                                });
+                                        }
+                                    });
+                                }
+
                             }
                         }, new com.android.volley.Response.ErrorListener() {
                     @Override
