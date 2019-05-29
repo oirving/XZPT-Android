@@ -4,21 +4,64 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/white"
-              style="@style/mid_layout"
-    >
-    <TextView
-        android:id="@+id/interview_title"
+              style="@style/mid_layout">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/ic_course_section"
+            android:layout_width="15.0dip"
+            android:layout_height="25.0dip"
+            android:layout_marginLeft="20.0dip"
+            android:layout_marginTop="15.0dip"
+            android:layout_marginRight="5.0dip"
+            android:src="@drawable/ic_course_section_icon" />
+        <TextView
+            android:id="@+id/interview_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15.0dip"
+            android:text="自我介绍"
+            android:textColor="@color/colorDark"
+            android:textSize="17dp" />
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="自我介绍"
-        android:textColor="@color/colorDark"
-        android:textSize="16dp"
-        />
-    <TextView
-        android:id="@+id/interview_author"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12dp"
-        android:text="待就业六人组"
-        />
+        android:orientation="horizontal"
+        android:paddingLeft="15dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp">
+
+        <TextView
+            android:id="@+id/interview_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20.0dip"
+            android:text="我爱福大"
+            android:textColor="@color/bbs_listview_gray3"
+            android:textSize="12sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="12sp"
+            android:text="发布日期: " />
+
+        <TextView
+            android:id="@+id/tips_listview_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:text="2018年08月08日"
+            android:textColor="@color/bbs_listview_gray3"
+            android:textSize="12sp" />
+    </LinearLayout>
+
 </LinearLayout>

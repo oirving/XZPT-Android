@@ -255,19 +255,19 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
         //1为未填写，2为大专及以上,3为本科及以上,4为硕士及以上,5为博士及以上
         switch ((int)resume.getHighestEducation()){
             case 1:
-                highestEducation = "未填写";
+                highestEducation = "其他";
                 break;
             case 2:
-                highestEducation = "大专及以上";
+                highestEducation = "大专";
                 break;
             case 3:
-                highestEducation = "本科及以上";
+                highestEducation = "本科";
                 break;
             case 4:
-                highestEducation = "硕士及以上";
+                highestEducation = "硕士";
                 break;
             case 5:
-                highestEducation = "博士及以上";
+                highestEducation = "博士";
                 break;
             default:
                 highestEducation = "未填写";
