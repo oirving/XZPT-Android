@@ -97,18 +97,6 @@
 
                 <View style="@style/bg_line" />
 
-                <LinearLayout
-                    android:id="@+id/me_layout_quit"
-                    style="@style/bottom_layout">
-
-                    <TextView
-                        android:id="@+id/me_tv_quit"
-                        style="@style/usertext"
-                        android:text="退出登录" />
-
-                    <ImageView style="@style/img_arrow" />
-
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout style="@style/wrap_layout">
@@ -165,6 +153,27 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+
+            <LinearLayout
+            android:id="@+id/me_layout_quit"
+            style="@style/wrap_layout">
+                <TextView
+                    android:id="@+id/me_tv_quit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:textColor="@color/white"
+                    android:textAlignment="center"
+                    android:text="退出登录"
+                    android:background="@color/red"/>
+
+            </LinearLayout>
+
+
+
+x
         </LinearLayout>
     </ScrollView>
 
