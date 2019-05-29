@@ -116,7 +116,7 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
                 if (onRemoveListener !=null) {
                     //在数据库删除对应的简历
                     //holder.delete.setVisibility(View.INVISIBLE);
-
+                    holder.delete.setVisibility(View.GONE);
                     final int position = holder.getAdapterPosition();
                     MyResumeItem myResumeItem = myResumeItems.get(position);
                     long resumeID = myResumeItem.getResume().getResumeId();

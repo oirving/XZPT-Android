@@ -82,7 +82,6 @@ public class MyResumeActivity extends AppCompatActivity {
                 Intent intent = new Intent(MyResumeActivity.this,EditMyResumeActivity.class);
                 intent.putExtra(Constants.INTENT_PUT_EXTRA_KEY_CREATE_OR_EDIT_RESUME,Constants.CREATE_RESUME);
                 Toast.makeText(v.getContext(), Constants.CREATE_RESUME, Toast.LENGTH_SHORT).show();
-
                 startActivity(intent);
             }
         });
@@ -193,11 +192,6 @@ public class MyResumeActivity extends AppCompatActivity {
         }
     }
     public void initPage(){
-        //填入简历列表Item的基本信息,按照以下格式填入
-        /*for(int i=0;i<5;i++) {
-            MyResumeItem myResumeItem = new MyResumeItem("算法工程师");
-            myResumeList.add(myResumeItem);
-        }*/
         initResumeList();
     }
 }
