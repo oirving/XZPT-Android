@@ -1,10 +1,20 @@
 package com.djylrz.xzpt.activityCompany;
 
+import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Layout;
 import android.text.TextPaint;
@@ -35,7 +45,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.vondear.rxtool.RxTextTool;
-import com.vondear.rxtool.RxTool;
 import com.vondear.rxtool.view.RxToast;
 import com.vondear.rxui.view.dialog.RxDialogLoading;
 import com.vondear.rxui.view.dialog.RxDialogShapeLoading;
@@ -43,14 +52,21 @@ import com.vondear.rxui.view.dialog.RxDialogSureCancel;
 
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ComRecruitmentDetailActivity extends AppCompatActivity implements View.OnClickListener{
+
+public class ComRecruitmentDetailActivity extends AppCompatActivity implements View.OnClickListener {
     private Toolbar toolbar;//标题栏
     private TextView mTvAboutSpannable;//RXTextView布局
     private ComRecruitmentDetailActivity mContext;//上下文context
@@ -60,6 +76,7 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
     private Button btnEdit;//编辑按钮
     private Button btnOp;//操作按钮（停招岗位为重新发布，在招岗位为结束招聘）
     private boolean flagModify = false;
+    private String tempFileName;
     //后续从服务器获取该数据
     private String[] mVals = new String[]
             {"C++", "Javascript", "金融", "直播", "电商", "Java", "移动互联网", "分布式", "C", "服务器端", "社交",
@@ -81,17 +98,36 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                     "团队建设", "美味晚餐", "领导好", "音频编解码", "弹性工作制", "年终奖丰厚", "Q版", "2D", "多媒体", "目标管理"
             };
     private static final String TAG = "ComRecruitmentDetailAct";
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    new AlertDialog.Builder(mContext).setTitle("文件下载完成").setMessage("文件存储路径：\n根目录/" + tempFileName + ".csv")
+                            .setCancelable(false)
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).create().show();
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_com_recruitment_detail);
         mContext = this;
         //获取布局控件
-        toolbar = (Toolbar)findViewById(R.id.asa_toolbar);
-        mTvAboutSpannable = (TextView)findViewById(R.id.tv_about_spannable);
+        toolbar = (Toolbar) findViewById(R.id.asa_toolbar);
+        mTvAboutSpannable = (TextView) findViewById(R.id.tv_about_spannable);
         requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
-        btnEdit = (Button)findViewById(R.id.btn_edit);
-        btnOp = (Button)findViewById(R.id.btn_stop);
+        btnEdit = (Button) findViewById(R.id.btn_edit);
+        btnOp = (Button) findViewById(R.id.btn_stop);
         //设置标题栏
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setTitle("岗位详情");
@@ -108,7 +144,22 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.add_menu_done:
+                    case R.id.download_resume_infomation:
+                        if (ContextCompat.checkSelfPermission(ComRecruitmentDetailActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//提示弹窗
+                            new AlertDialog.Builder(mContext).setTitle("需要文件读写权限").setMessage("下载文件需要文件读写权限，请允许！")
+                                    .setCancelable(false)
+                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            ActivityCompat.requestPermissions(ComRecruitmentDetailActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                                            dialog.dismiss();
+                                            getFileUrlAndDownload();
+                                        }
+                                    }).create().show();
+                        } else {
+                            getFileUrlAndDownload();
+                        }
                         break;
                     default:
                         break;
@@ -119,28 +170,28 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         //获取传递过来的岗位信息
         Intent intent = getIntent();
         recruitment = (Recruitment) intent.getSerializableExtra("recruitment");
-        if(recruitment == null){
+        if (recruitment == null) {
             //开始加载动画
             MyApplication.rxDialogShapeLoading = new RxDialogShapeLoading(mContext);
             MyApplication.rxDialogShapeLoading.setLoadingText("正在加载中");
             MyApplication.rxDialogShapeLoading.show();
             recruitment = new Recruitment();
-            Long recruitmentId = intent.getLongExtra("recruitmentId",0);
+            Long recruitmentId = intent.getLongExtra("recruitmentId", 0);
             recruitment.setRecruitmentId(recruitmentId);
             getNewRecruitment();
-        }else{
+        } else {
             initView();
         }
     }
 
     private void initView() {
         //设置按钮
-        if(recruitment.getValidate()==0){
+        if (recruitment.getValidate() == 0) {
             btnEdit.setText("编辑岗位");
             btnEdit.setTextColor(getResources().getColor(R.color.blue));
             btnOp.setText("结束招聘");
             btnOp.setTextColor(getResources().getColor(R.color.colorPrimary));
-        }else{
+        } else {
             btnEdit.setText("删除岗位");
             btnEdit.setTextColor(getResources().getColor(R.color.red));
             btnOp.setText("重新招聘");
@@ -173,15 +224,15 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss EE");
         String workTime;
         String industryLabel = "";
-        if(recruitment.getIndustryLabel() > 0){
-            industryLabel = data.get((int) recruitment.getIndustryLabel()-1);
-        }else{
+        if (recruitment.getIndustryLabel() > 0) {
+            industryLabel = data.get((int) recruitment.getIndustryLabel() - 1);
+        } else {
             industryLabel = "暂未分类";
         }
 
         String jobType;
         String recruitmentStatus;//简历状态
-        switch ((int)recruitment.getValidate()){
+        switch ((int) recruitment.getValidate()) {
             case 0:
                 recruitmentStatus = "正在招聘";
                 break;
@@ -192,7 +243,7 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                 recruitmentStatus = "停止招聘";
                 break;
         }
-        switch ((int)recruitment.getJobType()){
+        switch ((int) recruitment.getJobType()) {
             case 1:
                 jobType = "招聘";
                 break;
@@ -204,9 +255,9 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                 break;
             default:
                 jobType = "未定义";
-                    break;
+                break;
         }
-        switch (Integer.parseInt(recruitment.getWorkTime()+"")){
+        switch (Integer.parseInt(recruitment.getWorkTime() + "")) {
             case 1:
                 workTime = "955";
                 break;
@@ -240,58 +291,58 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         mTvAboutSpannable.setMovementMethod(LinkMovementMethod.getInstance());
         //获取岗位标签名称
         String strStationLabels = recruitment.getStationLabel();
-        if(strStationLabels != null){
+        if (strStationLabels != null) {
             String[] strStationLabel = strStationLabels.split(",");
             strStationLabels = "";
-            if(strStationLabel.length == 1){
-                strStationLabels = mVals[Integer.parseInt(strStationLabel[0])-1];
-            }else{
+            if (strStationLabel.length == 1) {
+                strStationLabels = mVals[Integer.parseInt(strStationLabel[0]) - 1];
+            } else {
                 for (String stationLabel : strStationLabel) {
-                    strStationLabels = strStationLabels + mVals[Integer.parseInt(stationLabel)-1] + ",";
+                    strStationLabels = strStationLabels + mVals[Integer.parseInt(stationLabel) - 1] + ",";
                 }
             }
-        }else{
+        } else {
             strStationLabels = "暂未分类";
         }
 
         RxTextTool.getBuilder("").setBold().setAlign(Layout.Alignment.ALIGN_CENTER)
                 .append(recruitment.getJobName() + "\n").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.colorPrimary))
-                .append("发布时间： "+df2.format(recruitment.getPublishTime())+ "\n").setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.black)).setProportion((float)0.8)
-                .append("发布公司： "+recruitment.getCompanyName()+ "\n").setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.black)).setProportion((float)0.8)
+                .append("发布时间： " + df2.format(recruitment.getPublishTime()) + "\n").setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.black)).setProportion((float) 0.8)
+                .append("发布公司： " + recruitment.getCompanyName() + "\n").setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.black)).setProportion((float) 0.8)
+                .append("当前已投递： " + recruitment.getCount() + "人\n").setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.black)).setProportion((float) 0.8)
 
-                .append("状态：" + recruitmentStatus +"\n")
+                .append("状态：" + recruitmentStatus + "\n")
                 .setBold().setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_OPPOSITE)
                 .setBackgroundColor(getResources().getColor(R.color.lightblue))
                 .setForegroundColor(getResources().getColor(R.color.black))
-                .append("招聘人数"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-                .append(recruitment.getHeadCount() + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
-                .append("岗位类型"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-                .append(jobType + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
+                .append("招聘人数" + "\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
+                .append(recruitment.getHeadCount() + "\n\n").setLeadingMargin(60, 50).setProportion((float) 0.8).setForegroundColor(getResources().getColor(R.color.black))
+                .append("岗位类型" + "\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
+                .append(jobType + "\n\n").setLeadingMargin(60, 50).setProportion((float) 0.8).setForegroundColor(getResources().getColor(R.color.black))
 
-                .append("岗位描述"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-                .append(recruitment.getDescription() + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
+                .append("岗位描述" + "\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
+                .append(recruitment.getDescription() + "\n\n").setLeadingMargin(60, 50).setProportion((float) 0.8).setForegroundColor(getResources().getColor(R.color.black))
 
-                .append("工作地点"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-                .append(recruitment.getLocation() + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
+                .append("工作地点" + "\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
+                .append(recruitment.getLocation() + "\n\n").setLeadingMargin(60, 50).setProportion((float) 0.8).setForegroundColor(getResources().getColor(R.color.black))
 
-                .append("投递要求"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-                .append(recruitment.getDeliveryRequest() + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
+                .append("投递要求" + "\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
+                .append(recruitment.getDeliveryRequest() + "\n\n").setLeadingMargin(60, 50).setProportion((float) 0.8).setForegroundColor(getResources().getColor(R.color.black))
 
-                .append("月薪资"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-                .append(recruitment.getSalary() + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
+                .append("月薪资" + "\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
+                .append(recruitment.getSalary() + "\n\n").setLeadingMargin(60, 50).setProportion((float) 0.8).setForegroundColor(getResources().getColor(R.color.black))
 
-                .append("学历要求"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-                .append(recruitment.getDegree() + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
+                .append("学历要求" + "\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
+                .append(recruitment.getDegree() + "\n\n").setLeadingMargin(60, 50).setProportion((float) 0.8).setForegroundColor(getResources().getColor(R.color.black))
 
-                .append("工作时间制度"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-                .append(workTime + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
+                .append("工作时间制度" + "\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
+                .append(workTime + "\n\n").setLeadingMargin(60, 50).setProportion((float) 0.8).setForegroundColor(getResources().getColor(R.color.black))
 
-                .append("所属行业"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-                .append(industryLabel + "\n\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
+                .append("所属行业" + "\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
+                .append(industryLabel + "\n\n").setLeadingMargin(60, 50).setProportion((float) 0.8).setForegroundColor(getResources().getColor(R.color.black))
 
-                .append("岗位标签"+"\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
-                .append(strStationLabels + "\n").setLeadingMargin(60, 50).setProportion((float)0.8).setForegroundColor(getResources().getColor(R.color.black))
-
+                .append("岗位标签" + "\n").setBold().setBullet(60, getResources().getColor(R.color.colorPrimary))
+                .append(strStationLabels + "\n").setLeadingMargin(60, 50).setProportion((float) 0.8).setForegroundColor(getResources().getColor(R.color.black))
 
 
                 .into(mTvAboutSpannable);
@@ -300,23 +351,23 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
     /**
      * 发起修改招聘信息状态请求
      */
-    public  void modifyRecruitment(){
+    public void modifyRecruitment() {
         //暂时将发布时间修改为空
         recruitment.setPublishTime(null);
         //获取token
-        SharedPreferences preferences = getSharedPreferences("token",0);
-        String token = preferences.getString(PostParameterName.TOKEN,null);
+        SharedPreferences preferences = getSharedPreferences("token", 0);
+        String token = preferences.getString(PostParameterName.TOKEN, null);
 
         //组装URL
         String url = PostParameterName.POST_URL_COMPANY_UPDATE_RESRUITMENT + token + "&recruitmentId=" + recruitment.getRecruitmentId();
         //请求数据
         try {
-            Log.d(TAG, "onCreate: 开始发送json请求"+ url);
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,new JSONObject(new Gson().toJson(recruitment)),
+            Log.d(TAG, "onCreate: 开始发送json请求" + url);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, new JSONObject(new Gson().toJson(recruitment)),
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.d(TAG, "onResponse: 返回"+response.toString());
+                            Log.d(TAG, "onResponse: 返回" + response.toString());
                             GsonBuilder builder = new GsonBuilder();
                             builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
                                 @Override
@@ -324,19 +375,20 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                                     return new Date(json.getAsJsonPrimitive().getAsLong());
                                 }
                             });
-                            Gson gson =builder.create();
-                            Type jsonType = new TypeToken<TempResponseData<Object>>() {}.getType();
+                            Gson gson = builder.create();
+                            Type jsonType = new TypeToken<TempResponseData<Object>>() {
+                            }.getType();
                             final TempResponseData<Object> postResult = gson.fromJson(response.toString(), jsonType);
-                            Log.d(TAG, "onResponse: "+postResult.getResultCode());
+                            Log.d(TAG, "onResponse: " + postResult.getResultCode());
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     //关闭加载动画
-                                    if(postResult.getResultCode()==200){
+                                    if (postResult.getResultCode() == 200) {
                                         Toast.makeText(mContext, "更新状态成功", Toast.LENGTH_SHORT).show();
                                         //刷新页面
                                         getNewRecruitment();
-                                    }else{
+                                    } else {
                                         Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
                                     }
                                 }
@@ -347,7 +399,8 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                 public void onErrorResponse(VolleyError error) {
                     Log.e("TAG", error.getMessage(), error);
                     Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
-                }});
+                }
+            });
 
             requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
@@ -356,23 +409,23 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         }
     }
 
-    public void getNewRecruitment(){
+    public void getNewRecruitment() {
         //暂时将发布时间修改为空
         recruitment.setPublishTime(null);
         //获取token
-        SharedPreferences preferences = getSharedPreferences("token",0);
-        String token = preferences.getString(PostParameterName.TOKEN,null);
+        SharedPreferences preferences = getSharedPreferences("token", 0);
+        String token = preferences.getString(PostParameterName.TOKEN, null);
 
         //组装URL
         String url = PostParameterName.POST_URL_COMPANY_GET_RESRUITMENT + token + "&recruitmentId=" + recruitment.getRecruitmentId();
         //请求数据
         try {
-            Log.d(TAG, "onCreate: 开始发送json请求"+ url);
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,new JSONObject(new Gson().toJson(recruitment)),
+            Log.d(TAG, "onCreate: 开始发送json请求" + url);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, new JSONObject(new Gson().toJson(recruitment)),
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.d(TAG, "onResponse: 返回"+response.toString());
+                            Log.d(TAG, "onResponse: 返回" + response.toString());
                             GsonBuilder builder = new GsonBuilder();
                             builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
                                 @Override
@@ -380,22 +433,23 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                                     return new Date(json.getAsJsonPrimitive().getAsLong());
                                 }
                             });
-                            Gson gson =builder.create();
-                            Type jsonType = new TypeToken<TempResponseData<Recruitment>>() {}.getType();
+                            Gson gson = builder.create();
+                            Type jsonType = new TypeToken<TempResponseData<Recruitment>>() {
+                            }.getType();
                             final TempResponseData<Recruitment> postResult = gson.fromJson(response.toString(), jsonType);
-                            Log.d(TAG, "onResponse: "+postResult.getResultCode());
+                            Log.d(TAG, "onResponse: " + postResult.getResultCode());
                             recruitment = postResult.getResultObject();
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     //结束加载动画
                                     MyApplication.rxDialogShapeLoading.hide();
-                                    if(postResult.getResultCode()==200){
+                                    if (postResult.getResultCode() == 200) {
                                         finish();
                                         Intent intent = new Intent(mContext, ComRecruitmentDetailActivity.class);
-                                        intent.putExtra("recruitment",recruitment);
+                                        intent.putExtra("recruitment", recruitment);
                                         startActivity(intent);
-                                    }else{
+                                    } else {
                                         Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
                                     }
                                 }
@@ -408,7 +462,8 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                     MyApplication.rxDialogShapeLoading.hide();
                     Log.e("TAG", error.getMessage(), error);
                     Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
-                }});
+                }
+            });
             requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
             //结束加载动画
@@ -417,26 +472,27 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
             e.printStackTrace();
         }
     }
+
     /**
      * 发起删除招聘信息状态请求
      */
-    public void deleteRecruitment(){
+    public void deleteRecruitment() {
         //暂时将发布时间修改为空
         recruitment.setPublishTime(null);
         //获取token
-        SharedPreferences preferences = getSharedPreferences("token",0);
-        String token = preferences.getString(PostParameterName.TOKEN,null);
+        SharedPreferences preferences = getSharedPreferences("token", 0);
+        String token = preferences.getString(PostParameterName.TOKEN, null);
 
         //组装URL
         String url = PostParameterName.POST_URL_COMPANY_DELETE_RECRUITMENT + token + "&recruitmentId=" + recruitment.getRecruitmentId();
         //请求数据
         try {
-            Log.d(TAG, "onCreate: 开始发送json请求"+ url);
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,new JSONObject(new Gson().toJson(recruitment)),
+            Log.d(TAG, "onCreate: 开始发送json请求" + url);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, new JSONObject(new Gson().toJson(recruitment)),
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.d(TAG, "onResponse: 返回"+response.toString());
+                            Log.d(TAG, "onResponse: 返回" + response.toString());
                             GsonBuilder builder = new GsonBuilder();
                             builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
                                 @Override
@@ -444,18 +500,19 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                                     return new Date(json.getAsJsonPrimitive().getAsLong());
                                 }
                             });
-                            Gson gson =builder.create();
-                            Type jsonType = new TypeToken<TempResponseData<Recruitment>>() {}.getType();
+                            Gson gson = builder.create();
+                            Type jsonType = new TypeToken<TempResponseData<Recruitment>>() {
+                            }.getType();
                             final TempResponseData<Recruitment> postResult = gson.fromJson(response.toString(), jsonType);
-                            Log.d(TAG, "onResponse: "+postResult.getResultCode());
+                            Log.d(TAG, "onResponse: " + postResult.getResultCode());
                             recruitment = postResult.getResultObject();
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(postResult.getResultCode()==200){
+                                    if (postResult.getResultCode() == 200) {
                                         finish();
                                         Toast.makeText(mContext, "删除成功", Toast.LENGTH_LONG).show();
-                                    }else{
+                                    } else {
                                         Toast.makeText(mContext, "删除失败，请联系客服", Toast.LENGTH_LONG).show();
                                     }
                                 }
@@ -466,7 +523,8 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                 public void onErrorResponse(VolleyError error) {
                     Log.e("TAG", error.getMessage(), error);
                     Toast.makeText(mContext, "删除失败，请联系客服", Toast.LENGTH_LONG).show();
-                }});
+                }
+            });
 
             requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
@@ -478,14 +536,14 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
 
     @Override
     public void onClick(View v) {
-        switch ((int)v.getId()){
+        switch ((int) v.getId()) {
             case R.id.btn_edit:
                 //第一个按钮
-                if(recruitment.getValidate()==0){
+                if (recruitment.getValidate() == 0) {
                     Intent intent = new Intent(this, AddRecruitmentActivity.class);
-                    intent.putExtra("recruitment",recruitment);
+                    intent.putExtra("recruitment", recruitment);
                     startActivity(intent);
-                }else{
+                } else {
                     //提示弹窗
                     final RxDialogSureCancel rxDialogSureCancel = new RxDialogSureCancel(mContext);
                     rxDialogSureCancel.getTitleView().setText("确认删除");
@@ -508,14 +566,126 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                 break;
             case R.id.btn_stop:
                 //第二个按钮
-                if(recruitment.getValidate()==0){
+                if (recruitment.getValidate() == 0) {
                     recruitment.setValidate(1);
-                }else if(recruitment.getValidate()==1){
+                } else if (recruitment.getValidate() == 1) {
                     recruitment.setValidate(0);
                 }
-                Log.d(TAG, "onClick: "+recruitment.getValidate());
+                Log.d(TAG, "onClick: " + recruitment.getValidate());
                 modifyRecruitment();
                 break;
         }
     }
+
+    public void getFileUrlAndDownload() {
+        //获取token
+        SharedPreferences preferences = getSharedPreferences("token", 0);
+        String token = preferences.getString(PostParameterName.TOKEN, null);
+        //组装URL
+        String url = PostParameterName.POST_GET_DELIVERY_INFORMATION_FILE + token + "&recruitmentId=" + recruitment.getRecruitmentId();
+        //请求数据
+        try {
+            Log.d(TAG, "onCreate: 开始发送json请求" + url);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, new JSONObject(new Gson().toJson(recruitment)),
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG, "onResponse: 返回" + response.toString());
+                            GsonBuilder builder = new GsonBuilder();
+                            builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+                                @Override
+                                public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                                    return new Date(json.getAsJsonPrimitive().getAsLong());
+                                }
+                            });
+                            Gson gson = builder.create();
+                            Type jsonType = new TypeToken<TempResponseData<String>>() {
+                            }.getType();
+                            final TempResponseData<String> postResult = gson.fromJson(response.toString(), jsonType);
+                            Log.d(TAG, "onResponse: " + postResult.getResultCode());
+                            final String filePath = postResult.getResultObject();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (postResult.getResultCode() == 200) {
+                                        downLoadFile(PostParameterName.DOWNLOAD_URL_RESUME_IMAGE_PREFIX + filePath, "[" + recruitment.getJobName() + "]岗位求职者信息");
+                                    } else {
+                                        RxToast.error("下载文件失败，请重试！");
+                                    }
+                                }
+                            });
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("TAG", error.getMessage(), error);
+                    RxToast.error("删除失败，请联系待就业六人组！");
+//                    Toast.makeText(mContext, "删除失败，请联系客服", Toast.LENGTH_LONG).show();
+                }
+            });
+
+            requestQueue.add(jsonObjectRequest);
+        } catch (Exception e) {
+            RxToast.error("删除失败，请检查网络连接!");
+//            Toast.makeText(mContext, "删除失败，请检查网络", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+    protected void downLoadFile(final String uri, final String fileName) {
+        //进度条
+        tempFileName = fileName;
+        final ProgressDialog pd;
+        pd = new ProgressDialog(this);
+        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        pd.setMessage("正在下载文件");
+        pd.setCancelable(false);
+        pd.show();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final File file = getFileFromServer(uri, pd, fileName);
+                    pd.dismiss(); //结束掉进度条对话框
+                    handler.sendEmptyMessage(1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    public static File getFileFromServer(String path, ProgressDialog pd, String fileName) throws Exception {
+        //如果相等的话表示当前的sdcard挂载在手机上并且是可用的
+        Log.d(TAG, "getFileFromServer: 开始下载");
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            URL url = new URL(path);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setRequestProperty("Accept-Encoding", "identity");
+            //获取到文件的大小
+            pd.setMax(conn.getContentLength());
+            InputStream is = conn.getInputStream();
+            File file = new File(Environment.getExternalStorageDirectory(), fileName + ".csv");
+            FileOutputStream fos = new FileOutputStream(file);
+            BufferedInputStream bis = new BufferedInputStream(is);
+            byte[] buffer = new byte[1024];
+            int len;
+            int total = 0;
+            while ((len = bis.read(buffer)) != -1) {
+                fos.write(buffer, 0, len);
+                total += len;
+                //获取当前下载量
+                pd.setProgress(total);
+                Log.d(TAG, "getFileFromServer: " + len);
+            }
+            fos.close();
+            bis.close();
+            is.close();
+            return file;
+        } else {
+            return null;
+        }
+    }
+
 }

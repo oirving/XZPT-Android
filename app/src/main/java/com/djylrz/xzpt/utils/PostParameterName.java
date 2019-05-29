@@ -49,7 +49,7 @@ public class PostParameterName {
     public static final String POST_URL_COMPANY_IMPORT_RECRUITMENT_LIST_BY_FILE = HOST + "/company/importdata?token=";//企业导入信息，从文件导入
     public static final String GET_URL_ALL_GET_CHAT_CONTENT_LIST = "https://mimc.chat.xiaomi.net/api/contact/";//用户/企业 获取历史消息列表
     public static final String GET_URL_WEEK_GET_MESSAGE_LIST_BETWEEN_TWO_PERSON = "https://mimc.chat.xiaomi.net/api/msg/p2p/queryOnCount/";//用户/企业 获取两个人之间的指定数量的历史消息
-
+    public static final String POST_GET_DELIVERY_INFORMATION_FILE = HOST+"/company/export/excel/resume?token=";//企业获取投递者信息文件下载链接
 
     public static final String REQUEST_CODE = "code";
     public static final String REQUEST_EMAIL = "email";

@@ -139,6 +139,7 @@
                             android:textSize="18sp"
                             android:textStyle="bold" />
                         <TextView
+                            android:visibility="invisible"
                             android:id="@+id/salary"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"

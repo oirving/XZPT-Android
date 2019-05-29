@@ -213,7 +213,7 @@ public class MyApplication extends Application {
                     //设置XMPUSH别名
                     MiPushClient.setAlias(context, userId, null);
                     //显示设置XMPUSH别名提示
-                    Toast.makeText(context, "设置别名成功："+userId, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context, "设置别名成功："+userId, Toast.LENGTH_LONG).show();
 
                     //小米云消息服务用户初始化
                     MIMCUser XMUser = UserManager.getInstance().newUser(userId);
@@ -224,7 +224,7 @@ public class MyApplication extends Application {
                 case MyApplication.REGISTER_XMPUSH_SUCCESS:
                     //显示xmpush注册成功提示
                     String s = (String) msg.obj;
-                    Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
                     break;
             }
 

@@ -29,6 +29,7 @@ import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.VolleyNetUtil;
+import com.djylrz.xzpt.xiaomi.mimc.common.NetWorkUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -40,7 +41,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 
 
-public class ActorChoose extends BaseActivity implements View.OnClickListener{
+public class ActorChoose extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "ActorChoose";
 
     LinearLayout layoutStu;
@@ -48,11 +49,11 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
     ImageView imageViewStu;
     ImageView imageViewCompany;
     Button btnStart;
-    private static final int GREY = Color.rgb(245,245,245);
+    private static final int GREY = Color.rgb(245, 245, 245);
     private static final int CHOOSE_NONE = -1;
     private static final int CHOOSE_STU = 1;
     private static final int CHOOSE_COMPANY = 2;
-    private int chooseFlag=CHOOSE_NONE;
+    private int chooseFlag = CHOOSE_NONE;
 
     private String userToken;
     private String companyToken;
@@ -60,17 +61,17 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
     private Company company = new Company();//企业实体对象
     private String token;
     private RequestQueue requestQueue;
+    private String recruitmentId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //验证是否已经登录
-        SharedPreferences preferences = getSharedPreferences(PostParameterName.TOKEN,0);
-        userToken = preferences.getString(PostParameterName.STUDENT_TOKEN,null);
-        companyToken = preferences.getString(PostParameterName.TOKEN,null);
-
+        SharedPreferences preferences = getSharedPreferences(PostParameterName.TOKEN, 0);
+        userToken = preferences.getString(PostParameterName.STUDENT_TOKEN, null);
+        companyToken = preferences.getString(PostParameterName.TOKEN, null);
         setContentView(R.layout.activity_actor_choose);
-
 
         layoutCompany = findViewById(R.id.linearLayoutCompany);//学生登陆按钮
         layoutStu = findViewById(R.id.linearLayoutStu);//企业登陆按钮
@@ -81,6 +82,22 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
         layoutCompany.setOnClickListener(this);
         layoutStu.setOnClickListener(this);
         btnStart.setOnClickListener(this);
+
+        if (NetWorkUtils.isNetwork(this)) {
+            //如果已存在token则直接登录
+            if (userToken != null) {
+                User user = new User();
+                user.setToken(userToken);
+                studentLoginWithToken(user);
+            } else if (companyToken != null) {
+                Company company = new Company();
+                company.setToken(companyToken);
+                companyLoginWithToken(company);
+            }
+        } else {
+            RxToast.error("请检查网络连接！");
+        }
+
     }
 
     //按钮响应事件
@@ -107,26 +124,30 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                 break;
 
             case R.id.btnStart:
+                if (NetWorkUtils.isNetwork(this)) {
+                    if (chooseFlag == CHOOSE_STU) {
 
-                if(chooseFlag==CHOOSE_STU) {
+                        if (userToken != null) {
+                            User user = new User();
+                            user.setToken(userToken);
+                            studentLoginWithToken(user);
+                        } else {
+                            studentLogin();
+                        }
+                    } else if (chooseFlag == CHOOSE_COMPANY) {
 
-                    if (userToken != null) {
-                        User user = new User();
-                        user.setToken(userToken);
-                        studentLoginWithToken(user);
-                    } else {
-                        studentLogin();
+                        if (companyToken != null) {
+                            Company company = new Company();
+                            company.setToken(companyToken);
+                            companyLoginWithToken(company);
+                        } else {
+                            companyLogin();
+                        }
                     }
-                }else if(chooseFlag==CHOOSE_COMPANY){
-
-                    if(companyToken != null){
-                        Company company = new Company();
-                        company.setToken(companyToken);
-                        companyLoginWithToken(company);
-                    }else{
-                        companyLogin();
-                    }
+                } else {
+                    RxToast.error("请检查网络连接！");
                 }
+
                 break;
             default:
                 break;
@@ -134,24 +155,24 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
     }
 
 
-    private void studentLoginWithToken(User user){
+    private void studentLoginWithToken(User user) {
         VolleyNetUtil.getInstance().setRequestQueue(getApplicationContext());//获取requestQueue
 
         try {
-            Log.d(TAG, "onCreate: 使用token登录"+new Gson().toJson(user));
+            Log.d(TAG, "onCreate: 使用token登录" + new Gson().toJson(user));
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_LOGIN_WITH_TOKEN+user.getToken(),
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_LOGIN_WITH_TOKEN + user.getToken(),
                     new JSONObject(new Gson().toJson(user)),
                     new com.android.volley.Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.d(TAG, "onResponse: 返回"+response.toString());
+                            Log.d(TAG, "onResponse: 返回" + response.toString());
                             final PostResult postResult = new Gson().fromJson(response.toString(), PostResult.class);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    switch (postResult.getResultCode()){
-                                        case "200":{
+                                    switch (postResult.getResultCode()) {
+                                        case "200": {
                                             //跳转到用户主界面
                                             getStudentInfo();
                                             Intent intent = new Intent(ActorChoose.this, MainActivity.class);
@@ -159,10 +180,11 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                                             MyApplication.setUserType(1);
                                             startActivity(intent);
                                             finish();
-                                        }break;
-                                        default:{
+                                        }
+                                        break;
+                                        default: {
                                             Toast.makeText(ActorChoose.this, "使用token登录失败", Toast.LENGTH_SHORT).show();
-                                            Log.d(TAG, "run: 使用token登录失败，跳转用户名密码登录"+postResult.getResultCode());
+                                            Log.d(TAG, "run: 使用token登录失败，跳转用户名密码登录" + postResult.getResultCode());
                                             studentLogin();
                                         }
 
@@ -175,7 +197,8 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                 public void onErrorResponse(VolleyError error) {
                     RxToast.error("无法连接到服务器，请检查网络连接");
                     Log.e("TAG", error.getMessage(), error);
-                }});
+                }
+            });
             VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
         } catch (JSONException e) {
             e.printStackTrace();
@@ -183,35 +206,37 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
 
     }
 
-    private void companyLoginWithToken(final Company company){
+    private void companyLoginWithToken(final Company company) {
         VolleyNetUtil.getInstance().setRequestQueue(getApplicationContext());//获取requestQueue
 
         try {
-            Log.d(TAG, "onCreate: 使用token登录"+new Gson().toJson(company));
+            Log.d(TAG, "onCreate: 使用token登录" + new Gson().toJson(company));
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_COMPANY_LOGIN_WITH_TOKEN+company.getToken(),
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_COMPANY_LOGIN_WITH_TOKEN + company.getToken(),
                     new JSONObject(new Gson().toJson(company)),
                     new com.android.volley.Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.d(TAG, "onResponse: 返回"+response.toString());
+                            Log.d(TAG, "onResponse: 返回" + response.toString());
                             final PostResult postResult = new Gson().fromJson(response.toString(), PostResult.class);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    switch (postResult.getResultCode()){
-                                        case "200":{
+                                    switch (postResult.getResultCode()) {
+                                        case "200": {
                                             //跳转到企业首页
                                             Intent intent = new Intent(ActorChoose.this, Main2Activity.class);
                                             startActivity(intent);
                                             Log.d(TAG, "postLogin: 企业用户登录成功！");
+                                            MyApplication.setUserType(0);
                                             getCompanyInfo();
                                             finish();
 
-                                        }break;
-                                        default:{
+                                        }
+                                        break;
+                                        default: {
                                             Toast.makeText(ActorChoose.this, "使用token登录失败", Toast.LENGTH_SHORT).show();
-                                            Log.d(TAG, "run: 使用token登录失败，跳转用户名密码登录"+postResult.getResultCode());
+                                            Log.d(TAG, "run: 使用token登录失败，跳转用户名密码登录" + postResult.getResultCode());
                                             companyLogin();
                                         }
 
@@ -224,37 +249,40 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                 public void onErrorResponse(VolleyError error) {
                     RxToast.error("无法连接到服务器，请检查网络连接");
                     Log.e("TAG", error.getMessage(), error);
-                }});
+                }
+            });
             VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
     }
-    private void getStudentInfo(){
+
+    private void getStudentInfo() {
         //用户已经登录，查询个人信息并显示
         requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
-        SharedPreferences userToken = getSharedPreferences("token",0);
-        token = userToken.getString(PostParameterName.STUDENT_TOKEN,null);
-        if (token != null){
-            Log.d(TAG, "onCreate: TOKEN is "+token);
+        SharedPreferences userToken = getSharedPreferences("token", 0);
+        token = userToken.getString(PostParameterName.STUDENT_TOKEN, null);
+        if (token != null) {
+            Log.d(TAG, "onCreate: TOKEN is " + token);
 
             user.setToken(token);
 
             try {
-                Log.d(TAG, "onCreate: 获取个人信息，只填了token"+new Gson().toJson(user));
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_USER_BY_TOKEN+user.getToken(),new JSONObject(new Gson().toJson(user)),
+                Log.d(TAG, "onCreate: 获取个人信息，只填了token" + new Gson().toJson(user));
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_USER_BY_TOKEN + user.getToken(), new JSONObject(new Gson().toJson(user)),
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                Log.d(TAG, "onResponse: 返回"+response.toString());
-                                Type jsonType = new TypeToken<TempResponseData<User>>() {}.getType();
+                                Log.d(TAG, "onResponse: 返回" + response.toString());
+                                Type jsonType = new TypeToken<TempResponseData<User>>() {
+                                }.getType();
 
                                 Gson gson = new GsonBuilder()
                                         .setDateFormat("yyyy-MM-dd HH:mm:ss")
                                         .create();
                                 final TempResponseData<User> postResult = gson.fromJson(response.toString(), jsonType);
-                                Log.d(TAG, "onResponse: "+postResult.getResultCode());
+                                Log.d(TAG, "onResponse: " + postResult.getResultCode());
                                 user = postResult.getResultObject();
                                 user.setToken(token);
 
@@ -262,7 +290,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                                 SharedPreferences sharedPreferences = getSharedPreferences("user", 0);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 try {
-                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：："+response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
+                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：：" + response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
                                     editor.putString("student", new Gson().toJson(user));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -286,7 +314,8 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("TAG", error.getMessage(), error);
-                    }});
+                    }
+                });
                 requestQueue.add(jsonObjectRequest);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -294,37 +323,39 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
 
         }
     }
-    private void getCompanyInfo(){
+
+    private void getCompanyInfo() {
         //用户已经登录，查询个人信息并显示
         requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
-        SharedPreferences userToken = getSharedPreferences("token",0);
-        token = userToken.getString(PostParameterName.TOKEN,null);
-        if (token != null){
-            Log.d(TAG, "onCreate: TOKEN is "+token);
+        SharedPreferences userToken = getSharedPreferences("token", 0);
+        token = userToken.getString(PostParameterName.TOKEN, null);
+        if (token != null) {
+            Log.d(TAG, "onCreate: TOKEN is " + token);
             company.setToken(token);
             try {
-                Log.d(TAG, "onCreate: 获取企业信息，只填了token"+new Gson().toJson(company));
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_COMPANY_BY_TOKEN + company.getToken(),new JSONObject(new Gson().toJson(company)),
+                Log.d(TAG, "onCreate: 获取企业信息，只填了token" + new Gson().toJson(company));
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_COMPANY_BY_TOKEN + company.getToken(), new JSONObject(new Gson().toJson(company)),
                         new com.android.volley.Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                Log.d(TAG, "onResponse: 返回"+response.toString());
-                                Type jsonType = new TypeToken<TempResponseData<Company>>() {}.getType();
+                                Log.d(TAG, "onResponse: 返回" + response.toString());
+                                Type jsonType = new TypeToken<TempResponseData<Company>>() {
+                                }.getType();
 
                                 Gson gson = new GsonBuilder()
                                         .setDateFormat("yyyy-MM-dd HH:mm:ss")
                                         .create();
                                 final TempResponseData<Company> postResult = gson.fromJson(response.toString(), jsonType);
-                                Log.d(TAG, "onResponse: "+postResult.getResultCode());
+                                Log.d(TAG, "onResponse: " + postResult.getResultCode());
                                 company = postResult.getResultObject();
                                 company.setToken(token);
 
                                 //获取用户信息，存储到本地。
-                                SharedPreferences sharedPreferences = getSharedPreferences("company", 0);
+                                SharedPreferences sharedPreferences = getSharedPreferences("companyUser", 0);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 try {
-                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：："+response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
-                                    editor.putString("student", new Gson().toJson(company));
+                                    Log.d(TAG, "用户信息存储到本地SharedPreferences：：" + response.getJSONObject(PostParameterName.RESPOND_RESULTOBJECT).toString());
+                                    editor.putString("company", new Gson().toJson(company));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -347,7 +378,8 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("TAG", error.getMessage(), error);
-                    }});
+                    }
+                });
                 requestQueue.add(jsonObjectRequest);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -355,19 +387,20 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener{
 
         }
     }
+
     //学生端使用用户名密码登录
-    private void studentLogin(){
+    private void studentLogin() {
         Intent student = new Intent(ActorChoose.this, StudentLogin.class);
         startActivity(student);
         finish();
-        Toast.makeText(ActorChoose.this,"学生用户",Toast.LENGTH_SHORT).show();
+        Toast.makeText(ActorChoose.this, "学生用户", Toast.LENGTH_SHORT).show();
     }
 
     //企业端使用用户名和密码登录
-    private void companyLogin(){
+    private void companyLogin() {
         Intent company = new Intent(ActorChoose.this, CompanyLogin.class);
         startActivity(company);
         finish();
-        Toast.makeText(ActorChoose.this,"企业用户",Toast.LENGTH_SHORT).show();
+        Toast.makeText(ActorChoose.this, "企业用户", Toast.LENGTH_SHORT).show();
     }
 }
