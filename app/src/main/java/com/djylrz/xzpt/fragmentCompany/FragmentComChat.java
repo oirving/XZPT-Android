@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -65,6 +66,8 @@ public class FragmentComChat extends Fragment
     private String userName;
     private String headUrl;
     private Toolbar toolbar;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    ;
 
     public static FragmentComChat getInstance(String title) {
         FragmentComChat fcc = new FragmentComChat();
@@ -77,6 +80,27 @@ public class FragmentComChat extends Fragment
         mDecorView = inflater.inflate(R.layout.fragment9_com_chat, container, false);
         dialogsList = (DialogsList) mDecorView.findViewById(R.id.dialogsList);
         toolbar = mDecorView.findViewById(R.id.message_toolbar);
+        swipeRefreshLayout = mDecorView.findViewById(R.id.swipe_refresh_layout_com_chat);
+        // 设置下拉刷新
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // 刷新数据
+                MIMCUser user = UserManager.getInstance().getUser();
+                if (user != null) {
+                    onRefreshDialogList();
+                }
+                // 延时1s关闭下拉刷新
+                swipeRefreshLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+                }, 1000);
+            }
+        });
         if (MyApplication.getUserType() == 1) {
             toolbar.setVisibility(View.GONE);
         }
@@ -199,15 +223,21 @@ public class FragmentComChat extends Fragment
             for (int i = 0; i < dataList.size(); ++i) {
                 final Data<LastMessage> dialogContent = dataList.get(i);
                 final ArrayList<ChatUser> users = new ArrayList<>();
+                final String fromAccount;
+                if(dialogContent.getLastMessage().getFromAccount().equals(MyApplication.getUserId())){
+                    fromAccount = dialogContent.getLastMessage().getToAccount();
+                }else{
+                    fromAccount = dialogContent.getLastMessage().getFromAccount();
+                }
                 //获取头像和名称
                 SharedPreferences preferences = MyApplication.getContext().getSharedPreferences(PostParameterName.TOKEN, 0);
                 String userToken = preferences.getString(PostParameterName.STUDENT_TOKEN, null);
                 final String companyToken = preferences.getString(PostParameterName.TOKEN, null);
                 String urlGetUserInfo;
                 if (MyApplication.getUserType() == 1) {
-                    urlGetUserInfo = PostParameterName.POST_URL_GET_USER_HEAD_NAME_BY_ID + userToken + "&userId=" + dialogContent.getLastMessage().getFromAccount() + "&requestType=" + 1 + "&wantType=" + 0;
+                    urlGetUserInfo = PostParameterName.POST_URL_GET_USER_HEAD_NAME_BY_ID + userToken + "&userId=" + fromAccount + "&requestType=" + 1 + "&wantType=" + 0;
                 } else {
-                    urlGetUserInfo = PostParameterName.POST_URL_GET_USER_HEAD_NAME_BY_ID + companyToken + "&userId=" + dialogContent.getLastMessage().getFromAccount() + "&requestType=" + 0 + "&wantType=" + 1;
+                    urlGetUserInfo = PostParameterName.POST_URL_GET_USER_HEAD_NAME_BY_ID + companyToken + "&userId=" + fromAccount + "&requestType=" + 0 + "&wantType=" + 1;
                 }
                 Log.d(TAG, "addMsg: " + urlGetUserInfo);
                 HttpUtil.post(urlGetUserInfo, new AsyncHttpResponseHandler() {
@@ -232,7 +262,7 @@ public class FragmentComChat extends Fragment
                             userName = "未知用户";
                             headUrl = "";
                         }
-                        ChatUser chatUser = new ChatUser(dialogContent.getLastMessage().getFromAccount(), userName, headUrl, true);
+                        ChatUser chatUser = new ChatUser(fromAccount, userName, headUrl, true);
                         users.add(chatUser);
                         Message message = null;
                         //需要对Payload进行base64解密
@@ -249,23 +279,24 @@ public class FragmentComChat extends Fragment
                         if (matcher.find()) {
                             String lastMessageBase64 = matcher.group(1);
                             String lastMessage = new String(android.util.Base64.decode(lastMessageBase64, android.util.Base64.DEFAULT));
-                            message = new Message(dialogContent.getLastMessage().getFromAccount(), chatUser, new String(lastMessage), new Date(Long.parseLong(dialogContent.getTimestamp())));
+                            message = new Message(fromAccount, chatUser, new String(lastMessage), new Date(Long.parseLong(dialogContent.getTimestamp())));
                         } else {
-                            message = new Message(dialogContent.getLastMessage().getFromAccount(), chatUser, "消息已损坏", new Date(Long.parseLong(dialogContent.getTimestamp())));
+                            message = new Message(fromAccount, chatUser, "消息已损坏", new Date(Long.parseLong(dialogContent.getTimestamp())));
                         }
                         int count = 0;
-                        if (unReadMessageCountMap.get(dialogContent.getLastMessage().getFromAccount()) != null) {
-                            count = unReadMessageCountMap.get(dialogContent.getLastMessage().getFromAccount());
+                        if (unReadMessageCountMap.get(fromAccount) != null) {
+                            Log.d(TAG, "获取未读消息数据 " + fromAccount);
+                            count = unReadMessageCountMap.get(fromAccount);
                         }
-                        Dialog dialog = new Dialog(dialogContent.getLastMessage().getFromAccount(), userName, headUrl, users, message, count);
+                        Log.d(TAG, "添加一个会话 " + fromAccount);
+                        Dialog dialog = new Dialog(fromAccount, userName, headUrl, users, message, count);
                         dialogsAdapter.upsertItem(dialog);
 
                     }
 
                     @Override
                     public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-                        String content = new String(bytes);
-                        Log.d(TAG, "onFailure: " + content);
+                        Log.d(TAG, "onFailure: 获取用户名称和头像失败" );
                     }
                 });
 

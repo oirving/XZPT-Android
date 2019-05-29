@@ -298,7 +298,9 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                 strStationLabels = mVals[Integer.parseInt(strStationLabel[0]) - 1];
             } else {
                 for (String stationLabel : strStationLabel) {
-                    strStationLabels = strStationLabels + mVals[Integer.parseInt(stationLabel) - 1] + ",";
+                    if(Integer.parseInt(stationLabel) <= mVals.length){
+                        strStationLabels = strStationLabels + mVals[Integer.parseInt(stationLabel) - 1] + ",";
+                    }
                 }
             }
         } else {

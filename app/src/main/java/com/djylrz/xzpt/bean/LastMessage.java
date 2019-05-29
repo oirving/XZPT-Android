@@ -3,6 +3,8 @@ package com.djylrz.xzpt.bean;
 public class LastMessage {
     private String fromUuid;
     private String fromAccount;
+    private String toUuid;
+    private String toAccount;
     private String payload;///消息体需base64解码
     private String sequence;//sequence主要用来做消息的排序和去重，全局唯一
     private String bizType;//可用于表示消息类型扩展字段（可选）
@@ -47,4 +49,19 @@ public class LastMessage {
         this.bizType = bizType;
     }
 
+    public String getToUuid() {
+        return toUuid;
+    }
+
+    public void setToUuid(String toUuid) {
+        this.toUuid = toUuid;
+    }
+
+    public String getToAccount() {
+        return toAccount;
+    }
+
+    public void setToAccount(String toAccount) {
+        this.toAccount = toAccount;
+    }
 }

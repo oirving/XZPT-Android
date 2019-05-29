@@ -1,12 +1,11 @@
 package com.djylrz.xzpt.fragmentStudent;
 
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +17,11 @@ import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activity.DefaultMessagesActivity;
 import com.djylrz.xzpt.bean.ChatUser;
+import com.djylrz.xzpt.bean.Data;
 import com.djylrz.xzpt.bean.Dialog;
+import com.djylrz.xzpt.bean.LastMessage;
 import com.djylrz.xzpt.bean.Message;
 import com.djylrz.xzpt.bean.TempResponseData;
-import com.djylrz.xzpt.bean.Data;
-import com.djylrz.xzpt.bean.LastMessage;
 import com.djylrz.xzpt.utils.HttpUtil;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.xiaomi.mimc.bean.ChatDTO;
@@ -36,7 +35,6 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.dialogs.DialogsList;
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
-import com.vondear.rxtool.view.RxToast;
 import com.xiaomi.mimc.MIMCGroupMessage;
 import com.xiaomi.mimc.MIMCMessage;
 import com.xiaomi.mimc.MIMCServerAck;
@@ -46,7 +44,6 @@ import com.xiaomi.mimc.common.MIMCConstant;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +64,7 @@ public class MessageCardFragment extends Fragment
     private HashMap<String, Integer> unReadMessageCountMap = new HashMap<>();
     private String userName;
     private String headUrl;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public static MessageCardFragment getInstance(String title) {
         MessageCardFragment mcf = new MessageCardFragment();
@@ -78,6 +76,27 @@ public class MessageCardFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mDecorView = inflater.inflate(R.layout.fragment_message_card, container, false);
         dialogsList = (DialogsList) mDecorView.findViewById(R.id.dialogsList_student);
+        swipeRefreshLayout = mDecorView.findViewById(R.id.swipe_refresh_layout);
+        // 设置下拉刷新
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // 刷新数据
+                MIMCUser user = UserManager.getInstance().getUser();
+                if (user != null) {
+                    onRefreshDialogList();
+                }
+                // 延时1s关闭下拉刷新
+                swipeRefreshLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+                }, 1000);
+            }
+        });
         initAdapter();
         // 设置处理MIMC消息监听器
         UserManager.getInstance().setHandleMIMCMsgListener(this);
@@ -197,15 +216,21 @@ public class MessageCardFragment extends Fragment
             for (int i = 0; i < dataList.size(); ++i) {
                 final Data<LastMessage> dialogContent = dataList.get(i);
                 final ArrayList<ChatUser> users = new ArrayList<>();
+                final String fromAccount;
+                if (dialogContent.getLastMessage().getFromAccount().equals(MyApplication.getUserId())) {
+                    fromAccount = dialogContent.getLastMessage().getToAccount();
+                } else {
+                    fromAccount = dialogContent.getLastMessage().getFromAccount();
+                }
                 //获取头像和名称
                 SharedPreferences preferences = MyApplication.getContext().getSharedPreferences(PostParameterName.TOKEN, 0);
                 String userToken = preferences.getString(PostParameterName.STUDENT_TOKEN, null);
                 final String companyToken = preferences.getString(PostParameterName.TOKEN, null);
                 String urlGetUserInfo;
                 if (MyApplication.getUserType() == 1) {
-                    urlGetUserInfo = PostParameterName.POST_URL_GET_USER_HEAD_NAME_BY_ID + userToken + "&userId=" + dialogContent.getLastMessage().getFromAccount() + "&requestType=" + 1 + "&wantType=" + 0;
+                    urlGetUserInfo = PostParameterName.POST_URL_GET_USER_HEAD_NAME_BY_ID + userToken + "&userId=" + fromAccount + "&requestType=" + 1 + "&wantType=" + 0;
                 } else {
-                    urlGetUserInfo = PostParameterName.POST_URL_GET_USER_HEAD_NAME_BY_ID + companyToken + "&userId=" + dialogContent.getLastMessage().getFromAccount() + "&requestType=" + 0 + "&wantType=" + 1;
+                    urlGetUserInfo = PostParameterName.POST_URL_GET_USER_HEAD_NAME_BY_ID + companyToken + "&userId=" + fromAccount + "&requestType=" + 0 + "&wantType=" + 1;
                 }
                 Log.d(TAG, "addMsg: " + urlGetUserInfo);
                 HttpUtil.post(urlGetUserInfo, new AsyncHttpResponseHandler() {
@@ -230,8 +255,7 @@ public class MessageCardFragment extends Fragment
                             userName = "未知用户";
                             headUrl = "";
                         }
-
-                        ChatUser chatUser = new ChatUser(dialogContent.getLastMessage().getFromAccount(), userName, headUrl, true);
+                        ChatUser chatUser = new ChatUser(fromAccount, userName, headUrl, true);
                         users.add(chatUser);
                         Message message = null;
                         //需要对Payload进行base64解密
@@ -248,26 +272,26 @@ public class MessageCardFragment extends Fragment
                         if (matcher.find()) {
                             String lastMessageBase64 = matcher.group(1);
                             String lastMessage = new String(android.util.Base64.decode(lastMessageBase64, android.util.Base64.DEFAULT));
-                            message = new Message(dialogContent.getLastMessage().getFromAccount(), chatUser, new String(lastMessage), new Date(Long.parseLong(dialogContent.getTimestamp())));
+                            message = new Message(fromAccount, chatUser, new String(lastMessage), new Date(Long.parseLong(dialogContent.getTimestamp())));
                         } else {
-                            message = new Message(dialogContent.getLastMessage().getFromAccount(), chatUser, "消息已损坏", new Date(Long.parseLong(dialogContent.getTimestamp())));
+                            message = new Message(fromAccount, chatUser, "消息已损坏", new Date(Long.parseLong(dialogContent.getTimestamp())));
                         }
                         int count = 0;
-                        if (unReadMessageCountMap.get(dialogContent.getLastMessage().getFromAccount()) != null) {
-                            count = unReadMessageCountMap.get(dialogContent.getLastMessage().getFromAccount());
+                        if (unReadMessageCountMap.get(fromAccount) != null) {
+                            Log.d(TAG, "获取未读消息数据 " + fromAccount);
+                            count = unReadMessageCountMap.get(fromAccount);
                         }
-                        Dialog dialog = new Dialog(dialogContent.getLastMessage().getFromAccount(), userName, headUrl, users, message, count);
-                        dialogsAdapter.addItem(dialog);
+                        Log.d(TAG, "添加一个会话 " + fromAccount);
+                        Dialog dialog = new Dialog(fromAccount, userName, headUrl, users, message, count);
+                        dialogsAdapter.upsertItem(dialog);
+
                     }
 
                     @Override
                     public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-                        String content = new String(bytes);
-                        Log.d(TAG, "onFailure: " + content);
+                        Log.d(TAG, "onFailure: 获取用户名称和头像失败");
                     }
                 });
-
-
             }
         }
     }
