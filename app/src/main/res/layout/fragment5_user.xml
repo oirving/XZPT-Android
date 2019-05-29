@@ -95,19 +95,6 @@
                 <View style="@style/bg_line"/>
 
                 <LinearLayout
-                        android:id="@+id/me_layout_focus_company"
-                        style="@style/mid_layout">
-
-                    <TextView
-                            style="@style/usertext"
-                            android:text="关注公司"/>
-
-                    <ImageView style="@style/img_arrow"/>
-                </LinearLayout>
-
-                <View style="@style/bg_line"/>
-
-                <LinearLayout
                         android:id="@+id/me_layout_quit"
                         style="@style/bottom_layout">
 

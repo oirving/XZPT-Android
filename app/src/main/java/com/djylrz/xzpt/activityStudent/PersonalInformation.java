@@ -165,7 +165,6 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                         user.setStartTime(new java.sql.Date(calendar.getTime().getTime()));//教育开始时间
                     }
                     if (!endTime.getText().toString().equals("")){
-                        Toast.makeText(this,"输入的endTime"+endTime.getText().toString(),Toast.LENGTH_SHORT).show();
                         calendar.setTime(endDate);
                         user.setEndTime(new java.sql.Date(calendar.getTime().getTime()));//教育结束时间，string->Date,没有限定输入格式                ;
                     }
@@ -255,7 +254,6 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
             calendar.setTime(user.getEndTime());
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             String dateString = formatter.format(calendar.getTime());
-            Toast.makeText(this,"endtiame"+dateString,Toast.LENGTH_SHORT).show();
             endTime.setText(dateString);
         }else{
             endTime.setText("   ");

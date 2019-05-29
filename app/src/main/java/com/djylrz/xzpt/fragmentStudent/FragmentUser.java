@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activity.ActorChoose;
 import com.djylrz.xzpt.activityStudent.DeliveryRecordActivity;
-import com.djylrz.xzpt.activityStudent.FocusCompanyActivity;
 import com.djylrz.xzpt.activityStudent.JobIntentionActivity;
 import com.djylrz.xzpt.activityStudent.MyResumeActivity;
 import com.djylrz.xzpt.activityStudent.PersonalInformation;
@@ -45,8 +44,6 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
         meLayoutDeliveryRecord.setOnClickListener(this);
         meLayoutJobIntent = view.findViewById(R.id.me_layout_job_intent);
         meLayoutJobIntent.setOnClickListener(this);
-        meLayoutFocusCompany = view.findViewById(R.id.me_layout_focus_company);
-        meLayoutFocusCompany.setOnClickListener(this);
         meLayoutQuit = view.findViewById(R.id.me_layout_quit);
         meLayoutQuit.setOnClickListener(this);
 
@@ -71,10 +68,6 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
                 break;
             case R.id.me_layout_job_intent:
                 intent = new Intent(getContext(), JobIntentionActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.me_layout_focus_company:
-                intent = new Intent(getContext(), FocusCompanyActivity.class);
                 startActivity(intent);
                 break;
             case R.id.me_layout_quit:

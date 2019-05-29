@@ -55,7 +55,6 @@
         <activity android:name=".activityStudent.EditProjectActivity" />
         <activity android:name=".activityStudent.EditAwardsActivity" />
         <activity android:name=".activityCompany.Main2Activity" />
-        <activity android:name=".activityStudent.FocusCompanyActivity" />
         <activity android:name=".activityStudent.NewResumeActivity" />
         <activity android:name=".activityStudent.MyResumeActivity" />
         <activity android:name=".activityStudent.FeedbackAndSuggestion" />
