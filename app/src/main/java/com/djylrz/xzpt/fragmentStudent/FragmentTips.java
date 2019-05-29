@@ -83,11 +83,11 @@ public class FragmentTips extends Fragment {
     private void initEvent() {
         imageInfoList = new ArrayList<>();
         //todo 填入title、image、url就可以了，image是图片的url,url是点击后跳转的页面的URL ->小榕
-        imageInfoList.add(new ImageInfo(1, "快乐减压 轻松迎考", "", "http://www.xinhuanet.com/photo/2019-05/25/1124541200_15587688147361n.jpg", "http://baidu.com/"));
-        imageInfoList.add(new ImageInfo(1, "捷克开始欧洲议会选举投票", "", "http://www.xinhuanet.com/photo/2019-05/25/1124541094_15587662540611n.jpg", "http://www.cnblogs.com/luhuan/"));
-        imageInfoList.add(new ImageInfo(1, "图片3，待就业六人组", "", "http://e.hiphotos.baidu.com/image/pic/item/6a600c338744ebf85ed0ab2bd4f9d72a6059a705.jpg", "https://org.modao.cc/app/950598c672c518ab5bd04e88bfa7fa1d#screen=s94715B7C8A1556100983973"));
-        imageInfoList.add(new ImageInfo(1, "图片4，待就业六人组", "仅展示", "http://b.hiphotos.baidu.com/image/h%3D300/sign=8ad802f3801001e9513c120f880e7b06/a71ea8d3fd1f4134be1e4e64281f95cad1c85efa.jpg", "http://www.xinhuanet.com/photo/2019-05/25/c_1124541200_2.htm"));
-        imageInfoList.add(new ImageInfo(1, "图片5，待就业六人组", "仅展示", "http://e.hiphotos.baidu.com/image/h%3D300/sign=73443062281f95cab9f594b6f9177fc5/72f082025aafa40fafb5fbc1a664034f78f019be.jpg", "https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&tn=84053098_3_dg&wd=java.lang.NullPointerException%3A%20SimpleDraweeView%20was%20not%20initialized!&oq=%25E6%2580%258E%25E4%25B9%2588%25E5%25BC%2595%25E5%2585%25A5com.facebook.drawee.backends.pipeline.Fresco&rsv_pq=cfac6ede0001ec1f&rsv_t=64d1qeXCZWpw1RVkNzSq10xtt8LINAjw0I5ctPFSkg7e85MsdWZbM%2B0gI2CSKuH1Y%2BJ77w&rqlang=cn&rsv_enter=1&inputT=8942&rsv_sug3=110&bs=%E6%80%8E%E4%B9%88%E5%BC%95%E5%85%A5com.facebook.drawee.backends.pipeline.Fresco"));
+        imageInfoList.add(new ImageInfo(1, "校园波斯菊盛开 蝶舞蜂飞忙不停（福友阁旁）", "", "https://www.fzu.edu.cn/attach/2019/05/27/347300.jpg", "https://www.fzu.edu.cn/"));
+        imageInfoList.add(new ImageInfo(1, "夏日·蓝花楹（学生活动中心旁）", "", "https://www.fzu.edu.cn/attach/2019/05/22/346750.jpg", "https://www.fzu.edu.cn/"));
+        imageInfoList.add(new ImageInfo(1, "光影福大", "", "https://www.fzu.edu.cn/attach/2019/05/13/345520.jpg", "https://www.fzu.edu.cn/"));
+        imageInfoList.add(new ImageInfo(1, "福大樱花季（福友阁）", "", "https://www.fzu.edu.cn/attach/2019/04/24/343183.jpg", "https://www.fzu.edu.cn/"));
+        imageInfoList.add(new ImageInfo(1, "校园风光（图书馆）", "", "https://www.fzu.edu.cn/attach/2019/04/15/341999.jpg", "https://www.fzu.edu.cn/"));
     }
 
     private void initTips() {

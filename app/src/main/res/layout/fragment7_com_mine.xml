@@ -180,7 +180,7 @@
             android:textColor="@color/gray_text"/>
 
         <TextView
-            android:id="@+id/tv_lables"
+            android:id="@+id/tv_is_review"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"

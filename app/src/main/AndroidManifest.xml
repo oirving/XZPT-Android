@@ -69,17 +69,16 @@
         <activity android:name=".activityStudent.JobIntentionActivity" />
         <activity android:name=".activityCompany.CompanyLogin" />
         <activity android:name=".activityStudent.RecruitmentDetailActivity" />
-        <activity android:name=".activity.ActorChoose">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".activity.ActorChoose" />
         <activity android:name=".activityStudent.MainActivity" />
         <activity android:name=".activity.ActivityWebView" />
         <activity android:name=".activity.DefaultMessagesActivity" />
-
+        <activity android:name=".activity.ActivitySVG">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <service
             android:name="com.xiaomi.push.service.XMPushService"
             android:enabled="true"
