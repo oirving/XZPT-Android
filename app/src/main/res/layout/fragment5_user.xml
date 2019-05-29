@@ -86,7 +86,7 @@
 
                 <LinearLayout
                     android:id="@+id/me_layout_job_intent"
-                    style="@style/mid_layout">
+                    style="@style/bottom_layout">
 
                     <TextView
                         style="@style/usertext"

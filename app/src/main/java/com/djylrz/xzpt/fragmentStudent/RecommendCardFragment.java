@@ -80,10 +80,7 @@ public class RecommendCardFragment extends Fragment {
         recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
-        Drawable drawable = ContextCompat.getDrawable(getContext(),R.drawable.divider_shape);
-        MyDividerItemDecoration dec = new MyDividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
-        dec.setDrawable(drawable);
-        recyclerView.addItemDecoration(dec);
+
         // 设置下拉刷新
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

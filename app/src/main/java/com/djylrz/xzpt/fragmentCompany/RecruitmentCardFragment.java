@@ -93,10 +93,7 @@ public class RecruitmentCardFragment extends Fragment {
         swipeRefreshLayout = v.findViewById(R.id.swipe_refresh_layout);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(loadMoreWrapper);
-        Drawable drawable = ContextCompat.getDrawable(getContext(),R.drawable.divider_shape);
-        MyDividerItemDecoration dec = new MyDividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
-        dec.setDrawable(drawable);
-        recyclerView.addItemDecoration(dec);
+
         // 设置下拉刷新
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
