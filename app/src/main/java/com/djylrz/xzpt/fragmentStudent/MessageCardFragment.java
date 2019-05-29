@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,6 +64,7 @@ public class MessageCardFragment extends Fragment
     private HashMap<String, Integer> unReadMessageCountMap = new HashMap<>();
     private String userName;
     private String headUrl;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public static MessageCardFragment getInstance(String title) {
         MessageCardFragment mcf = new MessageCardFragment();
@@ -74,6 +76,27 @@ public class MessageCardFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mDecorView = inflater.inflate(R.layout.fragment_message_card, container, false);
         dialogsList = (DialogsList) mDecorView.findViewById(R.id.dialogsList_student);
+        swipeRefreshLayout = mDecorView.findViewById(R.id.swipe_refresh_layout);
+        // 设置下拉刷新
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // 刷新数据
+                MIMCUser user = UserManager.getInstance().getUser();
+                if (user != null) {
+                    onRefreshDialogList();
+                }
+                // 延时1s关闭下拉刷新
+                swipeRefreshLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+                }, 1000);
+            }
+        });
         initAdapter();
         // 设置处理MIMC消息监听器
         UserManager.getInstance().setHandleMIMCMsgListener(this);
