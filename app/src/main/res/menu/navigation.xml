@@ -8,7 +8,7 @@
         android:title="@string/title_date" />
     <item
         android:id="@+id/navigation_resume"
-        android:icon="@drawable/resume"
+        android:icon="@drawable/r"
         android:title="@string/title_home" />
     <item
         android:id="@+id/navigation_find_job"

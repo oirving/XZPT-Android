@@ -208,4 +208,14 @@
         <item name="android:layout_height">24dp</item>
         <item name="android:layout_width">24dp</item>
     </style>
+
+
+    <style name="company_button">
+        <item name="android:textSize">16dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:padding">4dp</item>
+    </style>
 </resources>
