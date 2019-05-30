@@ -63,7 +63,17 @@ public class ActivitySVG extends ActivityBase {
                     showUpdataDialog();
                     break;
                 case 2:
-                    toMain();
+                    new Thread() {
+                        public void run() {
+                            try {
+                                Thread.sleep(500);
+                                Thread.sleep(2000);
+                                toMain();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }.start();
                     break;
             }
         }
@@ -80,12 +90,11 @@ public class ActivitySVG extends ActivityBase {
             String channelName = "下载";
             int importance = NotificationManager.IMPORTANCE_LOW;
             createNotificationChannel(channelId, channelName, importance);
-
         }
         RxBarTool.hideStatusBar(this);
         setContentView(R.layout.activity_svg);
         ButterKnife.bind(this);
-        setSvg(ModelSVG.values()[4]);
+        setSvg(ModelSVG.values()[12]);
         checkUpdate();
     }
 
