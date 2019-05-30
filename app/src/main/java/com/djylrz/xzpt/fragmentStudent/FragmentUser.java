@@ -41,6 +41,7 @@ import com.djylrz.xzpt.utils.Common;
 import com.djylrz.xzpt.utils.Constants;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
+import com.vondear.rxtool.view.RxToast;
 import com.xiaomi.mimc.MIMCUser;
 
 import static android.content.Context.BIND_ABOVE_CLIENT;
@@ -75,6 +76,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
                     showUpdataDialog();
                     break;
                 case 2:
+                    RxToast.info("已是最新版本！");
                     break;
             }
         }

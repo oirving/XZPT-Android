@@ -99,7 +99,7 @@ public class ActivitySVG extends ActivityBase {
                     new Thread() {
                         public void run() {
                             try {
-                                Thread.sleep(2500);
+                                Thread.sleep(2000);
                                 if (NetWorkUtils.isNetwork(mContext)) {
                                     //如果已存在token则直接登录
                                     if (userToken != null) {
@@ -118,6 +118,7 @@ public class ActivitySVG extends ActivityBase {
                                     RxToast.error("请检查网络连接！");
                                 }
                             } catch (Exception e) {
+                                RxToast.error("数据异常，请尝试清楚数据！");
                                 e.printStackTrace();
                             }
                         }

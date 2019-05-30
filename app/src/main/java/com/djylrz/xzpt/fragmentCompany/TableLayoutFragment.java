@@ -372,7 +372,7 @@ public class TableLayoutFragment
         initAdapter();
         mTableAdapter.notifyDataSetChanged();
         //向handler发送更新文件成功消息
-        handler.sendEmptyMessage(SAVE_FILE_SUCCESS);
+        //handler.sendEmptyMessage(SAVE_FILE_SUCCESS);
     }
 
     private void initAdapter() {
