@@ -148,7 +148,11 @@ public class ActivitySVG extends ActivityBase {
         SharedPreferences preferences = getSharedPreferences(PostParameterName.TOKEN, 0);
         userToken = preferences.getString(PostParameterName.STUDENT_TOKEN, null);
         companyToken = preferences.getString(PostParameterName.TOKEN, null);
-        checkUpdate();
+        if (NetWorkUtils.isNetwork(mContext)) {
+            checkUpdate();
+        }else{
+            RxToast.error("请检查网络连接！");
+        }
     }
 
     private void setSvg(ModelSVG modelSvg) {
