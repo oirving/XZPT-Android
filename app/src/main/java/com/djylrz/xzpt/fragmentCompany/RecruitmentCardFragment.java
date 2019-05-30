@@ -2,12 +2,9 @@ package com.djylrz.xzpt.fragmentCompany;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,9 +21,9 @@ import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PageData;
 import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.bean.TempResponseData;
+import com.djylrz.xzpt.bean.TempResponseRecruitmentData;
 import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
-import com.djylrz.xzpt.utils.MyDividerItemDecoration;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.RecruitmentAdapter;
 import com.google.gson.Gson;
@@ -77,6 +74,17 @@ public class RecruitmentCardFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // 刷新数据
+        recruitmentList.clear();
+        currentPage = 1;
+        limitNum = 9999;
+        initRecruitments();
+        loadMoreWrapper.notifyDataSetChanged();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -158,7 +166,7 @@ public class RecruitmentCardFragment extends Fragment {
                                 }
                             });
                             Gson gson =builder.create();
-                            Type jsonType = new TypeToken<TempResponseData<TempResponseRecruitmentData<List<Recruitment>> >>() {}.getType();
+                            Type jsonType = new TypeToken<TempResponseData<TempResponseRecruitmentData<List<Recruitment>>>>() {}.getType();
                             final TempResponseData<TempResponseRecruitmentData<List<Recruitment>> > postResult = gson.fromJson(response.toString(), jsonType);
                             Log.d(TAG, "onResponse: "+postResult.getResultCode());
                             if(postResult.getResultCode().equals(200)){
@@ -192,43 +200,5 @@ public class RecruitmentCardFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-}
-class TempResponseRecruitmentData<T>{
-    private Integer currentPage;
-    private Integer numOfPage;
-    private Integer pageSize;
-    private T contentList;
-
-    public Integer getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(Integer currentPage) {
-        this.currentPage = currentPage;
-    }
-
-    public Integer getNumOfPage() {
-        return numOfPage;
-    }
-
-    public void setNumOfPage(Integer numOfPage) {
-        this.numOfPage = numOfPage;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public T getContentList() {
-        return contentList;
-    }
-
-    public void setContentList(T contentList) {
-        this.contentList = contentList;
     }
 }

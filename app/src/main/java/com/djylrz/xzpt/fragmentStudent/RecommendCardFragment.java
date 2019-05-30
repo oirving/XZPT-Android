@@ -15,12 +15,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PageData;
 import com.djylrz.xzpt.bean.Recruitment;
+import com.djylrz.xzpt.bean.TempResponseData;
+import com.djylrz.xzpt.bean.TempResponseRecruitmentData;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
@@ -31,7 +35,10 @@ import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +47,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -56,6 +64,7 @@ public class RecommendCardFragment extends Fragment {
     private int currentPage = 1;
     private final int PAGE_SIZE = 20;
     private long limitNum = 9999;
+    private RequestQueue requestQueue;
 
     public static RecommendCardFragment getInstance(String title) {
         RecommendCardFragment sf = new RecommendCardFragment();
@@ -67,18 +76,29 @@ public class RecommendCardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        // 刷新数据
+        recruitmentList.clear();
+        currentPage = 1;
+        limitNum = 9999;
+        initRecruitments();
+        loadMoreWrapper.notifyDataSetChanged();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.job_recommend_card, null);
+        recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
+        requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext()); //把上下文context作为参数传递进去
+
         initRecruitments();//获取推荐信息
+        LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
         adapter = new StudentRecruitmentAdapter(recruitmentList, 0);
         loadMoreWrapper = new LoadMoreWrapper(adapter);
         swipeRefreshLayout = v.findViewById(R.id.swipe_refresh_layout);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
-        recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(loadMoreWrapper);
         recyclerView.setLayoutManager(layoutManager);
 
         // 设置下拉刷新
@@ -161,27 +181,13 @@ public class RecommendCardFragment extends Fragment {
                                                     Recruitment tempRecruitment = gson.fromJson(jsonArray.getJSONObject(i).toString(), Recruitment.class);
                                                     recruitmentList.add(tempRecruitment);
                                                 }
+                                                loadMoreWrapper.notifyDataSetChanged();
                                             }
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-                                    RecommendCardFragment.this.getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                if (responseObject.getString(PostParameterName.RESPOND_RESULTCODE).equals("200")){
-                                                    loadMoreWrapper.notifyDataSetChanged();
-                                                }else{
-                                                    loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
-                                                    limitNum = recruitmentList.size();
-                                                }
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
 
-                                        }
-                                    });
                                 }
                             }, new Response.ErrorListener() {
                         @Override
@@ -201,69 +207,61 @@ public class RecommendCardFragment extends Fragment {
             }
         }else if (mTitle.equals("热门")){
             //查询热门招聘并显示
-            VolleyNetUtil.getInstance().setRequestQueue(getContext().getApplicationContext());//获取requestQueue
-            SharedPreferences userToken = getContext().getSharedPreferences("token", 0);
-            String token = userToken.getString(PostParameterName.STUDENT_TOKEN, null);
-            if (token != null) {
-                user.setToken(userToken.getString(PostParameterName.STUDENT_TOKEN, null));
-                PageData pageData = new PageData();
-                pageData.setCurrentPage(currentPage++);
-                pageData.setPageSize(PAGE_SIZE);
-                try {
-                    Log.d(TAG, "initRecruitments: " + PostParameterName.POST_URL_GET_HOT_RECRUIMENT + user.getToken());
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(PostParameterName.POST_URL_GET_HOT_RECRUIMENT + user.getToken(), new JSONObject(new Gson().toJson(pageData)),
-                            new Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    Log.d(TAG, "onResponse: 返回" + response.toString());
-                                    /* recruitmentList = new Gson().fromJson(stringJson, new TypeToken<List<Recruitment>>(){}.getType());*/
-                                    try {
-                                        switch (response.getString(PostParameterName.RESPOND_RESULTCODE)) {
-                                            case "200": {
-                                                JSONArray jsonArray = response.getJSONArray("resultObject");
-                                                //recruitmentList = new Gson().fromJson(jsonArray.toString(), new TypeToken<List<Recruitment>>(){}.getType());
-
-                                                GsonBuilder builder = new GsonBuilder();
-                                                builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
-                                                    public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-                                                        return new Timestamp(json.getAsJsonPrimitive().getAsLong());
-                                                    }
-                                                });
-                                                Gson gson = builder.create();
-
-                                                for (int i = 0; i < jsonArray.length(); i++) {
-                                                    Log.d(TAG, "onResponse: " + jsonArray.getJSONObject(i).toString());
-                                                    Recruitment tempRecruitment = gson.fromJson(jsonArray.getJSONObject(i).toString(), Recruitment.class);
-                                                    recruitmentList.add(tempRecruitment);
-                                                }
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+            //获取token
+            SharedPreferences preferences = getActivity().getSharedPreferences("token",0);
+            String token = preferences.getString(PostParameterName.STUDENT_TOKEN,null);
+            //组装URL
+            String url = PostParameterName.POST_URL_GET_HOT_RECRUIMENT + token ;
+            //
+            PageData pageData = new PageData();
+            pageData.setCurrentPage(currentPage++);
+            pageData.setPageSize(PAGE_SIZE);
+            //请求数据
+            try {
+                Log.d(TAG, "onCreate: 开始发送json请求"+ url);
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,new JSONObject(new Gson().toJson(pageData)),
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Log.d(TAG, "onResponse: 返回"+response.toString());
+                                GsonBuilder builder = new GsonBuilder();
+                                builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+                                    @Override
+                                    public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                                        return new Date(json.getAsJsonPrimitive().getAsLong());
                                     }
-                                    RecommendCardFragment.this.getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            adapter = new StudentRecruitmentAdapter(recruitmentList, 0);
-                                            recyclerView.setAdapter(adapter);
-                                        }
-                                    });
+                                });
+                                Gson gson =builder.create();
+                                Type jsonType = new TypeToken<TempResponseData<List<Recruitment>>>() {}.getType();
+                                final TempResponseData<List<Recruitment>> postResult = gson.fromJson(response.toString(), jsonType);
+                                Log.d(TAG, "onResponse: "+postResult.getResultCode());
+                                if(postResult.getResultCode().equals(200)){
+                                    List<Recruitment>  recruitments = postResult.getResultObject();
+                                    for (int i = 0; i < recruitments.size(); ++i) {
+                                            recruitmentList.add(recruitments.get(i));
+                                    }
                                 }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("TAG Response failed", error.getMessage(), error);
-                        }
-                    });
 
-                    VolleyNetUtil.getInstance().setRequestQueue(getContext().getApplicationContext());//获取requestQueue
-                    VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            } else {
-                Log.d(TAG, "initRecruitments: 没有获取到token");
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if(postResult.getResultCode().equals(200)){
+                                            loadMoreWrapper.notifyDataSetChanged();
+                                        }else{
+                                            loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
+                                            limitNum = recruitmentList.size();
+                                        }
+                                    }
+                                });
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("TAG", error.getMessage(), error);
+                    }});
+                requestQueue.add(jsonObjectRequest);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     }

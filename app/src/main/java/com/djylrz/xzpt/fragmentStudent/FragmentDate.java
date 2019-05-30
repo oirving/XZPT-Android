@@ -96,7 +96,7 @@ public class FragmentDate extends Fragment implements
             switch (msg.what){
                 case GET_REVRUITMENT_DATE_DATA_SUCCESS:
                     //结束加载动画
-                    MyApplication.rxDialogShapeLoading.hide();
+//                    MyApplication.rxDialogShapeLoading.hide();
                     //初始化日历
                     initView();
                     initData();
@@ -107,7 +107,7 @@ public class FragmentDate extends Fragment implements
                     break;
                 case GET_REVRUITMENT_DATE_DATA_FAILURE:
                     //结束加载动画
-                    MyApplication.rxDialogShapeLoading.hide();
+//                    MyApplication.rxDialogShapeLoading.hide();
                     //初始化日历
                     initView();
                     initData();
@@ -124,10 +124,10 @@ public class FragmentDate extends Fragment implements
         View view = inflater.inflate(R.layout.fragment1_date, container, false);
         globalView = view;
 
-        //开始加载动画
-        MyApplication.rxDialogShapeLoading = new RxDialogShapeLoading(getContext());
-        MyApplication.rxDialogShapeLoading.setLoadingText("加载数据中...");
-        MyApplication.rxDialogShapeLoading.show();
+//        //开始加载动画
+//        MyApplication.rxDialogShapeLoading = new RxDialogShapeLoading(getContext());
+//        MyApplication.rxDialogShapeLoading.setLoadingText("加载数据中...");
+//        MyApplication.rxDialogShapeLoading.show();
 
         //先异步获取数据，获取数据成功再通过handler初始化时间轴
         getRecruitmentDateData();
