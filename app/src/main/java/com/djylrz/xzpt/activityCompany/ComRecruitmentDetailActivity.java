@@ -171,10 +171,6 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         Intent intent = getIntent();
         recruitment = (Recruitment) intent.getSerializableExtra("recruitment");
         if (recruitment == null) {
-            //开始加载动画
-            MyApplication.rxDialogShapeLoading = new RxDialogShapeLoading(mContext);
-            MyApplication.rxDialogShapeLoading.setLoadingText("正在加载中");
-            MyApplication.rxDialogShapeLoading.show();
             recruitment = new Recruitment();
             Long recruitmentId = intent.getLongExtra("recruitmentId", 0);
             recruitment.setRecruitmentId(recruitmentId);
@@ -444,8 +440,6 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    //结束加载动画
-                                    MyApplication.rxDialogShapeLoading.hide();
                                     if (postResult.getResultCode() == 200) {
                                         finish();
                                         Intent intent = new Intent(mContext, ComRecruitmentDetailActivity.class);
@@ -460,16 +454,12 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    //结束加载动画
-                    MyApplication.rxDialogShapeLoading.hide();
                     Log.e("TAG", error.getMessage(), error);
                     Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
                 }
             });
             requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
-            //结束加载动画
-            MyApplication.rxDialogShapeLoading.hide();
             Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
