@@ -92,8 +92,6 @@ public class RecommendCardFragment extends Fragment {
         View v = inflater.inflate(R.layout.job_recommend_card, null);
         recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
         requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext()); //把上下文context作为参数传递进去
-
-        initRecruitments();//获取推荐信息
         LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
         adapter = new StudentRecruitmentAdapter(recruitmentList, 0);
         loadMoreWrapper = new LoadMoreWrapper(adapter);

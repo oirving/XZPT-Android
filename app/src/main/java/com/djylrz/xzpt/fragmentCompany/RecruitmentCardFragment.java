@@ -81,7 +81,6 @@ public class RecruitmentCardFragment extends Fragment {
         // 刷新数据
         recruitmentList.clear();
         currentPage = 1;
-        limitNum = 9999;
         initRecruitments();
         loadMoreWrapper.notifyDataSetChanged();
     }
@@ -94,7 +93,6 @@ public class RecruitmentCardFragment extends Fragment {
         requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext()); //把上下文context作为参数传递进去
 
         //加载数据
-        initRecruitments();
         LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
         adapter = new RecruitmentAdapter(recruitmentList,type,getContext());
         loadMoreWrapper = new LoadMoreWrapper(adapter);
