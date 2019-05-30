@@ -170,13 +170,14 @@ public class RecruitmentCardFragment extends Fragment {
                             if(postResult.getResultCode().equals(200)){
                                 TempResponseRecruitmentData<List<Recruitment>>  resultObject = postResult.getResultObject();
                                 List<Recruitment> recruitments = resultObject.getContentList();
-                                for (int i = 0; i < recruitments.size(); ++i) {
-                                    if(recruitments.get(i).getValidate()==type){
-                                        recruitmentList.add(recruitments.get(i));
+                                if(recruitments != null){
+                                    for (int i = 0; i < recruitments.size(); ++i) {
+                                        if(recruitments.get(i).getValidate()==type){
+                                            recruitmentList.add(recruitments.get(i));
+                                        }
                                     }
                                 }
                             }
-
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

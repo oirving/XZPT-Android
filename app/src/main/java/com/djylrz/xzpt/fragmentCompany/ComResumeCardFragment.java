@@ -76,6 +76,16 @@ public class ComResumeCardFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // 刷新数据
+        resumeDeliveryList.clear();
+        currentPage = 1;
+        limitNum = 9999;
+        initRecruitments();
+        loadMoreWrapper.notifyDataSetChanged();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -85,7 +95,7 @@ public class ComResumeCardFragment extends Fragment {
         requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext()); //把上下文context作为参数传递进去
 
         //加载数据
-        initRecruitments();
+        //initRecruitments();
         LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
         adapter = new ComResumeDeliveryRecordAdapter(resumeDeliveryList,type,getContext());
         loadMoreWrapper = new LoadMoreWrapper(adapter);

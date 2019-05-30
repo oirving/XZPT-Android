@@ -235,8 +235,10 @@ public class RecommendCardFragment extends Fragment {
                                 Log.d(TAG, "onResponse: "+postResult.getResultCode());
                                 if(postResult.getResultCode().equals(200)){
                                     List<Recruitment>  recruitments = postResult.getResultObject();
-                                    for (int i = 0; i < recruitments.size(); ++i) {
+                                    if(recruitments != null){
+                                        for (int i = 0; i < recruitments.size(); ++i) {
                                             recruitmentList.add(recruitments.get(i));
+                                        }
                                     }
                                 }
 
