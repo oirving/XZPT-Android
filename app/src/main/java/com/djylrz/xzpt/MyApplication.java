@@ -1,6 +1,6 @@
 package com.djylrz.xzpt;
 
-import android.app.Activity;
+import android.Manifest;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Application;
@@ -8,8 +8,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.djylrz.xzpt.activityStudent.MainActivity;
 import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
@@ -58,6 +58,12 @@ public class MyApplication extends Application {
     //当前用户类型
     public static int userType = 0;
 
+    //用户是否授权使用系统日历
+    //0->未授权
+    //1->已授权
+    //-1->拒绝授权
+    public static int permissionOfCalendar = 0;
+
 
     //全局用户id
     public static String userId = null;
@@ -68,7 +74,6 @@ public class MyApplication extends Application {
         //初始化腾讯x5内核
         QbSdk.initX5Environment(this,null);
         MyApplication.context = getApplicationContext();
-
         Fresco.initialize(this);
         //初始化RxTool工具
         RxTool.init(this);
