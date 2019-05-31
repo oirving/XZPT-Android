@@ -3,6 +3,7 @@ package com.djylrz.xzpt.fragmentStudent;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ComponentName;
@@ -253,7 +254,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
      * 弹出对话框
      */
     protected void showUpdataDialog() {
-        new android.app.AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(getActivity())
                 .setTitle("版本升级").setMessage(version[2])
                 .setCancelable(false)
                 .setPositiveButton("立即更新", new DialogInterface.OnClickListener() {

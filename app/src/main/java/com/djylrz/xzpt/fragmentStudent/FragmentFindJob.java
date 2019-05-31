@@ -32,6 +32,7 @@ import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.RecruitmentAdapter;
+import com.djylrz.xzpt.utils.StudentRecruitmentAdapter;
 import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
@@ -63,7 +64,7 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener {
     private Toolbar toolbar;
     private List<Recruitment> recruitmentList = new ArrayList<Recruitment>();
     private LSearchView searchView;
-    private RecruitmentAdapter adapter;
+    private StudentRecruitmentAdapter adapter;
     private LoadMoreWrapper loadMoreWrapper;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -117,7 +118,7 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener {
             }
         });
         LinearLayoutManager layoutManager = new LinearLayoutManager(mDecorView.getContext());
-        adapter = new RecruitmentAdapter(recruitmentList, 0, getContext());
+        adapter = new StudentRecruitmentAdapter(recruitmentList, 0);
         loadMoreWrapper = new LoadMoreWrapper(adapter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(loadMoreWrapper);

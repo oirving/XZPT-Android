@@ -20,12 +20,16 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.*;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -33,7 +37,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PostResult;
-import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.google.gson.Gson;
@@ -47,22 +50,24 @@ import java.text.DecimalFormat;
 import static com.tencent.smtt.sdk.TbsReaderView.TAG;
 
 public class ResumeDisplayActivity extends Activity implements ReaderCallback {
-    private TextView tv_title;
     private TbsReaderView mTbsReaderView;
     private TextView tv_download;
     private RelativeLayout rl_tbsView;    //rl_tbsView为装载TbsReaderView的视图
     private ProgressBar progressBar_download;//进度条
     private DownloadManager mDownloadManager;//下载文件
     private long mRequestId;
-    private Button create;//生成
+    private Toolbar toolbar;//标题栏
     private DownloadObserver mDownloadObserver;
-    private String mFileUrl = "", mFileName, fileName,templatePath;//文件url，由文件url截取的文件名 ，上个页面传过来用于显示的文件名\
+    private String mFileUrl = "", mFileName, fileName, templatePath;//文件url，由文件url截取的文件名 ，上个页面传过来用于显示的文件名\
     private String createOrHistory;//判断是否显示create按钮
+    private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_resume_dispaly);
+        mContext = this;
         findViewById(); //初始化各个控件
         getFileUrlByIntent(); //获得其他页面传过来的URL地址
         mTbsReaderView = new TbsReaderView(this, this);
@@ -94,44 +99,79 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
             }
             startDownload();
         }
-        if (PostParameterName.INTENT_PUT_EXTRA_VALUE_RESUME_CREATE.equals(createOrHistory)){
-            create.setOnClickListener(new View.OnClickListener() {
-                //todo 填入信息生成简历到本地 ->小榕
+        if (PostParameterName.INTENT_PUT_EXTRA_VALUE_RESUME_CREATE.equals(createOrHistory)) {
+            toolbar.inflateMenu(R.menu.resume_display_moban_menu);
+            toolbar.setOnMenuItemClickListener(new android.support.v7.widget.Toolbar.OnMenuItemClickListener() {
                 @Override
-                public void onClick(View v) {
-                    Toast.makeText(v.getContext(),"生成",Toast.LENGTH_SHORT).show();
+                public boolean onMenuItemClick(MenuItem item) {
+//                    RxToast.info("生成");
                     createResumeFromResumeTemplate();
+                    return true;
                 }
             });
-        }else{
-            create.setVisibility(View.GONE);
-            tv_title.setText(("文件位置：Download/"+mFileName));
+            toolbar.setTitle("预览模板");
+        } else {
+            toolbar.inflateMenu(R.menu.resume_display_menu);
+            toolbar.setOnMenuItemClickListener(new android.support.v7.widget.Toolbar.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.watch_file_location:
+                            new AlertDialog.Builder(mContext)
+                                    .setTitle("文件位置")
+                                    .setMessage("系统根目录/Download/" + mFileName)
+                                    .setCancelable(false)
+                                    .setPositiveButton("朕知道了", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    }).create().show();
+                            break;
+                        case R.id.open_file:
+                            File file = new File(getLocalFile().getPath());
+                            if (file.exists()) {
+                                Intent openintent = new Intent();
+                                openintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                String type = getMIMEType(file);
+                                // 设置intent的data和Type属性。
+                                openintent.setDataAndType(/* uri */Uri.fromFile(file), type);
+                                // 跳转
+                                startActivity(openintent);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    return true;
+                }
+            });
+            toolbar.setTitle("预览简历");
         }
-
     }
 
     private void createResumeFromResumeTemplate() {
         //get token
-        String token = getSharedPreferences("token",0).getString(PostParameterName.STUDENT_TOKEN,null);
-        if (token!=null){
+        String token = getSharedPreferences("token", 0).getString(PostParameterName.STUDENT_TOKEN, null);
+        if (token != null) {
             //拼接url
-            String url = PostParameterName.POST_URL_EXPORT_RESUME+token+"&"+PostParameterName.REQUEST_RESUME_TEMPLATE_PATH+"="+templatePath;
-            Log.d(TAG, "createResumeFromResumeTemplate: "+url);
+            String url = PostParameterName.POST_URL_EXPORT_RESUME + token + "&" + PostParameterName.REQUEST_RESUME_TEMPLATE_PATH + "=" + templatePath;
+            Log.d(TAG, "createResumeFromResumeTemplate: " + url);
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    Log.d(TAG, "onResponse: "+response);
-                    final PostResult postResult = new Gson().fromJson(response,PostResult.class);
+                    Log.d(TAG, "onResponse: " + response);
+                    final PostResult postResult = new Gson().fromJson(response, PostResult.class);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            RxToast.info(postResult.getResultCode()+postResult.getResultMsg());
-                            if (postResult.getResultCode().equals("200")){
+                            RxToast.info(postResult.getResultCode() + postResult.getResultMsg());
+                            if (postResult.getResultCode().equals("200")) {
                                 //todo 获取到导出简历链接
                                 if (ContextCompat.checkSelfPermission(ResumeDisplayActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                    ActivityCompat.requestPermissions(ResumeDisplayActivity.this, new String[]{ Manifest.permission. WRITE_EXTERNAL_STORAGE }, 1);
+                                    ActivityCompat.requestPermissions(ResumeDisplayActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                                 } else {
-                                    ResumeDisplayActivity.actionStart(ResumeDisplayActivity.this,PostParameterName.DOWNLOAD_URL_RESUME_IMAGE_PREFIX+postResult.getResultObject(),fileName,templatePath,PostParameterName.INTENT_PUT_EXTRA_VALUE_RESUME_HISTORY);
+                                    ResumeDisplayActivity.actionStart(ResumeDisplayActivity.this, PostParameterName.DOWNLOAD_URL_RESUME_IMAGE_PREFIX + postResult.getResultObject(), fileName, templatePath, PostParameterName.INTENT_PUT_EXTRA_VALUE_RESUME_HISTORY);
                                     finish();
                                 }
                             }
@@ -184,10 +224,20 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
 
     private void findViewById() {
         tv_download = (TextView) findViewById(R.id.tv_download);
-        tv_title = (TextView) findViewById(R.id.title);
         progressBar_download = (ProgressBar) findViewById(R.id.progressBar_download);
         rl_tbsView = (RelativeLayout) findViewById(R.id.rl_tbsView);
-        create = (Button) findViewById(R.id.create);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //设置标题栏
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+
     }
 
     /**
@@ -199,7 +249,7 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
         fileName = intent.getStringExtra("fileName");
         templatePath = intent.getStringExtra(PostParameterName.REQUEST_RESUME_TEMPLATE_PATH);
         createOrHistory = intent.getStringExtra(PostParameterName.INTENT_PUT_EXTRA_KEY_RESUME_HISTORY_OR_CREATE);
-        tv_title.setText(fileName);
+        toolbar.setTitle(fileName);
     }
 
     /**
@@ -209,12 +259,12 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
      * @param fileUrl  文件url
      * @param fileName 文件名
      */
-    public static void actionStart(Context context, String fileUrl, String fileName,String templatePath ,String createOrHistory) {
+    public static void actionStart(Context context, String fileUrl, String fileName, String templatePath, String createOrHistory) {
         Intent intent = new Intent(context, ResumeDisplayActivity.class);
         intent.putExtra("fileUrl", fileUrl);
         intent.putExtra("fileName", fileName);
-        intent.putExtra(PostParameterName.REQUEST_RESUME_TEMPLATE_PATH,templatePath);
-        intent.putExtra(PostParameterName.INTENT_PUT_EXTRA_KEY_RESUME_HISTORY_OR_CREATE,createOrHistory);
+        intent.putExtra(PostParameterName.REQUEST_RESUME_TEMPLATE_PATH, templatePath);
+        intent.putExtra(PostParameterName.INTENT_PUT_EXTRA_KEY_RESUME_HISTORY_OR_CREATE, createOrHistory);
         context.startActivity(intent);
     }
 
@@ -231,7 +281,6 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
             //成功打开文件
             mTbsReaderView.openFile(bundle);
         } else {
-
             File file = new File(getLocalFile().getPath());
             if (file.exists()) {
                 Intent openintent = new Intent();
