@@ -7,6 +7,8 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 
 import android.util.Log;
+import android.view.View;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -43,7 +45,16 @@ public class ResumeModelHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resume_model_history);
         initResumeModel();
-        toolbar = (Toolbar) findViewById(R.id.resume_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.resume_history_toolbar);
+        //设置标题栏
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         resumeModelItemHistoryListAdapter = new ResumeModelListAdapter(resumeModelIHistorytemList);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.resume_model_list);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);

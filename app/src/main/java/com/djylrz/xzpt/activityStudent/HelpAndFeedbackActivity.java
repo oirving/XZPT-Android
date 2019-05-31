@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activity.BaseActivity;
+import com.vondear.rxtool.view.RxToast;
 
 public class HelpAndFeedbackActivity extends BaseActivity implements View.OnClickListener {
 
@@ -47,7 +48,7 @@ public class HelpAndFeedbackActivity extends BaseActivity implements View.OnClic
             case R.id.update_check_button:
                 //todo 版本更新检查——to小榕
                 String isUpdate="已是最新版本";
-                Toast.makeText(HelpAndFeedbackActivity.this,isUpdate,Toast.LENGTH_SHORT).show();
+                RxToast.info(isUpdate);
                 break;
                 default:
                     break;

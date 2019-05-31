@@ -20,23 +20,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            >
+            android:layout_marginBottom="20dp">
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                style="@style/icon_size"
                 android:src="@drawable/ic_launcher_mail"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
-                />
+                android:layout_marginTop="10dp"/>
 
             <EditText
                 android:id="@+id/register_mail"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:hint="邮箱"
-                android:maxLines="2"
-                />
+                style="@style/text_view_item"
+                android:hint="邮箱"/>
 
         </LinearLayout>
 
@@ -44,25 +39,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            >
+            android:layout_marginBottom="20dp">
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                style="@style/icon_size"
                 android:src="@drawable/ic_launcher_lock"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
                 />
 
             <EditText
                 android:id="@+id/register_password"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
                 android:hint="密码"
                 android:inputType="textPassword"
-                android:maxLines="2"
-                />
+                style="@style/text_view_item"/>
 
         </LinearLayout>
 
@@ -70,12 +60,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            >
+            android:layout_marginBottom="20dp">
 
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                style="@style/icon_size"
                 android:src="@drawable/ic_launcher_lock"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
@@ -83,11 +71,9 @@
 
             <EditText
                 android:id="@+id/register_password_check"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
                 android:hint="再次确认密码"
                 android:inputType="textPassword"
-                android:maxLines="2"
+                style="@style/text_view_item"
                 />
 
         </LinearLayout>
@@ -97,18 +83,13 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            >
+            android:layout_marginTop="20dp">
 
             <Button
                 android:id="@+id/register_button"
-                android:layout_width="190dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_style"
                 android:text="发送验证码"
-                android:textSize="30dp"
                 android:layout_gravity="center"
-                />
+                style="@style/login_button_style"/>
         </LinearLayout>
 
     </LinearLayout>

@@ -18,6 +18,7 @@ import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.google.gson.Gson;
 
+import com.vondear.rxtool.view.RxToast;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -70,7 +71,7 @@ public class Register extends BaseActivity implements View.OnClickListener {
                         verificationCode=et.getText().toString();//获取输入的验证码
                         new RegisterAsyncTask().execute();//注册
                     } else {
-                        Toast.makeText(Register.this,"请输入验证码",Toast.LENGTH_SHORT).show();
+                        RxToast.warning("请输入验证码");
                         dialog.dismiss();
                     }
 
@@ -80,10 +81,10 @@ public class Register extends BaseActivity implements View.OnClickListener {
             dialog.show();
         }
         else if(!mailChek(mail)) {
-            Toast.makeText(Register.this,"邮箱错误:"+mail,Toast.LENGTH_LONG).show();
+            RxToast.warning("邮箱错误");
         }
         else if(!passwordCheck(password,passwordCheck)) {
-            Toast.makeText(Register.this,"两次输入的密码不同或为空",Toast.LENGTH_LONG).show();
+            RxToast.warning("两次输入的密码不同或为空");
         }
     }
 
@@ -150,12 +151,12 @@ public class Register extends BaseActivity implements View.OnClickListener {
                 case "200":{
                     //获取验证码成功，验证码已发送至到邮箱
                     Log.d(TAG, "getVerificationCode: 发送验证码成功");
-                    Toast.makeText(Register.this,"已发送验证码至邮件:"+mail.getText().toString(),Toast.LENGTH_LONG).show();
+                    RxToast.info("已发送验证码至邮件");
 
                 }break;
                 default:{
                     //未知错误
-                    Toast.makeText(Register.this,"验证码获取失败，错误码："+result.getResultCode(),Toast.LENGTH_SHORT).show();
+                    RxToast.error("验证码获取失败，错误码："+result.getResultCode());
                 }
             }
         }
@@ -214,9 +215,9 @@ public class Register extends BaseActivity implements View.OnClickListener {
                 }break;
                 default:{
                     //未知错误
-                    Toast.makeText(Register.this,"注册失败，错误码："
+                    RxToast.error("注册失败，错误码："
                             +result.getResultCode()
-                            +result.getResultMsg(),Toast.LENGTH_SHORT).show();
+                            +result.getResultMsg());
                 }
             }
         }

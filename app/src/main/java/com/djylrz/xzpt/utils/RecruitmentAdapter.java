@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.djylrz.xzpt.activityCompany.ComRecruitmentDetailActivity;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Recruitment;
+import com.vondear.rxtool.view.RxToast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -82,7 +83,7 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
                 Intent intent = new Intent(context, ComRecruitmentDetailActivity.class);
                 intent.putExtra("recruitment",recruitment);
                 context.startActivity(intent);
-                Toast.makeText(v.getContext(), "you clicked view " + recruitment.getJobName(), Toast.LENGTH_SHORT).show();
+                RxToast.info(recruitment.getJobName());
             }
         });
         holder.editRecruitment.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +91,6 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 Recruitment recruitment = mRecruitments.get(position);
-                Toast.makeText(v.getContext(), "you clicked edit button " + recruitment.getJobName(), Toast.LENGTH_SHORT).show();
             }
         });
         holder.opRecruitment.setOnClickListener(new View.OnClickListener() {
@@ -98,14 +98,6 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 Recruitment recruitment = mRecruitments.get(position);
-                if(type == 0){
-                    Toast.makeText(v.getContext(), "you clicked end button " + recruitment.getJobName(), Toast.LENGTH_SHORT).show();
-                }else if(type == 1){
-                    Toast.makeText(v.getContext(), "you clicked delete button " + recruitment.getJobName(), Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(v.getContext(), "you clicked  button " + recruitment.getJobName(), Toast.LENGTH_SHORT).show();
-                }
-
             }
         });
         return holder;

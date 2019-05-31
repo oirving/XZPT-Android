@@ -91,7 +91,6 @@ public class FragmentResume extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-                Toast.makeText(getContext(),"menu",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getContext(), ResumeModelHistoryActivity.class);
                 startActivity(intent);
         return  true;

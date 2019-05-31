@@ -1,11 +1,19 @@
 package com.djylrz.xzpt.fragmentStudent;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -55,6 +63,7 @@ public class FragmentDate extends Fragment implements
     private static final String TAG = "FragmentDate";
     private static final int GET_REVRUITMENT_DATE_DATA_SUCCESS = 1;
     private static final int GET_REVRUITMENT_DATE_DATA_FAILURE = 2;
+    private static final int REQUEST_CALENDAR = 3;
 
     //日历部分
     private TextView mTextMonthDay;
@@ -87,16 +96,18 @@ public class FragmentDate extends Fragment implements
             switch (msg.what){
                 case GET_REVRUITMENT_DATE_DATA_SUCCESS:
                     //结束加载动画
-                    MyApplication.rxDialogShapeLoading.hide();
+//                    MyApplication.rxDialogShapeLoading.hide();
                     //初始化日历
                     initView();
                     initData();
                     //初始化时间轴
                     initViewTimeLine();
+                    //请求日历读写权限
+                    fetchPermission(REQUEST_CALENDAR);
                     break;
                 case GET_REVRUITMENT_DATE_DATA_FAILURE:
                     //结束加载动画
-                    MyApplication.rxDialogShapeLoading.hide();
+//                    MyApplication.rxDialogShapeLoading.hide();
                     //初始化日历
                     initView();
                     initData();
@@ -113,10 +124,10 @@ public class FragmentDate extends Fragment implements
         View view = inflater.inflate(R.layout.fragment1_date, container, false);
         globalView = view;
 
-        //开始加载动画
-        MyApplication.rxDialogShapeLoading = new RxDialogShapeLoading(getContext());
-        MyApplication.rxDialogShapeLoading.setLoadingText("加载数据中...");
-        MyApplication.rxDialogShapeLoading.show();
+//        //开始加载动画
+//        MyApplication.rxDialogShapeLoading = new RxDialogShapeLoading(getContext());
+//        MyApplication.rxDialogShapeLoading.setLoadingText("加载数据中...");
+//        MyApplication.rxDialogShapeLoading.show();
 
         //先异步获取数据，获取数据成功再通过handler初始化时间轴
         getRecruitmentDateData();
@@ -410,6 +421,95 @@ public class FragmentDate extends Fragment implements
                 handler.sendEmptyMessage(GET_REVRUITMENT_DATE_DATA_SUCCESS);
             }
         });
+    }
+
+    /**
+      *@Description: 检查权限
+      *@Param: [requestCode]
+      *@Return: void
+      *@Author: mingjun
+      *@Date: 2019/5/30 下午 3:08
+      */
+    public void fetchPermission(final int requestCode) {
+        int checkSelfPermission;
+        try {
+            checkSelfPermission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CALENDAR);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return;
+        }
+        // 如果有授权，走正常插入日历逻辑
+        if (checkSelfPermission == PackageManager.PERMISSION_GRANTED) {
+            //insertCalendar(); // 添加日历提醒
+            return;
+        } else {
+            // 如果没有授权，就请求用户授权
+                new android.app.AlertDialog.Builder(getActivity())
+                        .setTitle("权限申请").setMessage("将招聘会日程添加到系统日历需要日历读写权限")
+                        .setCancelable(false)
+                        .setPositiveButton("去授权", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_CALENDAR)){
+                                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_CALENDAR,
+                                            Manifest.permission.READ_CALENDAR}, requestCode);
+                                }else{
+                                    getAppDetailSettingIntent();
+                                }
+
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).create().show();
+        }
+    }
+    /**
+      *@Description: 请求权限回调
+      *@Param: [requestCode, permissions, grantResults]
+      *@Return: void
+      *@Author: mingjun
+      *@Date: 2019/5/30 下午 3:08
+      */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CALENDAR) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 用户同意的授权请求
+                //insertCalendar();// 添加日历提醒
+            } else {
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_CALENDAR)) {
+                    // 如果用户不是点击了拒绝就跳转到系统设置页
+                    getAppDetailSettingIntent();
+                }
+            }
+        }
+    }
+    /**
+      *@Description: 跳转到系统设置页
+      *@Param: []
+      *@Return: void
+      *@Author: mingjun
+      *@Date: 2019/5/30 下午 3:08
+      */
+    private void getAppDetailSettingIntent() {
+        Activity activity = getActivity();
+        Intent localIntent = new Intent();
+        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= 9) {
+            localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+            localIntent.setData(Uri.fromParts("package", activity.getPackageName(), null));
+        } else if (Build.VERSION.SDK_INT <= 8) {
+            localIntent.setAction(Intent.ACTION_VIEW);
+            localIntent.setClassName("com.android.settings","com.android.settings.InstalledAppDetails");
+            localIntent.putExtra("com.android.settings.ApplicationPkgName", activity.getPackageName());
+        }
+        startActivity(localIntent);
     }
 
 }

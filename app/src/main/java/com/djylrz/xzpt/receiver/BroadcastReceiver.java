@@ -66,7 +66,7 @@ public class BroadcastReceiver extends PushMessageReceiver {
 //            Intent intent = new Intent(MyApplication.getContext(), ActorChoose.class);
 //            intent.putExtra("recruitmentID", Long.parseLong(mMessage));
 //            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            MyApplication.getContext().startActivity(intent);
+              MyApplication.getContext().startActivity(intent);
         }
     }
 

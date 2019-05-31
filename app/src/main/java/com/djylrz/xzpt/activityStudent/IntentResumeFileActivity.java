@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.utils.PostParameterName;
+import com.vondear.rxtool.view.RxToast;
 
 public class IntentResumeFileActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -78,19 +79,19 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.resume_file_download:
-                //从输入框获取远程文件地址，正式版请去除
-                //fileUrl = url.getText().toString();
-                url.setText(fileUrl);
-                //动态权限申请
-                if (ContextCompat.checkSelfPermission(IntentResumeFileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(IntentResumeFileActivity.this, new String[]{ Manifest.permission. WRITE_EXTERNAL_STORAGE }, 1);
-                } else {
-                    ResumeDisplayActivity.actionStart(IntentResumeFileActivity.this,fileUrl,fileName,templatePath,createOrHistory);
-                }
-                break;
-            default:
-                break;
+//            case R.id.resume_file_download:
+//                //从输入框获取远程文件地址，正式版请去除
+//                //fileUrl = url.getText().toString();
+//                url.setText(fileUrl);
+//                //动态权限申请
+//                if (ContextCompat.checkSelfPermission(IntentResumeFileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions(IntentResumeFileActivity.this, new String[]{ Manifest.permission. WRITE_EXTERNAL_STORAGE }, 1);
+//                } else {
+//                    ResumeDisplayActivity.actionStart(IntentResumeFileActivity.this,fileUrl,fileName,templatePath,createOrHistory);
+//                }
+//                break;
+//            default:
+//                break;
         }
     }
 
@@ -101,7 +102,7 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     ResumeDisplayActivity.actionStart(IntentResumeFileActivity.this,fileUrl,fileName,templatePath,createOrHistory);
                 } else {
-                    Toast.makeText(this, "你拒绝了权限申请，可能无法下载文件到本地哟！", Toast.LENGTH_SHORT).show();
+                    RxToast.warning("你拒绝了权限申请，可能无法下载文件到本地哟！");
                 }
                 break;
             default:

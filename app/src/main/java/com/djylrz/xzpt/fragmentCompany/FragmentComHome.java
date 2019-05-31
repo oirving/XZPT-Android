@@ -141,9 +141,7 @@ public class FragmentComHome extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case 1:
-                if (resultCode == RESULT_OK) {
-
-                }
+                if (resultCode == RESULT_OK) { }
                 break;
         }
     }

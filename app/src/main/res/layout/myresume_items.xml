@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-
     android:layout_margin="10dp"
     android:background="@color/white"
     >
@@ -16,31 +15,30 @@
             android:id="@+id/resume_state_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="通过"
-            android:textSize="20dp"
-            android:background="@color/green"
-            />
+            android:textSize="14sp"
+            android:background="@color/course_color7"
+            android:textColor="@color/white"
+            android:padding="4dp"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
         <ImageView
             android:layout_width="50dp"
             android:layout_height="70dp"
             android:layout_gravity="center"
-            android:src="@drawable/r"
-            />
+            android:src="@drawable/resume"/>
         <TextView
             android:layout_marginTop="5dp"
             android:id="@+id/job_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:text="安卓工程师"
-            android:textSize="20dp"
+            android:textSize="16dp"
             android:textColor="@color/colorDark"
             android:layout_gravity="center"
             />
@@ -50,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="锐捷"
-            android:textSize="20dp"
+            android:textSize="12dp"
             android:textColor="@color/colorDark"
             android:layout_gravity="center"
             />
@@ -68,8 +66,7 @@
                 android:layout_height="wrap_content"
                 android:text="小李"
                 android:textSize="15dp"
-                android:layout_marginBottom="5dp"
-                />
+                android:layout_marginBottom="5dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -19,6 +19,7 @@ import com.djylrz.xzpt.bean.PostResult;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.google.gson.Gson;
+import com.vondear.rxtool.view.RxToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -82,14 +83,13 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
                                                 switch (postResult.getResultCode()){
                                                     case "200":{
                                                         //成功后的跳转
-                                                        Toast.makeText(ResetPasswordActivity.this, "修改密码成功", Toast.LENGTH_SHORT).show();
+                                                        RxToast.success("修改密码成功");
                                                         Intent intent = new Intent(ResetPasswordActivity.this,StudentLogin.class);
                                                         startActivity(intent);
                                                         finish();
                                                     }break;
                                                     default : {
-                                                        Toast.makeText(ResetPasswordActivity.this, "修改密码失败", Toast.LENGTH_SHORT).show();
-                                                    }
+                                                        RxToast.error("修改密码失败");                                                    }
                                                 }
 
                                             }
@@ -106,7 +106,7 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
                     }
                 }
                 else {
-                    Toast.makeText(this, "两次密码不相同，请重试", Toast.LENGTH_SHORT).show();
+                    RxToast.warning("两次密码不相同，请重试");
                 }
 
         }

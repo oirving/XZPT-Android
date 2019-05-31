@@ -2,6 +2,7 @@ package com.djylrz.xzpt.fragmentStudent;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -35,6 +36,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.dialogs.DialogsList;
 import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
+import com.stfalcon.chatkit.utils.DateFormatter;
 import com.xiaomi.mimc.MIMCGroupMessage;
 import com.xiaomi.mimc.MIMCMessage;
 import com.xiaomi.mimc.MIMCServerAck;
@@ -43,6 +45,7 @@ import com.xiaomi.mimc.common.MIMCConstant;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -55,7 +58,9 @@ import cz.msebera.android.httpclient.Header;
 
 public class MessageCardFragment extends Fragment
         implements DialogsListAdapter.OnDialogClickListener<Dialog>,
-        DialogsListAdapter.OnDialogLongClickListener<Dialog>, UserManager.OnHandleMIMCMsgListener {
+        DialogsListAdapter.OnDialogLongClickListener<Dialog>,
+        UserManager.OnHandleMIMCMsgListener ,
+        DateFormatter.Formatter{
     private static final String TAG = "FragmentComChat";
     private View mDecorView;
     private DialogsList dialogsList;
@@ -65,7 +70,21 @@ public class MessageCardFragment extends Fragment
     private String userName;
     private String headUrl;
     private SwipeRefreshLayout swipeRefreshLayout;
-
+    private int finishCount = 0;
+    private int dialogSize = 0;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:
+                    if(++finishCount == dialogSize){
+                        dialogsAdapter.sortByLastMessageDate();
+                    }
+                    break;
+            }
+        }
+    };
     public static MessageCardFragment getInstance(String title) {
         MessageCardFragment mcf = new MessageCardFragment();
         return mcf;
@@ -125,6 +144,7 @@ public class MessageCardFragment extends Fragment
          */
         dialogsAdapter.setOnDialogClickListener(this);
         dialogsAdapter.setOnDialogLongClickListener(this);
+        dialogsAdapter.setDatesFormatter(this);
         dialogsList.setAdapter(dialogsAdapter);
 
 
@@ -150,6 +170,7 @@ public class MessageCardFragment extends Fragment
     private void onRefreshDialogList() {
         //清空原有会话列表数据
         dialogsAdapter.clear();
+        finishCount = 0;
         MIMCUser user = UserManager.getInstance().getUser();
         HttpUtil.getClient().removeAllHeaders();
         HttpUtil.getClient().addHeader("token", user.getToken());
@@ -213,6 +234,7 @@ public class MessageCardFragment extends Fragment
         Log.d(TAG, "onResponse: code" + postResult.getCode());
         if (postResult.getCode().equals(200)) {
             List<Data<LastMessage>> dataList = postResult.getData();
+            dialogSize = dataList.size();
             for (int i = 0; i < dataList.size(); ++i) {
                 final Data<LastMessage> dialogContent = dataList.get(i);
                 final ArrayList<ChatUser> users = new ArrayList<>();
@@ -278,10 +300,8 @@ public class MessageCardFragment extends Fragment
                         }
                         int count = 0;
                         if (unReadMessageCountMap.get(fromAccount) != null) {
-                            Log.d(TAG, "获取未读消息数据 " + fromAccount);
                             count = unReadMessageCountMap.get(fromAccount);
                         }
-                        Log.d(TAG, "添加一个会话 " + fromAccount);
                         Dialog dialog = new Dialog(fromAccount, userName, headUrl, users, message, count);
                         dialogsAdapter.upsertItem(dialog);
 
@@ -290,6 +310,11 @@ public class MessageCardFragment extends Fragment
                     @Override
                     public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
                         Log.d(TAG, "onFailure: 获取用户名称和头像失败");
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        handler.sendEmptyMessage(1);
                     }
                 });
             }
@@ -444,5 +469,22 @@ public class MessageCardFragment extends Fragment
 
     public interface messageCallBack {
         public void getNewMessage(Message message);
+    }
+
+    @Override
+    public String format(Date date) {
+        if (DateFormatter.isToday(date)) {
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+            if(date.getHours()>=12){
+                return "下午 " + sdf.format(date);
+            }else{
+                return "上午 " + sdf.format(date);
+            }
+        }else if (DateFormatter.isYesterday(date)) {
+            return "昨天";
+        }else{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            return sdf.format(date);
+        }
     }
 }

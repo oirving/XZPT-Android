@@ -2,12 +2,9 @@ package com.djylrz.xzpt.fragmentCompany;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -24,11 +21,12 @@ import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PageData;
 import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.bean.TempResponseData;
+import com.djylrz.xzpt.bean.TempResponseRecruitmentData;
 import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
-import com.djylrz.xzpt.utils.MyDividerItemDecoration;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.RecruitmentAdapter;
+import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -36,6 +34,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.vondear.rxtool.view.RxToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,7 +57,6 @@ public class RecruitmentCardFragment extends Fragment {
     private static final String TAG = "RecruitmentCardFragment";
     private int currentPage = 1;
     private final int PAGE_SIZE = 20;
-    private RequestQueue requestQueue;
     private long limitNum = 9999;
 
     public static RecruitmentCardFragment getInstance(String title) {
@@ -79,24 +77,29 @@ public class RecruitmentCardFragment extends Fragment {
 
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // 刷新数据
+        recruitmentList.clear();
+        currentPage = 1;
+        initRecruitments();
+        loadMoreWrapper.notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fr_recruitment_card, null);
 
         recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-        requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext()); //把上下文context作为参数传递进去
 
         //加载数据
-        initRecruitments();
         LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
         adapter = new RecruitmentAdapter(recruitmentList,type,getContext());
         loadMoreWrapper = new LoadMoreWrapper(adapter);
         swipeRefreshLayout = v.findViewById(R.id.swipe_refresh_layout);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(loadMoreWrapper);
-        Drawable drawable = ContextCompat.getDrawable(getContext(),R.drawable.divider_shape);
-        MyDividerItemDecoration dec = new MyDividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
-        dec.setDrawable(drawable);
-        recyclerView.addItemDecoration(dec);
+
         // 设置下拉刷新
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -161,19 +164,20 @@ public class RecruitmentCardFragment extends Fragment {
                                 }
                             });
                             Gson gson =builder.create();
-                            Type jsonType = new TypeToken<TempResponseData<TempResponseRecruitmentData<List<Recruitment>> >>() {}.getType();
+                            Type jsonType = new TypeToken<TempResponseData<TempResponseRecruitmentData<List<Recruitment>>>>() {}.getType();
                             final TempResponseData<TempResponseRecruitmentData<List<Recruitment>> > postResult = gson.fromJson(response.toString(), jsonType);
                             Log.d(TAG, "onResponse: "+postResult.getResultCode());
                             if(postResult.getResultCode().equals(200)){
                                 TempResponseRecruitmentData<List<Recruitment>>  resultObject = postResult.getResultObject();
                                 List<Recruitment> recruitments = resultObject.getContentList();
-                                for (int i = 0; i < recruitments.size(); ++i) {
-                                    if(recruitments.get(i).getValidate()==type){
-                                        recruitmentList.add(recruitments.get(i));
+                                if(recruitments != null){
+                                    for (int i = 0; i < recruitments.size(); ++i) {
+                                        if(recruitments.get(i).getValidate()==type){
+                                            recruitmentList.add(recruitments.get(i));
+                                        }
                                     }
                                 }
                             }
-
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -191,47 +195,11 @@ public class RecruitmentCardFragment extends Fragment {
                 public void onErrorResponse(VolleyError error) {
                     Log.e("TAG", error.getMessage(), error);
                 }});
-            requestQueue.add(jsonObjectRequest);
+            VolleyNetUtil.getInstance().setRequestQueue(getContext().getApplicationContext());//获取requestQueue
+            VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
         } catch (JSONException e) {
             e.printStackTrace();
+            RxToast.warning("当前网络状态不好，可能导致加载缓慢！");
         }
-    }
-}
-class TempResponseRecruitmentData<T>{
-    private Integer currentPage;
-    private Integer numOfPage;
-    private Integer pageSize;
-    private T contentList;
-
-    public Integer getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(Integer currentPage) {
-        this.currentPage = currentPage;
-    }
-
-    public Integer getNumOfPage() {
-        return numOfPage;
-    }
-
-    public void setNumOfPage(Integer numOfPage) {
-        this.numOfPage = numOfPage;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public T getContentList() {
-        return contentList;
-    }
-
-    public void setContentList(T contentList) {
-        this.contentList = contentList;
     }
 }

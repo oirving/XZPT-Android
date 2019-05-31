@@ -9,32 +9,41 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
+
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.djylrz.xzpt.R;
-import com.djylrz.xzpt.bean.Message;
 import com.djylrz.xzpt.bean.PageData;
 import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.bean.User;
-import com.djylrz.xzpt.fragmentCompany.FragmentComChat;
+import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
+import com.djylrz.xzpt.utils.LoadMoreWrapper;
 import com.djylrz.xzpt.utils.PostParameterName;
+import com.djylrz.xzpt.utils.RecruitmentAdapter;
+import com.djylrz.xzpt.utils.StudentRecruitmentAdapter;
 import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.github.onlynight.library.lsearchview.LSearchView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
+import com.vondear.rxtool.view.RxToast;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,48 +54,123 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentFindJob extends Fragment implements View.OnClickListener{
+public class FragmentFindJob extends Fragment implements View.OnClickListener {
     private Context mContext = getContext();
-    private String[] mTitles = {"推荐","热门","联系"};
+    private String[] mTitles = {"推荐", "热门", "联系"};
     private View mDecorView;
-    private ImageView search;
-    private EditText searchEditText;
-    private Button searchButton;
     private SegmentTabLayout mTabLayout;
     private List<Fragment> mFragments;
     private static final String TAG = "FragmentFindJob";
-
+    private Toolbar toolbar;
+    private List<Recruitment> recruitmentList = new ArrayList<Recruitment>();
+    private LSearchView searchView;
+    private StudentRecruitmentAdapter adapter;
+    private LoadMoreWrapper loadMoreWrapper;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView recyclerView;
+    private int currentPage = 1;
+    private final int PAGE_SIZE = 20;
+    private long limitNum = 9999;
     private SharedPreferences sharedPreferences;
-    private List<Fragment> recommendCardFragmentList = null;
+    private String keyword = "";
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mFragments = new ArrayList<>();
-        mDecorView = inflater.inflate(R.layout.fragment3_find_job,container,false);
+        mDecorView = inflater.inflate(R.layout.fragment3_find_job, container, false);
+        toolbar = mDecorView.findViewById(R.id.find_job_toolbar);
+        searchView = (LSearchView) mDecorView.findViewById(R.id.searchView);
+        recyclerView = (RecyclerView) mDecorView.findViewById(R.id.recycler_view_search);
+        swipeRefreshLayout = mDecorView.findViewById(R.id.swipe_refresh_layout_search);
+        toolbar.inflateMenu(R.menu.menu_student_recruitment_fragment);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menuSearch:
+                        searchView.setVisibility(View.VISIBLE);
+                        searchView.showWithAnim();
+                        break;
+                }
+                return true;
+            }
+        });
+        searchView.getSearchButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchView.setSearching(true);
+                searchView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        recruitmentList.clear();
+                        keyword = searchView.getSearchEdit().getText().toString();
+                        Log.d(TAG, "onClick: 查询" + keyword);
+                        searchRecruitment(keyword);
+                    }
+                }, 1000);
+            }
+        });
+        searchView.getBackButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackSearch();
+            }
+        });
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mDecorView.getContext());
+        adapter = new StudentRecruitmentAdapter(recruitmentList, 0);
+        loadMoreWrapper = new LoadMoreWrapper(adapter);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(loadMoreWrapper);
+        // 设置下拉刷新
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // 刷新数据
+                recruitmentList.clear();
+                currentPage = 1;
+                searchRecruitment(keyword);
+                loadMoreWrapper.notifyDataSetChanged();
+
+                // 延时1s关闭下拉刷新
+                swipeRefreshLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+                }, 1000);
+            }
+        });
+
+        // 设置加载更多监听
+        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+            @Override
+            public void onLoadMore() {
+                loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING);
+                if (recruitmentList.size() < limitNum) {
+                    searchRecruitment(keyword);
+                } else {
+                    // 显示加载到底的提示
+                    loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
+                }
+            }
+        });
         for (String title : mTitles) {
-            if(title.equals("联系")){
+            if (title.equals("联系")) {
                 mFragments.add(MessageCardFragment.getInstance(title));
-            }else{
+            } else {
                 mFragments.add(RecommendCardFragment.getInstance(title));
             }
         }
-
-        recommendCardFragmentList=mFragments;
-
-        search = (ImageView) mDecorView.findViewById(R.id.search_logo);
-        search.setOnClickListener(this);
-        searchEditText = (EditText) mDecorView.findViewById(R.id.search_edittext);
-        searchEditText.setOnClickListener(this);
-        searchButton = (Button) mDecorView.findViewById(R.id.search_button);
-        searchButton.setOnClickListener(this);
-
         mTabLayout = mDecorView.findViewById(R.id.tl);
         tl();
 
-        sharedPreferences = getActivity().getSharedPreferences("user",0);
+        sharedPreferences = getActivity().getSharedPreferences("user", 0);
         return mDecorView;
     }
+
     private void tl() {
         final ViewPager vp = mDecorView.findViewById(R.id.vp);
         vp.setAdapter(new MyPagerAdapter(this.getActivity().getSupportFragmentManager()));
@@ -120,28 +204,10 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
         });
         vp.setCurrentItem(1);
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.search_logo:
-                Log.d(TAG, "onClick: 查询按钮。");
-                Log.d(TAG, "onClick:查询按钮可见"+searchButton.getVisibility());
-                Log.d(TAG, "onClick:查询文本可见"+searchButton.getVisibility());
-                if(searchEditText.getVisibility()==View.VISIBLE&&searchButton.getVisibility()==View.VISIBLE) {
-                    searchButton.setVisibility(View.GONE);
-                    searchEditText.setVisibility(View.GONE);
-                    mTabLayout.setVisibility(View.VISIBLE);
-                } else {
-                    searchButton.setVisibility(View.VISIBLE);
-                    searchEditText.setVisibility(View.VISIBLE);
-                    mTabLayout.setVisibility(View.GONE);
-                }
-                break;
-            case R.id.search_button:
-                String keyword = searchEditText.getText().toString();
-                Log.d(TAG, "onClick: 查询");
-                searchRecruitment(keyword);
-                break;
             default:
                 Log.d(TAG, "onClick: default");
         }
@@ -151,6 +217,7 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
         public MyPagerAdapter(FragmentManager fm) {
             super(fm);
         }
+
         @Override
         public int getCount() {
             return mFragments.size();
@@ -167,37 +234,36 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
         }
     }
 
-    private void searchRecruitment(String keyword){
-        String userJson = sharedPreferences.getString("student",null);
+    private void searchRecruitment(String keyword) {
+        String userJson = sharedPreferences.getString("student", null);
         //todo:关于page
         PageData pageData = new PageData();
-        pageData.setCurrentPage(1);
-        pageData.setPageSize(10);
-        if (userJson!=null){
-            User user = new Gson().fromJson(userJson,User.class);
+        pageData.setCurrentPage(currentPage++);
+        pageData.setPageSize(PAGE_SIZE);
+        if (userJson != null) {
+            User user = new Gson().fromJson(userJson, User.class);
             user.getToken();
             VolleyNetUtil.getInstance().setRequestQueue(getContext().getApplicationContext());
             try {
-                Log.d(TAG, "searchRecruitment: "+new Gson().toJson(pageData));
-                Log.d(TAG, "searchRecruitment: URL is "+ PostParameterName.POST_URL_SEARCH_RECRUIMENT+user.getToken()+"&"+
-                        PostParameterName.REQUEST_KEYWORD+"="+ URLEncoder.encode(keyword,"utf-8"));
+                Log.d(TAG, "searchRecruitment: " + new Gson().toJson(pageData));
+                Log.d(TAG, "searchRecruitment: URL is " + PostParameterName.POST_URL_SEARCH_RECRUIMENT + user.getToken() + "&" +
+                        PostParameterName.REQUEST_KEYWORD + "=" + URLEncoder.encode(keyword, "utf-8"));
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                        PostParameterName.POST_URL_SEARCH_RECRUIMENT+user.getToken()+"&"+
-                        PostParameterName.REQUEST_KEYWORD+"="+URLEncoder.encode(keyword,"utf-8"),
+                        PostParameterName.POST_URL_SEARCH_RECRUIMENT + user.getToken() + "&" +
+                                PostParameterName.REQUEST_KEYWORD + "=" + URLEncoder.encode(keyword, "utf-8"),
                         new JSONObject(new Gson().toJson(pageData)),
                         new com.android.volley.Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(final JSONObject response) {
-                                Log.d(TAG, "onResponse: 返回"+response.toString());
-                                List<Recruitment> recruitments = null;
+                                Log.d(TAG, "onResponse: 返回" + response.toString());
                                 try {
-                                    switch (response.getString(PostParameterName.RESPOND_RESULTCODE)){
-                                        case "200":{
+                                    switch (response.getString(PostParameterName.RESPOND_RESULTCODE)) {
+                                        case "200": {
                                             Log.d(TAG, "run: 获取招聘信息成功");
                                             //todo 解析数据
                                             JSONObject responsePageData = response.getJSONObject("resultObject");
-
                                             GsonBuilder builder = new GsonBuilder();
+                                            builder.setDateFormat("yyyy-MM-dd HH:mm:ss");
                                             builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
                                                 public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
                                                     return new Timestamp(json.getAsJsonPrimitive().getAsLong());
@@ -205,17 +271,44 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
                                             });
                                             Gson gson = builder.create();
 
-
                                             //解析pageData
-                                            Type jsonType = new TypeToken<PageData<Recruitment>>() {}.getType();
-                                            final PageData<Recruitment> recruitmentPageData = gson.fromJson(responsePageData.toString(),jsonType);
-
+                                            Type jsonType = new TypeToken<PageData<Recruitment>>() {
+                                            }.getType();
+                                            final PageData<Recruitment> recruitmentPageData = gson.fromJson(responsePageData.toString(), jsonType);
                                             //获取到RecruitmentList
-                                            recruitments = recruitmentPageData.getContentList();
-                                            Log.d(TAG, "onResponse: "+recruitments.size());
-                                        }break;
-                                        default:{
-                                            Log.d(TAG, "获取招聘信息失败"+response.getString(PostParameterName.RESPOND_RESULTCODE));
+                                            final List<Recruitment> recruitments = recruitmentPageData.getContentList();
+                                            if(recruitments != null){
+                                                for (Recruitment recruitment:recruitments) {
+                                                    recruitmentList.add(recruitment);
+                                                }
+                                                getActivity().runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        if (recruitments.size() != 0) {
+                                                            RxToast.success("获取招聘信息成功");
+                                                            searchView.setSearching(false);
+                                                            loadMoreWrapper.notifyDataSetChanged();
+                                                        } else {
+                                                            RxToast.info("无符合关键词的招聘信息");
+                                                        }
+                                                    }
+                                                });
+                                            }
+
+                                        }
+                                        break;
+                                        case "2018":
+                                            getActivity().runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    searchView.setSearching(false);
+                                                    loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
+                                                    limitNum = recruitmentList.size();
+                                                }
+                                            });
+                                            break;
+                                        default: {
+                                            Log.d(TAG, "获取招聘信息失败" + response.getString(PostParameterName.RESPOND_RESULTCODE));
                                         }
 
                                     }
@@ -223,36 +316,26 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener{
                                     e.printStackTrace();
                                 }
 
-                                final List<Recruitment> finalRecruitments = recruitments;
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(getContext(), "获取招聘信息成功", Toast.LENGTH_SHORT).show();
-                                        //todo 更新页面——尚未实现下拉刷新
-                                        finalRecruitments.size();
-                                        for(int i = 0; i < 2; ++i){
-                                            RecommendCardFragment recommendCardFragment = (RecommendCardFragment)recommendCardFragmentList.get(i);
-                                            recommendCardFragment.updateAdapter(finalRecruitments);
-                                        }
-//                                        for(Fragment fragment:recommendCardFragmentList){
-//                                            RecommendCardFragment recommendCardFragment = (RecommendCardFragment)fragment;
-//                                        }
-                                    }
-                                });
                             }
                         }, new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("TAG", error.getMessage(), error);
-                    }});
+                    }
+                });
                 VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
             } catch (JSONException | UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
 
-        }else {
+        } else {
             Log.d(TAG, "searchRecruitment: 没有UserJson");
         }
     }
+
+    private void onBackSearch() {
+        searchView.hideWithAnim();
+    }
+
 }
 

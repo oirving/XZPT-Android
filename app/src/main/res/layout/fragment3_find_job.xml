@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -12,9 +12,9 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/find_job_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            tools:titleTextColor="@color/white">
+            app:titleTextColor="@color/white">
 
             <TextView
                 android:id="@+id/find_job_toolbar_tv"
@@ -29,62 +29,70 @@
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#eeeeee"
-    android:fillViewport="true"
-    android:paddingTop="10dp"
-    android:scrollbars="none">
-    <LinearLayout
+    <com.github.onlynight.library.lsearchview.LSearchView
+        android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+        android:padding="8dp"
+        app:anim_time="500"
+        app:search_bar_height="48dp"
+        app:search_bg_color="@color/color_text_01"
+        app:search_hint="search something"
+        android:visibility="gone">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="4dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_search"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/background_card">
+            </android.support.v7.widget.RecyclerView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+    </com.github.onlynight.library.lsearchview.LSearchView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#eeeeee"
+        android:fillViewport="true"
+        android:paddingTop="10dp"
+        android:scrollbars="none">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="36dp">
-            <ImageView
-                android:id="@+id/search_logo"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:src="@drawable/search" />
-            <EditText
-                android:id="@+id/search_edittext"
-                android:layout_width="200dp"
-                android:layout_height="40dp"
-                android:visibility="gone" />
-            <Button
-                    android:id="@+id/search_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="查询"
-                    android:background="@drawable/rectangle_style"
-                    android:textColor="@color/gray_text"
-                    android:visibility="gone"
-                    android:textSize="20dp" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <com.flyco.tablayout.SegmentTabLayout
-                android:id="@+id/tl"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:paddingLeft="25dp"
-                android:paddingRight="25dp"
-                tools:tl_bar_color="#ffffff"
-                tools:tl_indicator_anim_enable="true"
-                tools:tl_indicator_color="@color/colorPrimary"
-                tools:tl_indicator_margin_bottom="2dp"
-                tools:tl_indicator_margin_left="2dp"
-                tools:tl_indicator_margin_right="2dp"
-                tools:tl_indicator_margin_top="2dp"
-                tools:tl_textBold="SELECT" />
-        </LinearLayout>
+                android:layout_height="36dp">
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/vp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-</ScrollView>
+                <com.flyco.tablayout.SegmentTabLayout
+                    android:id="@+id/tl"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:paddingLeft="25dp"
+                    android:paddingRight="25dp"
+                    app:tl_bar_color="#ffffff"
+                    app:tl_indicator_anim_enable="true"
+                    app:tl_indicator_color="@color/colorPrimary"
+                    app:tl_indicator_margin_bottom="2dp"
+                    app:tl_indicator_margin_left="2dp"
+                    app:tl_indicator_margin_right="2dp"
+                    app:tl_indicator_margin_top="2dp"
+                    app:tl_textBold="SELECT" />
+            </LinearLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

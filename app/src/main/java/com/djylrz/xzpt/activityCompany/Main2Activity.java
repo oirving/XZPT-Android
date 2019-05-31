@@ -16,6 +16,7 @@ import com.djylrz.xzpt.fragmentCompany.FragmentComChat;
 import com.djylrz.xzpt.fragmentCompany.FragmentComCheck;
 import com.djylrz.xzpt.fragmentCompany.FragmentComHome;
 import com.djylrz.xzpt.fragmentCompany.FragmentComMine;
+import com.vondear.rxtool.view.RxToast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +120,7 @@ public class Main2Activity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
             if ((System.currentTimeMillis() - exitTime) > 2000) {
-                Toast.makeText(getApplicationContext(), "再按一次退出校招平台", Toast.LENGTH_SHORT).show();
+                RxToast.info("再按一次退出校招平台");
                 exitTime = System.currentTimeMillis();
             } else {
                 finish();

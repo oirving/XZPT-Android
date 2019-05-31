@@ -1,4 +1,5 @@
 package com.djylrz.xzpt.fragmentCompany;
+
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,11 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PageData;
 import com.djylrz.xzpt.bean.ResumeDelivery;
@@ -24,6 +23,7 @@ import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.ComResumeDeliveryRecordAdapter;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
 import com.djylrz.xzpt.utils.PostParameterName;
+import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -31,6 +31,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.vondear.rxtool.view.RxToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,21 +53,30 @@ public class ComResumeCardFragment extends Fragment {
     private RecyclerView recyclerView;
     private static final String TAG = "ComResumeCardFragment";
     private int currentPage = 1;
-    private final int PAGE_SIZE = 20;
-    private RequestQueue requestQueue;
+    private final int PAGE_SIZE = 10;
     private long limitNum = 9999;
+    private int statusA = -100;
+    private int statusB = 100;
 
     public static ComResumeCardFragment getInstance(String title) {
         ComResumeCardFragment sf = new ComResumeCardFragment();
         sf.mTitle = title;
-        if(title.equals("已拒绝")){
+        if (title.equals("已拒绝")) {
             sf.type = 0;
-        }else if(title.equals("已通过")){
+            sf.statusA = -1;
+            sf.statusB = -1;
+        } else if (title.equals("已通过")) {
             sf.type = 1;
-        }else if(title.equals("面试中")){
+            sf.statusA = 7;
+            sf.statusB = 7;
+        } else if (title.equals("面试中")) {
             sf.type = 2;
-        }else if(title.equals("待审核")){
+            sf.statusA = 3;
+            sf.statusB = 6;
+        } else if (title.equals("待审核")) {
             sf.type = 3;
+            sf.statusA = 1;
+            sf.statusB = 2;
         }
         return sf;
     }
@@ -76,18 +86,26 @@ public class ComResumeCardFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // 刷新数据
+        resumeDeliveryList.clear();
+        currentPage = 1;
+        initResumes();
+        loadMoreWrapper.notifyDataSetChanged();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fr_recruitment_card, null);
 
         recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-        requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext()); //把上下文context作为参数传递进去
 
         //加载数据
-        initRecruitments();
+        initResumes();
         LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
-        adapter = new ComResumeDeliveryRecordAdapter(resumeDeliveryList,type,getContext());
+        adapter = new ComResumeDeliveryRecordAdapter(resumeDeliveryList, type, getContext());
         loadMoreWrapper = new LoadMoreWrapper(adapter);
         swipeRefreshLayout = v.findViewById(R.id.swipe_refresh_layout);
         recyclerView.setLayoutManager(layoutManager);
@@ -99,7 +117,7 @@ public class ComResumeCardFragment extends Fragment {
                 // 刷新数据
                 resumeDeliveryList.clear();
                 currentPage = 1;
-                initRecruitments();
+                initResumes();
                 loadMoreWrapper.notifyDataSetChanged();
 
                 // 延时1s关闭下拉刷新
@@ -120,7 +138,7 @@ public class ComResumeCardFragment extends Fragment {
             public void onLoadMore() {
                 loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING);
                 if (resumeDeliveryList.size() < limitNum) {
-                    initRecruitments();
+                    initResumes();
                 } else {
                     // 显示加载到底的提示
                     loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
@@ -130,100 +148,78 @@ public class ComResumeCardFragment extends Fragment {
         return v;
     }
 
-    private void initRecruitments(){
+    private void initResumes() {
         //获取token
-        SharedPreferences preferences = getActivity().getSharedPreferences("token",0);
-        String token = preferences.getString(PostParameterName.TOKEN,null);
+        SharedPreferences preferences = getActivity().getSharedPreferences("token", 0);
+        String token = preferences.getString(PostParameterName.TOKEN, null);
         //组装URL
-        String url = PostParameterName.POST_URL_COMPANY_GET_DELIVER_RECORD + token ;
+        String url = PostParameterName.POST_URL_COMPANY_GET_DELIVER_RECORD + token + "&statusA=" + statusA + "&statusB=" + statusB;
         //
         PageData pageData = new PageData();
         pageData.setCurrentPage(currentPage++);
         pageData.setPageSize(PAGE_SIZE);
         //请求数据
         try {
-            Log.d(TAG, "onCreate: 开始发送json请求"+ url);
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,new JSONObject(new Gson().toJson(pageData)),
+            Log.d(TAG, "onCreate: 开始发送json请求" + url);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, new JSONObject(new Gson().toJson(pageData)),
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.d(TAG, "onResponse: 返回"+response.toString());
-                            GsonBuilder builder = new GsonBuilder();
-                            builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-                                @Override
-                                public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                                    return new Date(json.getAsJsonPrimitive().getAsLong());
-                                }
-                            });
-                            Gson gson =builder.create();
-                            Type jsonType = new TypeToken<TempResponseData<TempResponseResumeData<List<ResumeDelivery>> >>() {}.getType();
-                            final TempResponseData<TempResponseResumeData<List<ResumeDelivery>> > postResult = gson.fromJson(response.toString(), jsonType);
-                            Log.d(TAG, "onResponse: "+postResult.getResultCode());
-                            if(postResult.getResultCode().equals(200)){
-                                TempResponseResumeData<List<ResumeDelivery>>  resultObject = postResult.getResultObject();
-                                List<ResumeDelivery> resumeDeliveryRecordVOS = resultObject.getContentList();
-                                for (int i = 0; i < resumeDeliveryRecordVOS.size(); ++i) {
-                                    int resumeRecordType = 0;
-                                    switch ((int)resumeDeliveryRecordVOS.get(i).getDeliveryStatus()){
-                                        case -1:
-                                            resumeRecordType = 0;
-                                            break;
-                                        case 0:
-                                            resumeRecordType = -1;
-                                            break;
-                                        case 1:
-                                            resumeRecordType = 3;
-                                            break;
-                                        case 2:
-                                            resumeRecordType = 3;
-                                            break;
-                                        case 3:
-                                            resumeRecordType = 2;
-                                            break;
-                                        case 4:
-                                            resumeRecordType = 2;
-                                            break;
-                                        case 5:
-                                            resumeRecordType = 2;
-                                            break;
-                                        case 6:
-                                            resumeRecordType = 2;
-                                            break;
-                                        case 7:
-                                            resumeRecordType = 1;
-                                            break;
-                                        default:
-                                            resumeRecordType = -1;
-                                            break;
+                            Log.d(TAG, "onResponse: 返回" + response.toString());
+                            try {
+                                if (response.getString(PostParameterName.RESPOND_RESULTCODE).equals("200")) {
+                                    GsonBuilder builder = new GsonBuilder();
+                                    builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+                                        @Override
+                                        public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                                            return new Date(json.getAsJsonPrimitive().getAsLong());
+                                        }
+                                    });
+                                    Gson gson = builder.create();
+                                    Type jsonType = new TypeToken<TempResponseData<TempResponseResumeData<List<ResumeDelivery>>>>() {
+                                    }.getType();
+                                    final TempResponseData<TempResponseResumeData<List<ResumeDelivery>>> postResult = gson.fromJson(response.toString(), jsonType);
+                                    Log.d(TAG, "onResponse: " + postResult.getResultCode());
+                                    List<ResumeDelivery> resumeDeliveryRecordVOS = postResult.getResultObject().getContentList();
+                                    if (resumeDeliveryRecordVOS != null) {
+                                        for (int i = 0; i < resumeDeliveryRecordVOS.size(); ++i) {
+                                            resumeDeliveryList.add(resumeDeliveryRecordVOS.get(i));
+                                        }
                                     }
-                                    Log.d(TAG, "onResponse: 当前的type为"+ resumeRecordType);
-                                    if(type == resumeRecordType){
-                                        Log.d(TAG, "onResponse: 进入if，当前的type为"+ resumeRecordType);
-                                        resumeDeliveryList.add(resumeDeliveryRecordVOS.get(i));
-                                    }
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            loadMoreWrapper.notifyDataSetChanged();
+                                        }
+                                    });
+                                } else if (response.getString(PostParameterName.RESPOND_RESULTCODE).equals("2018")) {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
+                                            limitNum = resumeDeliveryList.size();
+                                        }
+                                    });
+                                } else {
+                                    RxToast.error("服务器返回数据异常！错误代码：" + response.getString(PostParameterName.RESPOND_RESULTCODE));
                                 }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                RxToast.error("无法连接服务器！");
                             }
-
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if(postResult.getResultCode().equals(200)){
-                                        loadMoreWrapper.notifyDataSetChanged();
-                                    }else{
-                                        loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
-                                        limitNum = resumeDeliveryList.size();
-                                    }
-                                }
-                            });
                         }
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("TAG", error.getMessage(), error);
-                }});
-            requestQueue.add(jsonObjectRequest);
+                    RxToast.error("无法连接服务器！");
+                }
+            });
+            VolleyNetUtil.getInstance().setRequestQueue(getContext().getApplicationContext());//获取requestQueue
+            VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
         } catch (JSONException e) {
             e.printStackTrace();
+            RxToast.warning("当前网络状态不好，可能导致加载缓慢！");
         }
 //        for(int i = 0; i< 20 ; ++i){
 //            ResumeDelivery test1 = new ResumeDelivery("王铭君","待就业六人组PM","福州大学","软件工程",5);
@@ -231,6 +227,7 @@ public class ComResumeCardFragment extends Fragment {
 //        }
     }
 }
+
 class TempResponseResumeData<T> {
     private Integer currentPage;
     private Integer numOfPage;

@@ -38,6 +38,5 @@ public class VolleyNetUtil {
 
     public void setRequestQueue(Context context) {
         this.requestQueue = Volley.newRequestQueue(context); //把上下文context作为参数传递进去
-        ;
     }
 }

@@ -29,6 +29,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
+import com.vondear.rxtool.view.RxToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -291,7 +292,7 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
                                     switch (postResult.getResultCode()) {
                                         case "200": {
                                             //跳转到我的简历界面
-                                            Toast.makeText(NewResumeActivity.this, "创建简历成功", Toast.LENGTH_SHORT).show();
+                                            RxToast.success("创建简历成功");
                                             //并打开MyResumeActivity
                                             Intent intent5 = new Intent(NewResumeActivity.this, MyResumeActivity.class);
                                             startActivity(intent5);
@@ -299,8 +300,7 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
                                         }
                                         break;
                                         default: {
-                                            Toast.makeText(NewResumeActivity.this, "创建简历失败", Toast.LENGTH_SHORT).show();
-                                            Log.d(TAG, "创建简历失败" + postResult.getResultCode());
+                                            RxToast.error("创建简历失败");
                                         }
 
                                     }
@@ -372,12 +372,12 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
                                     switch (postResult.getResultCode()) {
                                         case "200": {
                                             //跳转到我的简历界面，打开MyResumeActivity
-                                            Toast.makeText(NewResumeActivity.this, "更新简历成功", Toast.LENGTH_SHORT).show();
+                                            RxToast.success("更新简历成功");
                                             finish();
                                         }
                                         break;
                                         default: {
-                                            Toast.makeText(NewResumeActivity.this, "更新简历失败", Toast.LENGTH_SHORT).show();
+                                            RxToast.error("更新简历失败");
                                             Log.d(TAG, "更新简历失败" + postResult.getResultCode());
                                         }
 
@@ -534,7 +534,7 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
                                 }
                                 break;
                                 default: {
-                                    Toast.makeText(NewResumeActivity.this, "更新简历失败", Toast.LENGTH_SHORT).show();
+                                    RxToast.error("更新简历失败");
                                     Log.d(TAG, "更新简历失败" + response.getString(PostParameterName.RESPOND_RESULTCODE));
                                 }
 

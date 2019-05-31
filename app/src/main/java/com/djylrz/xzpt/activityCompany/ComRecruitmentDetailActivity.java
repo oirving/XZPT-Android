@@ -117,6 +117,41 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         }
     };
 
+    //新布局
+    private TextView jobName;//岗位名称
+    private TextView publishTime;//发布时间
+    private TextView publishState;//发布状态
+    private TextView currentCount;//当前已投递人数
+    private TextView salary;//工资
+    private TextView location;//工作地点
+    private TextView degree;//学历要求
+    private TextView workTimeTextView;//工作时间
+    private TextView companyName;//公司名称
+    private TextView description;//岗位描述
+    private TextView deliveryRequest;//投递详细要求
+    private TextView industryLabelTextView;//行业标签内容
+    private TextView stationLabel;//岗位标签内容
+    private TextView contact;//联系方式
+    private TextView headcount;//招聘人数
+
+    private void getView(){
+        jobName = findViewById(R.id.jobName);//岗位名称
+        publishTime = findViewById(R.id.publish_time);//发布时间
+        publishState = findViewById(R.id.publish_status);//发布状态
+        currentCount = findViewById(R.id.current_count);//当前已投递人数
+        salary = findViewById(R.id.salary);//工资
+        location = findViewById(R.id.location);//工作地点
+        degree = findViewById(R.id.degree);//学历要求
+        workTimeTextView = findViewById(R.id.workTime);//工作时间
+        companyName = findViewById(R.id.companyName);//公司名称
+        description = findViewById(R.id.description);//岗位描述
+        deliveryRequest = findViewById(R.id.deliveryRequest);//投递详细要求
+        contact = findViewById(R.id.contact);//联系方式
+        industryLabelTextView = findViewById(R.id.industryLabel);//行业标签内容
+        stationLabel = findViewById(R.id.stationLabel);//岗位标签内容
+        headcount = findViewById(R.id.headcount);//招聘人数
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +163,10 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
         btnEdit = (Button) findViewById(R.id.btn_edit);
         btnOp = (Button) findViewById(R.id.btn_stop);
+
+        //新布局
+        getView();
+
         //设置标题栏
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setTitle("岗位详情");
@@ -171,10 +210,6 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         Intent intent = getIntent();
         recruitment = (Recruitment) intent.getSerializableExtra("recruitment");
         if (recruitment == null) {
-            //开始加载动画
-            MyApplication.rxDialogShapeLoading = new RxDialogShapeLoading(mContext);
-            MyApplication.rxDialogShapeLoading.setLoadingText("正在加载中");
-            MyApplication.rxDialogShapeLoading.show();
             recruitment = new Recruitment();
             Long recruitmentId = intent.getLongExtra("recruitmentId", 0);
             recruitment.setRecruitmentId(recruitmentId);
@@ -188,14 +223,14 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         //设置按钮
         if (recruitment.getValidate() == 0) {
             btnEdit.setText("编辑岗位");
-            btnEdit.setTextColor(getResources().getColor(R.color.blue));
+            btnEdit.setBackground(getResources().getDrawable(R.drawable.button_style));
             btnOp.setText("结束招聘");
-            btnOp.setTextColor(getResources().getColor(R.color.colorPrimary));
+            btnOp.setBackground(getResources().getDrawable(R.drawable.red_button_style));
         } else {
             btnEdit.setText("删除岗位");
-            btnEdit.setTextColor(getResources().getColor(R.color.red));
+            btnEdit.setBackground(getResources().getDrawable(R.drawable.red_button_style));
             btnOp.setText("重新招聘");
-            btnOp.setTextColor(getResources().getColor(R.color.colorPrimary));
+            btnOp.setBackground(getResources().getDrawable(R.drawable.button_style));
         }
         btnEdit.setOnClickListener(this);
         btnOp.setOnClickListener(this);
@@ -308,10 +343,10 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         }
 
         RxTextTool.getBuilder("").setBold().setAlign(Layout.Alignment.ALIGN_CENTER)
-                .append(recruitment.getJobName() + "\n").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.colorPrimary))
-                .append("发布时间： " + df2.format(recruitment.getPublishTime()) + "\n").setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.black)).setProportion((float) 0.8)
-                .append("发布公司： " + recruitment.getCompanyName() + "\n").setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.black)).setProportion((float) 0.8)
-                .append("当前已投递： " + recruitment.getCount() + "人\n").setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_CENTER).setForegroundColor(getResources().getColor(R.color.black)).setProportion((float) 0.8)
+                .append(recruitment.getJobName() + "\n").setBold().setForegroundColor(getResources().getColor(R.color.black))
+                .append("发布时间： " + df2.format(recruitment.getPublishTime()) + "\n").setFontFamily("serif").setForegroundColor(getResources().getColor(R.color.black)).setProportion((float) 0.8)
+                .append("发布公司： " + recruitment.getCompanyName() + "\n").setFontFamily("serif").setForegroundColor(getResources().getColor(R.color.black)).setProportion((float) 0.8)
+                .append("当前已投递： " + recruitment.getCount() + "人\n").setFontFamily("serif").setForegroundColor(getResources().getColor(R.color.black)).setProportion((float) 0.8)
 
                 .append("状态：" + recruitmentStatus + "\n")
                 .setBold().setFontFamily("serif").setAlign(Layout.Alignment.ALIGN_OPPOSITE)
@@ -348,6 +383,23 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
 
 
                 .into(mTvAboutSpannable);
+
+                //新布局信息填入
+            jobName.setText(recruitment.getJobName());
+            publishTime.setText(df2.format(recruitment.getPublishTime()));
+            publishState.setText(recruitmentStatus);
+            currentCount.setText((recruitment.getCount()+"人"));
+            salary.setText(recruitment.getSalary());
+            location.setText(recruitment.getLocation());
+            degree.setText(recruitment.getDegree());
+            workTimeTextView.setText(workTime);
+            companyName.setText(recruitment.getCompanyName());
+            description.setText(recruitment.getDescription());
+            deliveryRequest.setText(recruitment.getDeliveryRequest());
+            industryLabelTextView.setText(industryLabel);
+            stationLabel.setText(strStationLabels);
+            contact.setText(recruitment.getContact());
+            headcount.setText((recruitment.getHeadCount()+"人"));
     }
 
     /**
@@ -387,11 +439,11 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                                 public void run() {
                                     //关闭加载动画
                                     if (postResult.getResultCode() == 200) {
-                                        Toast.makeText(mContext, "更新状态成功", Toast.LENGTH_SHORT).show();
+                                        RxToast.success("更新状态成功");
                                         //刷新页面
                                         getNewRecruitment();
                                     } else {
-                                        Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
+                                        RxToast.error("更新状态失败，请重试");
                                     }
                                 }
                             });
@@ -400,13 +452,13 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("TAG", error.getMessage(), error);
-                    Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
+                    RxToast.error("更新状态失败，请重试");
                 }
             });
 
             requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
-            Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
+            RxToast.error("更新状态失败，请重试");
             e.printStackTrace();
         }
     }
@@ -444,15 +496,13 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    //结束加载动画
-                                    MyApplication.rxDialogShapeLoading.hide();
                                     if (postResult.getResultCode() == 200) {
                                         finish();
                                         Intent intent = new Intent(mContext, ComRecruitmentDetailActivity.class);
                                         intent.putExtra("recruitment", recruitment);
                                         startActivity(intent);
                                     } else {
-                                        Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
+                                        RxToast.error("更新状态失败，请重试");
                                     }
                                 }
                             });
@@ -460,17 +510,13 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    //结束加载动画
-                    MyApplication.rxDialogShapeLoading.hide();
                     Log.e("TAG", error.getMessage(), error);
-                    Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
+                    RxToast.error("更新状态失败，请重试");
                 }
             });
             requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
-            //结束加载动画
-            MyApplication.rxDialogShapeLoading.hide();
-            Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
+            RxToast.error("更新状态失败，请重试");
             e.printStackTrace();
         }
     }
@@ -513,9 +559,9 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                                 public void run() {
                                     if (postResult.getResultCode() == 200) {
                                         finish();
-                                        Toast.makeText(mContext, "删除成功", Toast.LENGTH_LONG).show();
+                                        RxToast.success("删除成功");
                                     } else {
-                                        Toast.makeText(mContext, "删除失败，请联系客服", Toast.LENGTH_LONG).show();
+                                        RxToast.error("删除失败，请联系客服");
                                     }
                                 }
                             });
@@ -524,13 +570,13 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("TAG", error.getMessage(), error);
-                    Toast.makeText(mContext, "删除失败，请联系客服", Toast.LENGTH_LONG).show();
+                    RxToast.error("删除失败，请联系客服");
                 }
             });
 
             requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
-            Toast.makeText(mContext, "删除失败，请检查网络", Toast.LENGTH_LONG).show();
+            RxToast.error("删除失败，请检查网络");
             e.printStackTrace();
         }
     }

@@ -1,27 +1,85 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/white"
-    android:layout_marginBottom="1sp"
-    >
-    <TextView
-        android:id="@+id/interview_title"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/gray" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="自我介绍"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="15dp"
-        android:textColor="@color/colorDark"
-        android:textSize="17dp"
-        />
-    <TextView
-        android:id="@+id/interview_author"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="待就业六人组"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="15dp"
-        />
+        android:background="@drawable/bg_bbs_listview"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!--<View-->
+            <!--android:layout_width="2dp"-->
+            <!--android:layout_height="15dp"-->
+            <!--android:layout_marginRight="15dp"-->
+            <!--android:layout_marginTop="5dp"-->
+            <!--android:background="@color/bbs_listview_blue" />-->
+
+            <ImageView
+                android:id="@+id/ic_title_section"
+                android:layout_width="15.0dip"
+                android:layout_height="25.0dip"
+                android:layout_marginRight="5.0dip"
+                android:src="@drawable/ic_course_section_icon" />
+
+
+            <TextView
+                android:id="@+id/interview_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="这是标题"
+                android:textColor="@color/bbs_listview_gray2"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp">
+
+            <TextView
+                android:id="@+id/interview_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="我爱福大"
+                android:textColor="@color/bbs_listview_gray3"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="发布日期: "
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tip_listview_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="2018.8.8"
+                android:textColor="@color/bbs_listview_gray3"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

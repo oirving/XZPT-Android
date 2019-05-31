@@ -12,9 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:src="@drawable/resumemodel2"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/rectangle_style"
-        />
+        android:layout_gravity="center_horizontal"/>
     <TextView
         android:id="@+id/resume_model_title"
         android:layout_width="wrap_content"

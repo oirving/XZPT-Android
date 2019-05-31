@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,9 +14,9 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.djylrz.xzpt.MyApplication;
+import com.bumptech.glide.Glide;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activity.DefaultMessagesActivity;
 import com.djylrz.xzpt.bean.Resume;
@@ -47,6 +48,7 @@ import com.nightonke.boommenu.OnBoomListener;
 import com.nightonke.boommenu.Piece.PiecePlaceEnum;
 import com.vondear.rxtool.RxTextTool;
 import com.vondear.rxtool.RxTool;
+import com.vondear.rxtool.view.RxToast;
 import com.vondear.rxui.view.dialog.RxDialogLoading;
 
 import org.json.JSONException;
@@ -72,11 +74,66 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
     private int nextNum = 0;//用户点击哪一个next菜单
     private static final String TAG = "ComResumeDeliveryRecord";
     private ResumeDelivery resumeDelivery;//用于发送json的简历投递记录对象
+    private int colorArray[]={
+            R.color.course_color6,
+            R.color.course_color7,
+            R.color.course_color8,
+            R.color.course_color1,
+            R.color.course_color2,
+            R.color.course_color3,
+            R.color.course_color4,
+            R.color.course_color5,
+            R.color.course_color9,
+            R.color.course_color10,
+            R.color.course_color11,};
+
+    //新布局
+    private TextView userName;//姓名
+    private TextView basicInfoPhone;//电话号码
+    private TextView basicInfoEmail;//邮件
+    private TextView basicInfoSex;//性别
+    private ImageView headView;//头像
+    private TextView resumeRecordState;//投递状态
+    private TextView expectPosition;//期望工作
+    private TextView expectCity;//期望工作城市
+
+    private TextView highestEducationTextView;//最高学历
+    private TextView school;//学校
+    private TextView speciality;//专业
+    private TextView time;//在校时间
+
+    private TextView awardsTextView;
+    private TextView projectTextView;
+    private TextView practiceTextView;
+
+    private void getView(){
+        userName = findViewById(R.id.user_name);//姓名
+        basicInfoPhone = findViewById(R.id.basic_info_phone);//电话号码
+        basicInfoEmail = findViewById(R.id.basic_info_email);//邮件
+        basicInfoSex = findViewById(R.id.basic_info_sex);//性别
+        headView = findViewById(R.id.head_image);//头像
+        resumeRecordState = findViewById(R.id.resume_record_state);//简历投递状态
+
+        expectPosition = findViewById(R.id.job_name);//期望工作
+        expectCity = findViewById(R.id.job_location);//期望工作城市
+
+        highestEducationTextView = findViewById(R.id.highest_education);//最高学历
+        school = findViewById(R.id.school_name);//学校
+        speciality = findViewById(R.id.speciality);//专业
+        time = findViewById(R.id.education_time);//在校时间
+
+        awardsTextView = findViewById(R.id.awards_text_view);
+        projectTextView = findViewById(R.id.project_text_view);
+        practiceTextView = findViewById(R.id.practice_text_view);
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resume_delivery_record_detial);
         //获取布局控件
+        getView();
         toolbar = (Toolbar)findViewById(R.id.asa_toolbar);
         mTvAboutSpannable = (TextView)findViewById(R.id.tv_about_spannable);
         requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
@@ -101,28 +158,30 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
 
         //设置按钮
         btnRefuse.setText("拒绝");
-        btnRefuse.setTextColor(getResources().getColor(R.color.red));
         btnRefuse.setOnClickListener(this);
         btnNext.setText("下一步");
-        btnNext.setTextColor(getResources().getColor(R.color.colorPrimary));
         btnNext.setOnClickListener(this);
         btnChat.setText("发起聊天");
-        btnChat.setTextColor(getResources().getColor(R.color.colorPrimary));
         btnChat.setOnClickListener(this);
         //设置弹出式选择器
         bmbNext = (BoomMenuButton) findViewById(R.id.bmb_next);
+        bmbNext.setDimColor(0);
         bmbNext.setButtonEnum(ButtonEnum.Ham);//设置弹出样式
         bmbNext.setPiecePlaceEnum(PiecePlaceEnum.HAM_5);
         bmbNext.setButtonPlaceEnum(ButtonPlaceEnum.HAM_5);
         for (int i = 0; i < bmbNext.getButtonPlaceEnum().buttonNumber(); i++) {
             bmbNext.addBuilder(new HamButton.Builder()
-                    .normalImageRes(R.drawable.fzu_logo).imagePadding(new Rect(10, 10, 10, 10))
-                    .normalText(strNext[i]).textSize(26).textGravity(Gravity.CENTER));
+                    .normalImageRes(R.drawable.done)
+                    .imagePadding(new Rect(10,10,10,10))
+                    .normalText(strNext[i]).textSize(26).textGravity(Gravity.CENTER_VERTICAL)
+                    .normalColorRes(colorArray[i+4])
+                    .highlightedColorRes(colorArray[(i+4+1)])
+            .shadowColor(Color.parseColor("#000000")));
+
         }
         bmbNext.setOnBoomListener(new OnBoomListener() {
             @Override
             public void onClicked(int index, BoomButton boomButton) {
-                Toast.makeText(ComResumeDeliveryRecordDetailActivity.this, ""+index, Toast.LENGTH_SHORT).show();
 //                tv_importance.setText(str_importance[index]);
                 nextNum = index + 3;
                 resumeDelivery.setDeliveryStatus(nextNum);
@@ -205,13 +264,13 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("TAG", error.getMessage(), error);
-                    Toast.makeText(mContext, "获取数据失败，请重试", Toast.LENGTH_LONG).show();
+                    RxToast.error("获取数据失败，请重试");
                     finish();
                 }});
 
             requestQueue.add(jsonObjectRequest);
         } catch (JSONException e) {
-            Toast.makeText(mContext, "获取数据失败，请重试", Toast.LENGTH_LONG).show();
+            RxToast.error("获取数据失败，请重试");
             finish();
             e.printStackTrace();
         }
@@ -238,19 +297,19 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
         //1为未填写，2为大专及以上,3为本科及以上,4为硕士及以上,5为博士及以上
         switch ((int)resume.getHighestEducation()){
             case 1:
-                highestEducation = "未填写";
+                highestEducation = "其他";
                 break;
             case 2:
-                highestEducation = "大专及以上";
+                highestEducation = "大专";
                 break;
             case 3:
-                highestEducation = "本科及以上";
+                highestEducation = "本科";
                 break;
             case 4:
-                highestEducation = "硕士及以上";
+                highestEducation = "硕士";
                 break;
             case 5:
-                highestEducation = "博士及以上";
+                highestEducation = "博士";
                 break;
             default:
                 highestEducation = "未填写";
@@ -334,7 +393,30 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                 .append(resume.getPracticalExperience() + "\n").setBullet(60, getResources().getColor(R.color.colorPrimary)).setProportion((float)0.8)
 
                 .into(mTvAboutSpannable);
+        //简历数据填充到新布局中
+        userName.setText(resume.getUserName());//姓名
+        basicInfoPhone.setText(resume.getTelephone());//电话号码
+        basicInfoEmail.setText(resume.getEmail());//邮件
+        basicInfoSex.setText(sex);//性别
+        resumeRecordState.setBackgroundColor(getResources().getColor(colorArray[(int)resume.getResumeStatus()+1]));
+        resumeRecordState.setText(resumeRecordType);
+        //resumeRecordType;//todo 简历状态
+        Uri imgUri = Uri.parse(PostParameterName.DOWNLOAD_URL_RESUME_IMAGE_PREFIX + resume.getHeadUrl());//头像
+        Glide.with(getApplicationContext()).load(imgUri).into(headView);
+
+        expectPosition.setText((resume.getExpectWork()+""));//期望工作
+        expectCity.setText((resume.getExpectedCity()+""));//期望工作城市
+
+        highestEducationTextView.setText(highestEducation);//最高学历
+        school.setText((resume.getSchool()+""));//学校
+        speciality.setText((resume.getSpeciality()+""));//专业
+        time.setText((resume.getStartTime()+"-"+resume.getEndTime()));//在校时间
+
+        awardsTextView.setText((resume.getCertificate()+""));
+        projectTextView.setText((resume.getProjectExperience()+""));
+        practiceTextView.setText((resume.getPracticalExperience()+""));
     }
+
 
     @Override
     public void onClick(View v) {
@@ -386,10 +468,10 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                                 @Override
                                 public void run() {
                                     if(postResult.getResultCode()==200){
-                                        Toast.makeText(mContext, "更新状态成功", Toast.LENGTH_SHORT).show();
+                                        RxToast.success("更新状态成功");
                                         resumeDeliveryRecordVO.setDeliveryStatus(resumeDelivery.getDeliveryStatus());
                                     }else{
-                                        Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
+                                        RxToast.error("更新状态失败，请重试");
                                     }
                                     resumeDeliveryRecordVO.setDeliveryStatus(resumeDelivery.getDeliveryStatus());
                                     //刷新页面
@@ -403,13 +485,14 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e("TAG", error.getMessage(), error);
-                    Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
+                    Log.e("TAG", error.getMessage(), error);                                        RxToast.error("更新状态失败，请重试");
+                    RxToast.error("更新状态失败，请重试");
+
                 }});
 
             requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
-            Toast.makeText(mContext, "获取数据失败，请重试", Toast.LENGTH_LONG).show();
+            RxToast.error("获取数据失败，请重试");
             finish();
             e.printStackTrace();
         }

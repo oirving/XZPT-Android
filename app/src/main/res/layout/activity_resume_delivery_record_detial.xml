@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activityCompany.ComRecruitmentDetailActivity">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/asa_toolbar"
         android:layout_width="match_parent"
@@ -13,8 +14,8 @@
         android:background="@color/colorPrimary"
         android:theme="@style/ToolbarTheme"
         android:titleTextColor="@color/white"
-        app:title="求职信息详情">
-    </android.support.v7.widget.Toolbar>
+        app:title="求职信息详情"></android.support.v7.widget.Toolbar>
+
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -22,7 +23,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/gray"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:padding="8dp">
@@ -32,51 +33,382 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
                 android:clickable="true"
+                android:visibility="gone"
                 android:textColor="@color/brown1"
-                android:textSize="22dp"/>
+                android:textSize="22dp" />
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical">
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        style="@style/resume_item_style_paddings"
+                        android:orientation="horizontal">
+                    <LinearLayout
+                            android:layout_margin="10dp"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="10dp"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_gravity="center">
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+                            <TextView
+                                    android:id="@+id/user_name"
+                                    android:layout_width="177dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:text="李达康"
+                                    android:textSize="30dp"
+                                    android:textColor="@color/colorDark"/>
+                            <TextView
+                                    android:id="@+id/resume_record_state"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="面试待安排"
+                                    android:padding="8dp"
+                                    android:textSize="16sp"
+                                    android:layout_gravity="center"
+                                    android:textAlignment="center"
+                                    android:background="@color/course_color3"
+                                    android:textColor="@color/white"/>
+                        </LinearLayout>
+
+                        <TextView
+                                android:layout_marginTop="3dp"
+                                android:id="@+id/basic_info_sex"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="male"/>
+                        <TextView
+                                android:layout_marginTop="3dp"
+                                android:id="@+id/basic_info_phone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="xxx-xxxx-xxxx"/>
+                        <TextView
+                                android:layout_marginTop="3dp"
+                                android:id="@+id/basic_info_email"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="xxxxxxxxx@xxxxxx.xxxxx"/>
+
+                    </LinearLayout>
+                    <ImageView
+                            android:id="@+id/head_image"
+                            android:layout_weight="0"
+                            android:layout_width="90dp"
+                            android:layout_height="90dp"
+                            android:layout_gravity="center"
+                            android:src="@mipmap/tab_contact_unselect"
+                            android:layout_marginRight="15dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:background="@color/white"
+                        style="@style/resume_item_style_paddings">
+                    <TextView
+                            android:layout_marginTop="15dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="求职期望"
+                            android:textSize="20dp"
+                            android:textColor="@color/colorDark"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginBottom="15dp"/>
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:orientation="vertical">
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginRight="15dp"
+                                android:layout_marginBottom="10dp"
+                                android:orientation="horizontal">
+                            <TextView
+                                    android:id="@+id/job_name"
+                                    android:layout_height="wrap_content"
+                                    android:layout_width="wrap_content"
+                                    android:text="job_name"
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginBottom="10dp"
+                                android:layout_marginRight="15dp"
+                                android:orientation="horizontal">
+
+                            <TextView
+                                    android:textColor="@color/gray_text"
+                                    android:id="@+id/job_location"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="5dp"
+                                    android:text="job_location" />
+
+                            <TextView
+                                    android:id="@+id/job_industry"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="5dp"
+                                    android:textColor="@color/gray_text"
+                                    tools:text="job_industry" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:orientation="vertical"
+                        style="@style/resume_item_style_paddings">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginBottom="15dp"
+                            android:text="教育经历"
+                            android:textSize="20dp"
+                            android:textColor="@color/colorDark"/>
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:orientation="vertical">
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginRight="15dp"
+                                android:layout_marginBottom="10dp"
+                                android:orientation="horizontal">
+                            <TextView
+                                    android:id="@+id/school_name"
+                                    android:layout_height="wrap_content"
+                                    android:layout_width="wrap_content"
+                                    android:text="school_name"
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+                            <TextView
+                                    android:id="@+id/speciality"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="7dp"
+                                    android:layout_width="wrap_content"
+                                    android:text="speciality"
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+                            <TextView
+                                    android:id="@+id/highest_education"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="7dp"
+                                    android:layout_width="0dp"
+                                    android:text="highestEducation"
+                                    android:textColor="@color/black"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginBottom="10dp"
+                                android:layout_marginRight="15dp"
+                                android:orientation="horizontal">
+
+                            <TextView
+                                    android:id="@+id/education_time"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="5dp"
+                                    android:textColor="@color/gray_text"
+                                    android:text="education_time" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        style="@style/resume_item_style_paddings">
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white">
+                        <TextView
+                                android:layout_marginTop="15dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="实习经历"
+                                android:textSize="20dp"
+                                android:textColor="@color/colorDark"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginBottom="15dp"/>
+                    </LinearLayout>
+
+                    <TextView
+                            android:id="@+id/practice_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:paddingTop="10dp"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="15dp"
+                            android:paddingBottom="10dp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        style="@style/resume_item_style_paddings">
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white">
+                        <TextView
+                                android:layout_marginTop="15dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="项目经历"
+                                android:textSize="20dp"
+                                android:textColor="@color/colorDark"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginBottom="15dp"/>
+                    </LinearLayout>
+
+                    <TextView
+                            android:id="@+id/project_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:paddingTop="10dp"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="15dp"
+                            android:paddingBottom="10dp"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        style="@style/resume_item_style_paddings">
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:background="@color/white">
+                        <TextView
+                                android:layout_marginTop="15dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="荣誉证书"
+                                android:textSize="20dp"
+                                android:textColor="@color/colorDark"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginBottom="15dp"/>
+                    </LinearLayout>
+                    <TextView
+                            android:id="@+id/awards_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:paddingTop="10dp"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="15dp"
+                            android:paddingBottom="10dp"
+                            tools:text="XXXXXXXX"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginRight="15dp"
-                android:orientation="horizontal"
-                android:gravity="center_horizontal">
+                android:paddingTop="10dp"
+                android:paddingBottom="8dp"
+                android:gravity="center_horizontal"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
                 <Button
                     android:id="@+id/btn_refuse"
-                    android:textColor="@color/colorPrimary"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="22dp"
-                    android:text="button"/>
+                    android:text="button"
+                    android:textColor="@color/white"
+                    android:textSize="16dp"
+                    android:background="@drawable/red_button_style"
+                    android:textStyle="bold" />
+
                 <Button
                     android:id="@+id/btn_next"
-                    android:textColor="@color/colorAccent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="22dp"
-                    android:text="button"/>
+                    android:layout_marginLeft="20dp"
+                    android:text="button"
+                    android:textColor="@color/white"
+                    android:textSize="16dp"
+                    android:background="@drawable/button_style"
+                    android:textStyle="bold" />
+
                 <Button
                     android:id="@+id/btn_message"
-                    android:textColor="@color/colorPrimary"
-                    android:layout_marginLeft="10dp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="22dp"
-                    android:text="发起聊天"/>
+                    android:layout_marginLeft="20dp"
+                    android:text="发起聊天"
+                    android:textColor="@color/white"
+                    android:textSize="16dp"
+                    android:background="@drawable/button_style"
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
     <com.nightonke.boommenu.BoomMenuButton
         android:id="@+id/bmb_next"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="wrap_content" />
 </LinearLayout>
