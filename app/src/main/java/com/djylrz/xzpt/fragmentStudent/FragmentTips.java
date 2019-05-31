@@ -55,6 +55,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
+import com.vondear.rxtool.view.RxToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -91,7 +92,7 @@ public class FragmentTips extends Fragment implements OnRefreshListener, OnLoadM
                     lRecyclerViewAdapter.notifyDataSetChanged();
                     break;
                 case 2:
-                    Toast.makeText(getContext(), "加载出错[好像没网了哦]", Toast.LENGTH_LONG).show();
+                    RxToast.error("加载出错[好像没网了哦]");
                     lRecyclerView.refreshComplete(10);
                     lRecyclerViewAdapter.notifyDataSetChanged();
                     break;
@@ -104,7 +105,7 @@ public class FragmentTips extends Fragment implements OnRefreshListener, OnLoadM
                     lRecyclerViewAdapter.notifyDataSetChanged();
                     break;
                 case 8:
-                    Toast.makeText(getContext(), "加载出错[好像没网了哦]", Toast.LENGTH_LONG).show();
+                    RxToast.error("加载出错[好像没网了哦]");
                     lRecyclerView.refreshComplete(10);
                     lRecyclerViewAdapter.notifyDataSetChanged();
                     break;

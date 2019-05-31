@@ -28,6 +28,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
+import com.vondear.rxtool.view.RxToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -81,7 +82,7 @@ public class MyResumeActivity extends AppCompatActivity {
                 //添加一份简历，跳转到简历编辑页面,不可变的基本信息可以先填入 ->小榕
                 Intent intent = new Intent(MyResumeActivity.this,EditMyResumeActivity.class);
                 intent.putExtra(Constants.INTENT_PUT_EXTRA_KEY_CREATE_OR_EDIT_RESUME,Constants.CREATE_RESUME);
-                Toast.makeText(v.getContext(), Constants.CREATE_RESUME, Toast.LENGTH_SHORT).show();
+                RxToast.info( Constants.CREATE_RESUME);
                 startActivity(intent);
             }
         });
@@ -93,7 +94,6 @@ public class MyResumeActivity extends AppCompatActivity {
             public void onDelete(int i) {
                 myResumeList.remove(i);
                 adapter.notifyDataSetChanged();
-                Toast.makeText(getContext(),""+i,Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -165,7 +165,7 @@ public class MyResumeActivity extends AppCompatActivity {
                                     public void run() {
                                         //处理空列表
                                         if (myResumeList.size()==0){
-                                            Toast.makeText(MyResumeActivity.this, "无未投递简历", Toast.LENGTH_SHORT).show();
+                                            RxToast.info("无未投递简历");
                                         }
                                         //todo 处理选择投递的简历
                                         if (getIntent().getIntExtra("selectResume",0)==CHOOSE_RESUME_TO_DELIVER){//选择简历用于投体

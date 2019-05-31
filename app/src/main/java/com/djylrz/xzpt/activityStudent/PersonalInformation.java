@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import com.vondear.rxtool.view.RxToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -187,12 +188,12 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                                             public void run() {
                                                 switch(postResult.getResultCode()){
                                                     case "200":{
-                                                        Toast.makeText(PersonalInformation.this, "修改个人信息成功", Toast.LENGTH_SHORT).show();
+                                                        RxToast.success("修改个人信息成功");
                                                         getStudentInfo();
                                                         finish();//保存成功，结束当前页面
                                                     }break;
                                                     default:{
-                                                        Toast.makeText(PersonalInformation.this, "修改个人信息失败", Toast.LENGTH_SHORT).show();
+                                                        RxToast.error("修改个人信息失败");
                                                     }
                                                 }
                                                 PersonalInformation.this.finish();
@@ -209,7 +210,7 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(this,"电话号码输入有误！",Toast.LENGTH_SHORT).show();
+                    RxToast.warning("电话号码输入有误");
                 }
                 break;
             default:

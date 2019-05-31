@@ -362,7 +362,7 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener {
         Intent student = new Intent(ActorChoose.this, StudentLogin.class);
         startActivity(student);
         //finish();
-        Toast.makeText(ActorChoose.this, "学生用户", Toast.LENGTH_SHORT).show();
+        RxToast.info("学生用户");
     }
 
     //企业端使用用户名和密码登录
@@ -370,6 +370,6 @@ public class ActorChoose extends BaseActivity implements View.OnClickListener {
         Intent company = new Intent(ActorChoose.this, CompanyLogin.class);
         startActivity(company);
         //finish();
-        Toast.makeText(ActorChoose.this, "企业用户", Toast.LENGTH_SHORT).show();
+        RxToast.info("企业用户");
     }
 }

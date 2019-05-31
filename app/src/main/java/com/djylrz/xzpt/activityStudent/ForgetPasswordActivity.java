@@ -20,6 +20,7 @@ import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.google.gson.Gson;
 
+import com.vondear.rxtool.view.RxToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,14 +64,14 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
                                             switch (postResult.getResultCode())
                                             {
                                                 case "200":{
-                                                    Toast.makeText(ForgetPasswordActivity.this, "已发送验证码到邮箱："+user.getEmail(), Toast.LENGTH_SHORT).show();
+                                                    RxToast.success("已发送验证码到邮箱");
                                                     Intent intent = new Intent(ForgetPasswordActivity.this,ResetPasswordActivity.class);
                                                     intent.putExtra(PostParameterName.REQUEST_EMAIL,user.getEmail());
                                                     startActivity(intent);
                                                     finish();
                                                 }break;
                                                 default:{
-                                                    Toast.makeText(ForgetPasswordActivity.this, "请求发送验证码失败", Toast.LENGTH_SHORT).show();
+                                                    RxToast.error("请求发送验证码失败");
                                                 }
                                             }
                                         }

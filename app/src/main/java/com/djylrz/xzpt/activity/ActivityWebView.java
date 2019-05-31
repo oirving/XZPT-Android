@@ -27,6 +27,7 @@ import com.vondear.rxtool.RxBarTool;
 import com.vondear.rxtool.RxConstants;
 import com.vondear.rxtool.RxImageTool;
 import com.vondear.rxtool.RxKeyboardTool;
+import com.vondear.rxtool.view.RxToast;
 import com.vondear.rxui.activity.ActivityBase;
 import com.vondear.rxui.view.RxTextAutoZoom;
 
@@ -248,7 +249,7 @@ public class ActivityWebView extends ActivityBase {
                 super.onBackPressed();
                 return;
             } else {
-                Toast.makeText(getBaseContext(), "再次点击返回键退出", Toast.LENGTH_SHORT).show();
+                RxToast.info("再次点击返回键退出");
             }
             mBackPressed = System.currentTimeMillis();
         }

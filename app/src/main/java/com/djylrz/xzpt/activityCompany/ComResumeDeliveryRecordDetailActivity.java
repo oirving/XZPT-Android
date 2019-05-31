@@ -48,6 +48,7 @@ import com.nightonke.boommenu.OnBoomListener;
 import com.nightonke.boommenu.Piece.PiecePlaceEnum;
 import com.vondear.rxtool.RxTextTool;
 import com.vondear.rxtool.RxTool;
+import com.vondear.rxtool.view.RxToast;
 import com.vondear.rxui.view.dialog.RxDialogLoading;
 
 import org.json.JSONException;
@@ -181,7 +182,6 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
         bmbNext.setOnBoomListener(new OnBoomListener() {
             @Override
             public void onClicked(int index, BoomButton boomButton) {
-                Toast.makeText(ComResumeDeliveryRecordDetailActivity.this, ""+index, Toast.LENGTH_SHORT).show();
 //                tv_importance.setText(str_importance[index]);
                 nextNum = index + 3;
                 resumeDelivery.setDeliveryStatus(nextNum);
@@ -264,13 +264,13 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("TAG", error.getMessage(), error);
-                    Toast.makeText(mContext, "获取数据失败，请重试", Toast.LENGTH_LONG).show();
+                    RxToast.error("获取数据失败，请重试");
                     finish();
                 }});
 
             requestQueue.add(jsonObjectRequest);
         } catch (JSONException e) {
-            Toast.makeText(mContext, "获取数据失败，请重试", Toast.LENGTH_LONG).show();
+            RxToast.error("获取数据失败，请重试");
             finish();
             e.printStackTrace();
         }
@@ -468,10 +468,10 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                                 @Override
                                 public void run() {
                                     if(postResult.getResultCode()==200){
-                                        Toast.makeText(mContext, "更新状态成功", Toast.LENGTH_SHORT).show();
+                                        RxToast.success("更新状态成功");
                                         resumeDeliveryRecordVO.setDeliveryStatus(resumeDelivery.getDeliveryStatus());
                                     }else{
-                                        Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
+                                        RxToast.error("更新状态失败，请重试");
                                     }
                                     resumeDeliveryRecordVO.setDeliveryStatus(resumeDelivery.getDeliveryStatus());
                                     //刷新页面
@@ -485,13 +485,14 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e("TAG", error.getMessage(), error);
-                    Toast.makeText(mContext, "更新状态失败，请重试", Toast.LENGTH_LONG).show();
+                    Log.e("TAG", error.getMessage(), error);                                        RxToast.error("更新状态失败，请重试");
+                    RxToast.error("更新状态失败，请重试");
+
                 }});
 
             requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
-            Toast.makeText(mContext, "获取数据失败，请重试", Toast.LENGTH_LONG).show();
+            RxToast.error("获取数据失败，请重试");
             finish();
             e.printStackTrace();
         }

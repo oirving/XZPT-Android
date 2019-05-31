@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activity.ActorChoose;
 import com.djylrz.xzpt.listener.DownloadListener;
+import com.vondear.rxtool.view.RxToast;
 
 import java.io.File;
 
@@ -41,7 +42,7 @@ public class DownloadService extends Service {
             //下载成功时将前台服务通知关闭，并创建一个下载成功的通知
             stopForeground(true);
             getNotificationManager().notify(1,getNotification("下载完成",-1));
-            Toast.makeText(DownloadService.this, "下载完成", Toast.LENGTH_SHORT).show();
+            RxToast.success("下载完成");
 
             //安装apk
             String fileName = downloadUrl.substring(downloadUrl.lastIndexOf("/"));
@@ -56,20 +57,20 @@ public class DownloadService extends Service {
             //下载失败时将前台服务通知关闭，并创建一个下载失败的通知
             stopForeground(true);
             getNotificationManager().notify(1,getNotification("下载失败",-1));
-            Toast.makeText(DownloadService.this, "下载失败", Toast.LENGTH_SHORT).show();
+            RxToast.error("下载失败");
         }
 
         @Override
         public void onPaused() {
             downloadTask = null;
-            Toast.makeText(DownloadService.this, "下载暂停", Toast.LENGTH_SHORT).show();
+            RxToast.info("下载暂停");
         }
 
         @Override
         public void onCanceled() {
             downloadTask = null;
             stopForeground(true);
-            Toast.makeText(DownloadService.this, "下载取消", Toast.LENGTH_SHORT).show();
+            RxToast.info("下载取消");
         }
     };
 
@@ -86,7 +87,7 @@ public class DownloadService extends Service {
                 downloadTask = new DownloadTask(listener);
                 downloadTask.execute(downloadUrl);
                 startForeground(1, getNotification("下载中...", 0));
-                Toast.makeText(DownloadService.this, "下载中...", Toast.LENGTH_SHORT).show();
+                RxToast.info("下载中...");
             }
         }
 
@@ -110,7 +111,7 @@ public class DownloadService extends Service {
                     }
                     getNotificationManager().cancel(1);
                     stopForeground(true);
-                    Toast.makeText(DownloadService.this, "Canceled", Toast.LENGTH_SHORT).show();
+                    RxToast.info("Canceled");
                 }
             }
         }

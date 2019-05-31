@@ -25,6 +25,7 @@ import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.vondear.rxtool.view.RxToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,7 +74,6 @@ public class JobIntentionActivity extends BaseActivity implements View.OnClickLi
         industry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(JobIntentionActivity.this,"行业标签"+Constants.INDUSTRY_LABEL[position], Toast.LENGTH_SHORT).show();
                 user.setIndustryLabel(position);
             }
             @Override
@@ -90,7 +90,6 @@ public class JobIntentionActivity extends BaseActivity implements View.OnClickLi
         workTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(JobIntentionActivity.this,"工作时间制度"+Constants.WORK_TIME[position], Toast.LENGTH_SHORT).show();
                 user.setWorkTime(position);
             }
             @Override
@@ -131,12 +130,12 @@ public class JobIntentionActivity extends BaseActivity implements View.OnClickLi
                                         public void run() {
                                             switch(postResult.getResultCode()){
                                                 case "200":{
-                                                    Toast.makeText(JobIntentionActivity.this, "修改个人信息成功", Toast.LENGTH_SHORT).show();
+                                                    RxToast.success("修改个人信息成功");
                                                     getStudenInfo();
                                                     finish();//保存成功，结束当前页面
                                                 }break;
                                                 default:{
-                                                    Toast.makeText(JobIntentionActivity.this, "修改个人信息失败", Toast.LENGTH_SHORT).show();
+                                                    RxToast.error("修改个人信息失败");
                                                 }
                                             }
                                             JobIntentionActivity.this.finish();

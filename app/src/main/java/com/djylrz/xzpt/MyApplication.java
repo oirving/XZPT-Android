@@ -230,7 +230,6 @@ public class MyApplication extends Application {
                 case MyApplication.REGISTER_XMPUSH_SUCCESS:
                     //显示xmpush注册成功提示
                     String s = (String) msg.obj;
-                    //Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
                     break;
             }
 
