@@ -17,7 +17,7 @@ public class PostParameterName {
     public static final String POST_URL_GETVERIFICATIONCODE = HOST+"/getverificationcode/";//获取验证码接口
     public static final String POST_URL_GET_USER_BY_TOKEN = HOST +"/user/getuserbytoken?token=";//查看用户信息
     public static final String POST_URL_UPDATE_USER_INRO = HOST + "/user/updateinfo?token=";//修改用户信息
-    public static final String POST_URL_RESET_PASSWORD = HOST +"/user/resetpasswd?";//找回密码URL
+    public static final String POST_URL_RESET_PASSWORD = HOST +"/user/resetpasswd?";//学生找回密码URL
     public static final String POST_URL_USER_GET_RECRUITMENT = HOST + "/user/getrecruitment?token="; // 查看招聘信息
 
     public static final String POST_URL_GET_RECOMMEND = HOST +"/user/getrecommend?token=";//获取推荐信息URL
@@ -50,6 +50,8 @@ public class PostParameterName {
     public static final String GET_URL_ALL_GET_CHAT_CONTENT_LIST = "https://mimc.chat.xiaomi.net/api/contact/";//用户/企业 获取历史消息列表
     public static final String GET_URL_WEEK_GET_MESSAGE_LIST_BETWEEN_TWO_PERSON = "https://mimc.chat.xiaomi.net/api/msg/p2p/queryOnCount/";//用户/企业 获取两个人之间的指定数量的历史消息
     public static final String POST_GET_DELIVERY_INFORMATION_FILE = HOST+"/company/export/excel/resume?token=";//企业获取投递者信息文件下载链接
+    public static final String POST_URL_RESET_PASSWORD_COMPANY = HOST +"/company/resetpasswd?";//企业找回密码URL
+
 
     public static final String REQUEST_CODE = "code";
     public static final String REQUEST_EMAIL = "email";

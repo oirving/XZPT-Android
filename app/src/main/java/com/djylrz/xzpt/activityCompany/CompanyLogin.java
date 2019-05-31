@@ -19,6 +19,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.activity.BaseActivity;
+import com.djylrz.xzpt.activityStudent.ForgetPasswordActivity;
+import com.djylrz.xzpt.activityStudent.StudentLogin;
 import com.djylrz.xzpt.bean.Company;
 import com.djylrz.xzpt.bean.PostResult;
 import com.djylrz.xzpt.bean.TempResponseData;
@@ -87,8 +89,10 @@ public class CompanyLogin extends BaseActivity implements View.OnClickListener {
                 new LoginAsyncTask().execute();
                 break;
             case R.id.company_forget_password_button:
-                //Intent forgetPassword = new Intent();//跳到忘记密码
-                //startActivity(forgetPassword);
+                Intent forgetPassword = new Intent(CompanyLogin.this, ForgetPasswordActivity.class);//跳到忘记密码
+                forgetPassword.putExtra("TYPE","company");
+                startActivity(forgetPassword);
+                RxToast.info("忘记密码");
                 break;
             case R.id.company_back_button:
                 finish();

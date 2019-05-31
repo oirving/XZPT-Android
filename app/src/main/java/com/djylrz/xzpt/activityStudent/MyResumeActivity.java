@@ -48,7 +48,10 @@ public class MyResumeActivity extends AppCompatActivity {
     private List<Resume> resumeList = new ArrayList<>();
     private RecyclerView recyclerView;
     private ImageView addResume;
-    private MyResumeAdapter adapter;  /**
+    private MyResumeAdapter adapter;
+    private Toolbar toolbar;
+
+    /**
      * Fragment中初始化Toolbar
      * @param toolbar
      * @param title 标题
@@ -71,6 +74,14 @@ public class MyResumeActivity extends AppCompatActivity {
         //从系统读取简历基本状态——to小榕
         //initResumeList();
         recyclerView = (RecyclerView)findViewById(R.id.resume_list);
+        toolbar = findViewById(R.id.my_resume_toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new MyResumeAdapter(myResumeList);

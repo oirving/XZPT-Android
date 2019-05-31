@@ -60,6 +60,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,9 +79,30 @@ public class FragmentTips extends Fragment implements OnRefreshListener, OnLoadM
     private InterviewTipsAdapter interviewTipsAdapter;
     public LRecyclerView lRecyclerView;
     private LRecyclerViewAdapter lRecyclerViewAdapter;
+    static SecureRandom rnd = new SecureRandom();
     // 图片数据，包括图片标题、图片链接、数据、点击要打开的网站（点击打开的网页或一些提示指令）
     private List<ImageInfo> imageInfoList;
     private int currentPage = 1;
+    static final ArrayList<String> messages = new ArrayList<String>() {
+        {
+            add("不要后悔做任何事情，因为曾经有个时候，那正是你想要的");
+            add("Don't regret anything, because there was a time, that's exactly what you want");
+            add("孤单，是你心里面没有人。 寂寞，是你心里有人却不在身边");
+            add("No one is alone, is your heart. Lonely, is your heart someone but not around");
+            add("非要经历一些无常，才能甘愿珍惜当下");
+            add("Have to experience some uncertainty to willing to cherish the present");
+            add("也许我们都没变，只是越来越接近真实的自己");
+            add("Perhaps we didn't change, just more and more close to the real you");
+            add("时光，就这样在我们回首追寻中，兜兜转转间，一去不返");
+            add("人生是一场负重的奔跑，需要不停地在每一个岔路口做出选择");
+            add("Never trouble trouble till trouble troubles you");
+            add("但凡不能杀死你的，最终都会使你更强大");
+            add("That which does not kill us makes us stronger");
+            add("我的生活不曾取悦于我，所以我创造了自己的生活");
+            add("别让你的骄傲使你孤独一人");
+            add("如果你有足够的勇气，那么一切皆有可能");
+        }
+    };
 
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -267,10 +289,12 @@ public class FragmentTips extends Fragment implements OnRefreshListener, OnLoadM
             simpleDraweeView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //跳转到一个webview
-                    Intent intent = new Intent(v.getContext(), ActivityWebView.class);
-                    intent.putExtra("URL", url);
-                    v.getContext().startActivity(intent);
+//                    //跳转到一个webview
+//                    Intent intent = new Intent(v.getContext(), ActivityWebView.class);
+//                    intent.putExtra("URL", url);
+//                    v.getContext().startActivity(intent);
+                    //吐司一个鸡汤
+                    RxToast.success(getRandomChickenSoup());
                 }
             });
             titles[i] = imageInfoList.get(i).getTitle();
@@ -477,5 +501,8 @@ public class FragmentTips extends Fragment implements OnRefreshListener, OnLoadM
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    public String getRandomChickenSoup(){
+        return messages.get(rnd.nextInt(messages.size()));
     }
 }

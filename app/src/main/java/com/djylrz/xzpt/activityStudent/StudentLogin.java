@@ -93,6 +93,7 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.student_forget_password_button:
                 Intent forgetPassword = new Intent(StudentLogin.this, ForgetPasswordActivity.class);//跳到忘记密码
+                forgetPassword.putExtra("TYPE","student");
                 startActivity(forgetPassword);
                 RxToast.info("忘记密码");
 //                Toast.makeText(StudentLogin.this, "忘记密码", Toast.LENGTH_SHORT).show();

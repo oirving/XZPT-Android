@@ -37,7 +37,7 @@
         app:anim_time="500"
         app:search_bar_height="48dp"
         app:search_bg_color="@color/color_text_01"
-        app:search_hint="search something"
+        app:search_hint="请输入搜索关键字"
         android:visibility="gone">
 
         <android.support.v4.widget.SwipeRefreshLayout

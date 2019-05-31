@@ -126,6 +126,14 @@ public class EditMyResumeActivity extends AppCompatActivity implements View.OnCl
         //设置标题栏和最底下的按钮
         toolbar = (Toolbar) findViewById(R.id.creat_or_edit_resume_toolbar);
         toolbar.setTitle(getIntent().getStringExtra(Constants.INTENT_PUT_EXTRA_KEY_CREATE_OR_EDIT_RESUME));
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         save.setText(Constants.EDIT_OR_CREATE_RESUME_SAVE_BUTTON);
 
         switch (getIntent().getStringExtra(Constants.INTENT_PUT_EXTRA_KEY_CREATE_OR_EDIT_RESUME)){

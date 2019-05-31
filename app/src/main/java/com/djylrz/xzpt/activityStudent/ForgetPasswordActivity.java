@@ -31,6 +31,7 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
 
     private User user = new User();//用户实体对象
     private RequestQueue requestQueue;
+    private String type = "";
 
 
     @Override
@@ -40,6 +41,7 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
         mailAddress = (EditText)findViewById(R.id.mail_address_edittext);//邮箱
         findBack = (Button) findViewById(R.id.find_back_button);//找回按钮
         findBack.setOnClickListener(this);
+        type = getIntent().getStringExtra("TYPE");
     }
 
     @Override
@@ -67,6 +69,7 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
                                                     RxToast.success("已发送验证码到邮箱");
                                                     Intent intent = new Intent(ForgetPasswordActivity.this,ResetPasswordActivity.class);
                                                     intent.putExtra(PostParameterName.REQUEST_EMAIL,user.getEmail());
+                                                    intent.putExtra("TYPE",type);
                                                     startActivity(intent);
                                                     finish();
                                                 }break;

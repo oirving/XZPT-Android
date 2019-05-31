@@ -2,6 +2,7 @@ package com.djylrz.xzpt.activityStudent;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -52,6 +53,7 @@ public class JobIntentionActivity extends BaseActivity implements View.OnClickLi
     private ArrayAdapter<String> industryLabelAdapter;
     private User user = new User();
     private String token;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,14 @@ public class JobIntentionActivity extends BaseActivity implements View.OnClickLi
         topSalary = (EditText) findViewById(R.id.info_top_salary);
         workTime = (Spinner) findViewById(R.id.work_time_spinner);
         save = (Button) findViewById(R.id.info_next_button);
+        toolbar = (Toolbar)findViewById(R.id.job_intention_toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         save.setOnClickListener(this);
 
         //行业标签

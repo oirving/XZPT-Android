@@ -8,6 +8,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -36,6 +37,7 @@ public class DeliveryRecordActivity extends AppCompatActivity {
 
     private List<DeliveryRecordItem> deliveryRecordItemList = new ArrayList<>();
     private DeliveryRecordAdapter deliveryRecordAdapter;
+    private Toolbar toolbar;
 
 
 
@@ -43,6 +45,14 @@ public class DeliveryRecordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery_record);
+        toolbar = findViewById(R.id.resume_delivery_toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         deliveryRecordAdapter = new DeliveryRecordAdapter(deliveryRecordItemList);
         initDeliveryRecord();
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.resume_record_list);

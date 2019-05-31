@@ -15,12 +15,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,6 +34,7 @@ import com.djylrz.xzpt.model.OrderStatus;
 import com.djylrz.xzpt.model.Orientation;
 import com.djylrz.xzpt.model.TimeLineModel;
 import com.djylrz.xzpt.utils.HttpUtil;
+import com.djylrz.xzpt.utils.LoadMoreWrapper;
 import com.haibin.calendarview.CalendarLayout;
 import com.haibin.calendarview.CalendarView;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -81,11 +84,17 @@ public class FragmentDate extends Fragment implements
     private List<TimeLineModel> mDataList = new ArrayList<>();
     private Orientation mOrientation;
     private boolean mWithLinePadding;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+
     public final static String EXTRA_ORIENTATION = "EXTRA_ORIENTATION";
     public final static String EXTRA_WITH_LINE_PADDING = "EXTRA_WITH_LINE_PADDING";
 
     //招聘会数据list
     private List<RecruitmentDate> recruitmentDateList = new ArrayList<>();
+
+    //加载动画部分
+    private FrameLayout frameLayoutLoadingView;
 
     //全局View 用于获取控件
     private View globalView;
@@ -96,7 +105,7 @@ public class FragmentDate extends Fragment implements
             switch (msg.what){
                 case GET_REVRUITMENT_DATE_DATA_SUCCESS:
                     //结束加载动画
-//                    MyApplication.rxDialogShapeLoading.hide();
+                    frameLayoutLoadingView.setVisibility(View.GONE);
                     //初始化日历
                     initView();
                     initData();
@@ -107,13 +116,13 @@ public class FragmentDate extends Fragment implements
                     break;
                 case GET_REVRUITMENT_DATE_DATA_FAILURE:
                     //结束加载动画
-//                    MyApplication.rxDialogShapeLoading.hide();
+                    frameLayoutLoadingView.setVisibility(View.GONE);
                     //初始化日历
                     initView();
                     initData();
                     //初始化时间轴
                     initViewTimeLine();
-                    RxToast.error("网络连接失败，请检查网络连接！");
+                    RxToast.error("招聘会数据获取失败，请检查网络连接！");
                     break;
             }
         }
@@ -132,12 +141,31 @@ public class FragmentDate extends Fragment implements
         //先异步获取数据，获取数据成功再通过handler初始化时间轴
         getRecruitmentDateData();
 
-
-
         //初始化时间轴
         mOrientation = (Orientation) getActivity().getIntent().getSerializableExtra(FragmentDate.EXTRA_ORIENTATION);
         mWithLinePadding = getActivity().getIntent().getBooleanExtra(FragmentDate.EXTRA_WITH_LINE_PADDING, false);
+        frameLayoutLoadingView = (FrameLayout) view.findViewById(R.id.loading_view);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout_date);
+        // 设置下拉刷新
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // 刷新数据
+                recruitmentDateList.clear();
+                getRecruitmentDateData();
+                mTimeLineAdapter.notifyDataSetChanged();
 
+                // 延时1s关闭下拉刷新
+                swipeRefreshLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (swipeRefreshLayout != null && swipeRefreshLayout.isRefreshing()) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+                }, 1000);
+            }
+        });
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(getLinearLayoutManager());
         mRecyclerView.setHasFixedSize(true);

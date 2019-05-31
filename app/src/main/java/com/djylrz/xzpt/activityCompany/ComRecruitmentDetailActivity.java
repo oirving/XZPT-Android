@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -25,14 +26,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.bean.TempResponseData;
@@ -47,7 +46,6 @@ import com.google.gson.reflect.TypeToken;
 import com.vondear.rxtool.RxTextTool;
 import com.vondear.rxtool.view.RxToast;
 import com.vondear.rxui.view.dialog.RxDialogLoading;
-import com.vondear.rxui.view.dialog.RxDialogShapeLoading;
 import com.vondear.rxui.view.dialog.RxDialogSureCancel;
 
 import org.json.JSONObject;
@@ -77,6 +75,7 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
     private Button btnOp;//操作按钮（停招岗位为重新发布，在招岗位为结束招聘）
     private boolean flagModify = false;
     private String tempFileName;
+    private File file;
     //后续从服务器获取该数据
     private String[] mVals = new String[]
             {"C++", "Javascript", "金融", "直播", "电商", "Java", "移动互联网", "分布式", "C", "服务器端", "社交",
@@ -104,12 +103,27 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
-                    new AlertDialog.Builder(mContext).setTitle("文件下载完成").setMessage("文件存储路径：\n根目录/" + tempFileName + ".csv")
+                    new AlertDialog.Builder(mContext).setTitle("文件下载完成").setMessage("文件存储路径：\n根目录/" + tempFileName + ".csv" +
+                            "\n是否打开该文件？")
                             .setCancelable(false)
-                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            .setPositiveButton("打开文件", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
+                                    if (file.exists()) {
+                                        Intent openintent = new Intent();
+                                        openintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        String type = getMIMEType(file);
+                                        // 设置intent的data和Type属性。
+                                        openintent.setDataAndType(/* uri */Uri.fromFile(file), type);
+                                        // 跳转
+                                        startActivity(openintent);
+                                    }
+                                }
+                            })
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
                                 }
                             }).create().show();
                     break;
@@ -134,7 +148,7 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
     private TextView contact;//联系方式
     private TextView headcount;//招聘人数
 
-    private void getView(){
+    private void getView() {
         jobName = findViewById(R.id.jobName);//岗位名称
         publishTime = findViewById(R.id.publish_time);//发布时间
         publishState = findViewById(R.id.publish_status);//发布状态
@@ -333,7 +347,7 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                 strStationLabels = mVals[Integer.parseInt(strStationLabel[0]) - 1];
             } else {
                 for (String stationLabel : strStationLabel) {
-                    if(Integer.parseInt(stationLabel) <= mVals.length){
+                    if (Integer.parseInt(stationLabel) <= mVals.length) {
                         strStationLabels = strStationLabels + mVals[Integer.parseInt(stationLabel) - 1] + ",";
                     }
                 }
@@ -384,22 +398,22 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
 
                 .into(mTvAboutSpannable);
 
-                //新布局信息填入
-            jobName.setText(recruitment.getJobName());
-            publishTime.setText(df2.format(recruitment.getPublishTime()));
-            publishState.setText(recruitmentStatus);
-            currentCount.setText((recruitment.getCount()+"人"));
-            salary.setText(recruitment.getSalary());
-            location.setText(recruitment.getLocation());
-            degree.setText(recruitment.getDegree());
-            workTimeTextView.setText(workTime);
-            companyName.setText(recruitment.getCompanyName());
-            description.setText(recruitment.getDescription());
-            deliveryRequest.setText(recruitment.getDeliveryRequest());
-            industryLabelTextView.setText(industryLabel);
-            stationLabel.setText(strStationLabels);
-            contact.setText(recruitment.getContact());
-            headcount.setText((recruitment.getHeadCount()+"人"));
+        //新布局信息填入
+        jobName.setText(recruitment.getJobName());
+        publishTime.setText(df2.format(recruitment.getPublishTime()));
+        publishState.setText(recruitmentStatus);
+        currentCount.setText((recruitment.getCount() + "人"));
+        salary.setText(recruitment.getSalary());
+        location.setText(recruitment.getLocation());
+        degree.setText(recruitment.getDegree());
+        workTimeTextView.setText(workTime);
+        companyName.setText(recruitment.getCompanyName());
+        description.setText(recruitment.getDescription());
+        deliveryRequest.setText(recruitment.getDeliveryRequest());
+        industryLabelTextView.setText(industryLabel);
+        stationLabel.setText(strStationLabels);
+        contact.setText(recruitment.getContact());
+        headcount.setText((recruitment.getHeadCount() + "人"));
     }
 
     /**
@@ -667,14 +681,14 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("TAG", error.getMessage(), error);
-                    RxToast.error("删除失败，请联系待就业六人组！");
+                    RxToast.error("下载失败，请联系待就业六人组！");
 //                    Toast.makeText(mContext, "删除失败，请联系客服", Toast.LENGTH_LONG).show();
                 }
             });
 
             requestQueue.add(jsonObjectRequest);
         } catch (Exception e) {
-            RxToast.error("删除失败，请检查网络连接!");
+            RxToast.error("下载失败，请检查网络连接!");
 //            Toast.makeText(mContext, "删除失败，请检查网络", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
@@ -693,7 +707,7 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
             @Override
             public void run() {
                 try {
-                    final File file = getFileFromServer(uri, pd, fileName);
+                    file = getFileFromServer(uri, pd, fileName);
                     pd.dismiss(); //结束掉进度条对话框
                     handler.sendEmptyMessage(1);
                 } catch (Exception e) {
@@ -735,5 +749,91 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
             return null;
         }
     }
+    private String getMIMEType(File file) {
+
+        String type = "*/*";
+        String fName = file.getName();
+        // 获取后缀名前的分隔符"."在fName中的位置。
+        int dotIndex = fName.lastIndexOf(".");
+        if (dotIndex < 0) {
+            return type;
+        }
+        /* 获取文件的后缀名 */
+        String end = fName.substring(dotIndex, fName.length()).toLowerCase();
+        if (end == "")
+            return type;
+        // 在MIME和文件类型的匹配表中找到对应的MIME类型。
+        for (int i = 0; i < MIME_MapTable.length; i++) {
+            if (end.equals(MIME_MapTable[i][0]))
+                type = MIME_MapTable[i][1];
+        }
+        return type;
+    }
+
+    private final String[][] MIME_MapTable = {
+            // {后缀名，MIME类型}
+            {".3gp", "video/3gpp"},
+            {".apk", "application/vnd.android.package-archive"},
+            {".asf", "video/x-ms-asf"},
+            {".avi", "video/x-msvideo"},
+            {".bin", "application/octet-stream"},
+            {".bmp", "image/bmp"},
+            {".c", "text/plain"},
+            {".class", "application/octet-stream"},
+            {".conf", "text/plain"},
+            {".cpp", "text/plain"},
+            {".doc", "application/msword"},
+            {".docx",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
+            {".xls", "application/vnd.ms-excel"},
+            {".csv", "application/vnd.ms-excel"},
+            {".xlsx",
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+            {".exe", "application/octet-stream"},
+            {".gif", "image/gif"},
+            {".gtar", "application/x-gtar"},
+            {".gz", "application/x-gzip"},
+            {".h", "text/plain"},
+            {".htm", "text/html"},
+            {".html", "text/html"},
+            {".jar", "application/java-archive"},
+            {".java", "text/plain"},
+            {".jpeg", "image/jpeg"},
+            {".jpg", "image/jpeg"},
+            {".js", "application/x-javascript"},
+            {".log", "text/plain"},
+            {".m3u", "audio/x-mpegurl"},
+            {".m4a", "audio/mp4a-latm"},
+            {".m4b", "audio/mp4a-latm"},
+            {".m4p", "audio/mp4a-latm"},
+            {".m4u", "video/vnd.mpegurl"},
+            {".m4v", "video/x-m4v"},
+            {".mov", "video/quicktime"},
+            {".mp2", "audio/x-mpeg"},
+            {".mp3", "audio/x-mpeg"},
+            {".mp4", "video/mp4"},
+            {".mpc", "application/vnd.mpohun.certificate"},
+            {".mpe", "video/mpeg"},
+            {".mpeg", "video/mpeg"},
+            {".mpg", "video/mpeg"},
+            {".mpg4", "video/mp4"},
+            {".mpga", "audio/mpeg"},
+            {".msg", "application/vnd.ms-outlook"},
+            {".ogg", "audio/ogg"},
+            {".pdf", "application/pdf"},
+            {".png", "image/png"},
+            {".pps", "application/vnd.ms-powerpoint"},
+            {".ppt", "application/vnd.ms-powerpoint"},
+            {".pptx",
+                    "application/vnd.openxmlformats-officedocument.presentationml.presentation"},
+            {".prop", "text/plain"}, {".rc", "text/plain"},
+            {".rmvb", "audio/x-pn-realaudio"}, {".rtf", "application/rtf"},
+            {".sh", "text/plain"}, {".tar", "application/x-tar"},
+            {".tgz", "application/x-compressed"}, {".txt", "text/plain"},
+            {".wav", "audio/x-wav"}, {".wma", "audio/x-ms-wma"},
+            {".wmv", "audio/x-ms-wmv"},
+            {".wps", "application/vnd.ms-works"}, {".xml", "text/plain"},
+            {".z", "application/x-compress"},
+            {".zip", "application/x-zip-compressed"}, {"", "*/*"}};
 
 }

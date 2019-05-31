@@ -3,6 +3,7 @@ package com.djylrz.xzpt.activityStudent;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -65,6 +66,7 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
     private String[] sexArray=new String[]{"默认","男","女"};
     private String[] highestEducationArray=new String[]{"学历不限","大专","本科","硕士","博士及以上"};
 
+    private Toolbar toolbar;
     private User user = new User();//用户实体对象
     private String token;
     private RequestQueue requestQueue;
@@ -122,6 +124,14 @@ public class PersonalInformation extends BaseActivity implements View.OnClickLis
             }
         });
         Button next = (Button)findViewById(R.id.info_next_button);//保存按钮
+        toolbar = findViewById(R.id.pernoal_information_toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         next.setOnClickListener(this);
         initStartTimeDatePicker();
         initEndTimeDatePicker();

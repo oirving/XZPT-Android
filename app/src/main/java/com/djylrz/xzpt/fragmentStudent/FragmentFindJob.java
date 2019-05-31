@@ -18,10 +18,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.djylrz.xzpt.R;
@@ -31,7 +29,6 @@ import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
 import com.djylrz.xzpt.utils.PostParameterName;
-import com.djylrz.xzpt.utils.RecruitmentAdapter;
 import com.djylrz.xzpt.utils.StudentRecruitmentAdapter;
 import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.flyco.tablayout.SegmentTabLayout;
@@ -104,9 +101,14 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener {
                     @Override
                     public void run() {
                         recruitmentList.clear();
-                        keyword = searchView.getSearchEdit().getText().toString();
-                        Log.d(TAG, "onClick: 查询" + keyword);
-                        searchRecruitment(keyword);
+                        keyword = searchView.getSearchEdit().getText().toString().trim();//trim()用于去掉收尾空格
+                        if (keyword.equals("")) {
+                            searchView.setSearching(false);
+                            RxToast.warning("没有想好搜索什么？可以去看看推荐或热门岗位！");
+                        } else {
+                            Log.d(TAG, "查询" + keyword);
+                            searchRecruitment(keyword);
+                        }
                     }
                 }, 1000);
             }
@@ -277,8 +279,8 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener {
                                             final PageData<Recruitment> recruitmentPageData = gson.fromJson(responsePageData.toString(), jsonType);
                                             //获取到RecruitmentList
                                             final List<Recruitment> recruitments = recruitmentPageData.getContentList();
-                                            if(recruitments != null){
-                                                for (Recruitment recruitment:recruitments) {
+                                            if (recruitments != null) {
+                                                for (Recruitment recruitment : recruitments) {
                                                     recruitmentList.add(recruitment);
                                                 }
                                                 getActivity().runOnUiThread(new Runnable() {
@@ -323,6 +325,14 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener {
                         Log.e("TAG", error.getMessage(), error);
                     }
                 });
+                //设置超时时间
+                jsonObjectRequest.setRetryPolicy(
+                        new DefaultRetryPolicy(
+                                10000,//默认超时时间，应设置一个稍微大点儿的，十秒
+                                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,//默认最大尝试次数
+                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                        )
+                );
                 VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
             } catch (JSONException | UnsupportedEncodingException e) {
                 e.printStackTrace();

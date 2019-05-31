@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -217,6 +218,14 @@ public class ComResumeCardFragment extends Fragment {
                     RxToast.error("无法连接服务器！");
                 }
             });
+            //设置超时时间
+            jsonObjectRequest.setRetryPolicy(
+                    new DefaultRetryPolicy(
+                            20000,//默认超时时间，应设置一个稍微大点儿的，十秒
+                            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,//默认最大尝试次数
+                            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                    )
+            );
             VolleyNetUtil.getInstance().setRequestQueue(getContext().getApplicationContext());//获取requestQueue
             VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
         } catch (JSONException e) {
