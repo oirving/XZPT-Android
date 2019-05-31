@@ -23,32 +23,32 @@
 
         <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-            android:layout_margin="10dp">
+                    android:layout_margin="10dp">
 
                 <TextView
                         android:id="@+id/jobName"
                         android:layout_width="match_parent"
                         android:layout_weight="2"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:text="前端开发工程师"
                         android:textColor="@color/black"
                         android:textSize="24sp"
                         android:textAlignment="center"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"
-                android:textStyle="bold"/>
+                        android:textStyle="bold"/>
 
                 <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp">
+                        android:layout_marginTop="16dp">
 
                     <ImageView
                             style="@style/icon_size"
@@ -60,7 +60,8 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:text="内蒙古呼和浩特"
+                            android:text="内蒙古呼和浩特"                                android:textAlignment="center"
+
                             android:maxLines="1"
                             android:singleLine="true"
                             android:ellipsize="end"
@@ -74,9 +75,12 @@
                             android:id="@+id/degree"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="2"
+                            android:layout_weight="1"
                             android:gravity="center"
-                            android:text="本科"
+                            android:text="大专及以上"
+                            android:textAlignment="center"
+                            android:singleLine="true"
+                            android:ellipsize="end"
                             android:textSize="14sp"/>
 
                     <ImageView
@@ -85,11 +89,12 @@
 
                     <TextView
                             android:id="@+id/workTime"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_marginRight="10dp"
-                            android:layout_weight="1"
                             android:gravity="center"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp"
+                            android:textAlignment="center"
                             android:text="996"
                             android:textSize="14sp"/>
                 </LinearLayout>
@@ -97,39 +102,48 @@
                 <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                            android:layout_marginTop="20dp">
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_gravity="center_vertical|right"
-                            android:layout_height="wrap_content"
-                            android:text="薪资："
-                            android:textColor="@color/black"
-                            android:textSize="14sp"/>
-                    <TextView
-                            android:id="@+id/salary"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical|center"
-                            android:layout_weight="1"
-                            android:text="5k-12k"
-                            android:textSize="14sp"
-                            android:textColor="@color/green_xiaomi"/>
-                    <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_gravity="center_vertical|right"
-                            android:layout_height="wrap_content"
-                            android:text="招聘人数："
-                            android:textColor="@color/black"
-                            android:textSize="14sp"/>
-                    <TextView
-                            android:id="@+id/headcount"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical|right"
-                            android:textSize="14sp"
-                            android:text="5"/>
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal">
+                    <LinearLayout android:layout_width="0dp"
+                                  android:layout_weight="1"
+                                  android:gravity="center_horizontal"
+                                  android:layout_height="wrap_content">
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="薪资："
+                                android:textColor="@color/black"
+                                android:textSize="14sp"/>
+                        <TextView
+                                android:id="@+id/salary"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="5k-12k"
+                                android:textSize="14sp"
+                                android:textColor="@color/green_xiaomi"/>
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="0dp"
+                                  android:layout_weight="1"
+                                  android:gravity="center_horizontal"
+                                  android:layout_height="wrap_content">
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_gravity="center_vertical|right"
+                                android:layout_height="wrap_content"
+                                android:text="招聘人数："
+                                android:textColor="@color/black"
+                                android:textSize="14sp"/>
+                        <TextView
+                                android:id="@+id/headcount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|right"
+                                android:textSize="14sp"
+                                android:text="5"/>
+                    </LinearLayout>
+
+
                 </LinearLayout>
 
             </LinearLayout>
@@ -137,15 +151,14 @@
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:paddingTop="8dp"
+                    android:layout_margin="10dp"
                     android:orientation="horizontal">
 
                 <ImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/cat"/>
+                        android:src="@drawable/cat"
+                        android:layout_gravity="center"/>
 
                 <TextView
                         android:id="@+id/companyName"
@@ -154,27 +167,28 @@
                         android:layout_marginStart="20dp"
                         android:layout_weight="1"
                         android:text="Apple"
+                        android:layout_gravity="center"
                         android:textSize="18sp"/>
 
                 <ImageView
                         style="@style/icon_size"
-                        android:src="@drawable/certificated"/>
+                        android:src="@drawable/certificated"
+                        android:layout_gravity="center"/>
             </LinearLayout>
 
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_margin="10dp">
 
                 <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:layout_marginTop="14dp"
                         android:text="岗位描述"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp"
+                        android:textColor="@color/colorDark"/>
 
                 <TextView
                         android:id="@+id/description"
@@ -183,23 +197,24 @@
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
                         android:text="岗位详细描述"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
                         android:textSize="14sp"/>
             </LinearLayout>
 
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_margin="10dp">
 
                 <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:layout_marginTop="14dp"
                         android:text="投递要求"
                         android:textSize="18sp"
-                        android:textColor="@color/black"/>
+                        android:textColor="@color/colorDark"/>
 
                 <TextView
                         android:id="@+id/deliveryRequest"
@@ -208,23 +223,24 @@
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
                         android:text="投递详细要求"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
                         android:textSize="14sp"/>
             </LinearLayout>
 
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_margin="10dp">
 
                 <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:layout_marginTop="14dp"
                         android:text="联系人及联系方式"
                         android:textSize="18sp"
-                        android:textColor="@color/black"/>
+                        android:textColor="@color/colorDark"/>
 
                 <TextView
                         android:id="@+id/contact"
@@ -239,15 +255,15 @@
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_margin="10dp">
 
                 <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:text="行业标签"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorDark"
                         android:textSize="18sp"/>
 
                 <TextView
@@ -256,6 +272,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
                         android:text="行业标签内容"
                         android:textSize="14sp"/>
             </LinearLayout>
@@ -263,15 +281,15 @@
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_margin="10dp">
 
                 <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:text="岗位标签"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorDark"
                         android:textSize="18sp"/>
 
                 <TextView
@@ -281,8 +299,11 @@
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
                         android:text="岗位标签内容"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
                         android:textSize="14sp"/>
             </LinearLayout>
+
 
             <RelativeLayout
                     android:layout_width="match_parent"
@@ -310,6 +331,10 @@
                         android:text="立即沟通"
                         android:textSize="18sp"/>
             </RelativeLayout>
+
         </LinearLayout>
+
+
+
     </ScrollView>
 </LinearLayout>
