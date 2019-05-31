@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -64,6 +65,7 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
     private int recruitmentId;
 
     private String token;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +85,15 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
         chat = findViewById(R.id.chat);
         contact = findViewById(R.id.contact);
         headcount = findViewById(R.id.headcount);
+        toolbar = findViewById(R.id.recruitment_detail_student_toolbar);
+        //设置标题栏
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         delivery.setOnClickListener(this);
         chat.setOnClickListener(this);
 

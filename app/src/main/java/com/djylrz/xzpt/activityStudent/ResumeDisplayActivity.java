@@ -165,8 +165,8 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            RxToast.info(postResult.getResultCode() + postResult.getResultMsg());
                             if (postResult.getResultCode().equals("200")) {
+                                RxToast.success("生成简历成功");
                                 //todo 获取到导出简历链接
                                 if (ContextCompat.checkSelfPermission(ResumeDisplayActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                                     ActivityCompat.requestPermissions(ResumeDisplayActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
@@ -174,6 +174,8 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
                                     ResumeDisplayActivity.actionStart(ResumeDisplayActivity.this, PostParameterName.DOWNLOAD_URL_RESUME_IMAGE_PREFIX + postResult.getResultObject(), fileName, templatePath, PostParameterName.INTENT_PUT_EXTRA_VALUE_RESUME_HISTORY);
                                     finish();
                                 }
+                            }else{
+                                RxToast.error(postResult.getResultCode() + postResult.getResultMsg());
                             }
                         }
                     });

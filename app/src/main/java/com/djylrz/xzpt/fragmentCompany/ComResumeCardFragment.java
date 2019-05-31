@@ -189,7 +189,9 @@ public class ComResumeCardFragment extends Fragment {
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            loadMoreWrapper.notifyDataSetChanged();
+                                            if(loadMoreWrapper != null){
+                                                loadMoreWrapper.notifyDataSetChanged();
+                                            }
                                         }
                                     });
                                 } else if (response.getString(PostParameterName.RESPOND_RESULTCODE).equals("2018")) {

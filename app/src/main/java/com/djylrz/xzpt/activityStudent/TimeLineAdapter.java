@@ -20,6 +20,7 @@ import com.djylrz.xzpt.utils.DateTimeUtils;
 import com.djylrz.xzpt.utils.VectorDrawableUtils;
 import com.github.vipulasri.timelineview.TimelineView;
 import com.vondear.rxtool.view.RxToast;
+import com.vondear.rxui.view.dialog.RxDialogAcfunVideoLoading;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -99,32 +100,35 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
         holder.mCard.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-
-                //提示弹窗
-                new AlertDialog.Builder(mContext).setTitle("招聘会信息").setMessage("是否将该场招聘会添加到系统日历提醒 ")
-                        .setCancelable(false)
-                        .setPositiveButton("是", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                                Date date = new Date();
-                                try {
-                                    date = df.parse(timeLineModel.getDate());
-                                } catch (ParseException pe) {
-                                    pe.printStackTrace();
+                if (timeLineModel.getmLocation() != null) {
+                    //提示弹窗
+                    new AlertDialog.Builder(mContext).setTitle("招聘会信息").setMessage("是否将该场招聘会添加到系统日历提醒 ")
+                            .setCancelable(false)
+                            .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                                    Date date = new Date();
+                                    try {
+                                        date = df.parse(timeLineModel.getDate());
+                                    } catch (ParseException pe) {
+                                        pe.printStackTrace();
+                                    }
+                                    CalendarUtils calendarUtils = CalendarUtils.getInstance();
+                                    calendarUtils.addCalendarEvent(mContext, timeLineModel.getMessage(),
+                                            "[时间] : " + timeLineModel.getDate() + "\n[地点] : " + timeLineModel.getmLocation() + "\n[网址] : " + timeLineModel.getURL(),
+                                            date.getTime(), 1);
+                                    RxToast.info("已添加招聘会[" + timeLineModel.getMessage() + "]到系统日历");
                                 }
-                                CalendarUtils calendarUtils = CalendarUtils.getInstance();
-                                calendarUtils.addCalendarEvent(mContext, timeLineModel.getMessage(),
-                                        "[时间] : " + timeLineModel.getDate() + "\n[地点] : " + timeLineModel.getmLocation() + "\n[网址] : " + timeLineModel.getURL(),
-                                        date.getTime(), 1);
-                                RxToast.info("已添加招聘会[" + timeLineModel.getMessage() + "]到系统日历");
-                            }
-                        }).setNegativeButton("否", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).create().show();
+                            }).setNegativeButton("否", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).create().show();
+                } else {
+                    new RxDialogAcfunVideoLoading(mContext).show();
+                }
                 //Toast.makeText(mContext, "你长按了" + timeLineModel.getMessage(), Toast.LENGTH_SHORT).show();
                 return true;
             }

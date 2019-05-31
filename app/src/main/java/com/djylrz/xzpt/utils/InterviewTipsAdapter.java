@@ -52,6 +52,7 @@ public class InterviewTipsAdapter extends RecyclerView.Adapter<InterviewTipsAdap
                 String url = interviewTipsItem.getUrl();
                 Intent intent = new Intent(v.getContext(), ActivityWebView.class);
                 intent.putExtra("URL", url);
+                intent.putExtra("TYPE", "tips");
                 v.getContext().startActivity(intent);
             }
         });
