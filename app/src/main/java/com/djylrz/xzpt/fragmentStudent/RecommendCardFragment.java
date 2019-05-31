@@ -39,6 +39,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.vondear.rxtool.view.RxToast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,7 +65,6 @@ public class RecommendCardFragment extends Fragment {
     private int currentPage = 1;
     private final int PAGE_SIZE = 20;
     private long limitNum = 9999;
-    private RequestQueue requestQueue;
 
     public static RecommendCardFragment getInstance(String title) {
         RecommendCardFragment sf = new RecommendCardFragment();
@@ -91,7 +91,6 @@ public class RecommendCardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.job_recommend_card, null);
         recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-        requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext()); //把上下文context作为参数传递进去
         LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
         adapter = new StudentRecruitmentAdapter(recruitmentList, 0);
         loadMoreWrapper = new LoadMoreWrapper(adapter);
@@ -198,6 +197,7 @@ public class RecommendCardFragment extends Fragment {
                     VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    RxToast.warning("当前网络状态不好，可能导致加载缓慢！");
                 }
 
             } else {
@@ -259,9 +259,11 @@ public class RecommendCardFragment extends Fragment {
                     public void onErrorResponse(VolleyError error) {
                         Log.e("TAG", error.getMessage(), error);
                     }});
-                requestQueue.add(jsonObjectRequest);
+                VolleyNetUtil.getInstance().setRequestQueue(getContext().getApplicationContext());//获取requestQueue
+                VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
             } catch (JSONException e) {
                 e.printStackTrace();
+                RxToast.warning("当前网络状态不好，可能导致加载缓慢！");
             }
         }
     }

@@ -26,6 +26,7 @@ import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.RecruitmentAdapter;
+import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -33,6 +34,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.vondear.rxtool.view.RxToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,7 +57,6 @@ public class RecruitmentCardFragment extends Fragment {
     private static final String TAG = "RecruitmentCardFragment";
     private int currentPage = 1;
     private final int PAGE_SIZE = 20;
-    private RequestQueue requestQueue;
     private long limitNum = 9999;
 
     public static RecruitmentCardFragment getInstance(String title) {
@@ -90,7 +91,6 @@ public class RecruitmentCardFragment extends Fragment {
         View v = inflater.inflate(R.layout.fr_recruitment_card, null);
 
         recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-        requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext()); //把上下文context作为参数传递进去
 
         //加载数据
         LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
@@ -195,9 +195,11 @@ public class RecruitmentCardFragment extends Fragment {
                 public void onErrorResponse(VolleyError error) {
                     Log.e("TAG", error.getMessage(), error);
                 }});
-            requestQueue.add(jsonObjectRequest);
+            VolleyNetUtil.getInstance().setRequestQueue(getContext().getApplicationContext());//获取requestQueue
+            VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
         } catch (JSONException e) {
             e.printStackTrace();
+            RxToast.warning("当前网络状态不好，可能导致加载缓慢！");
         }
     }
 }

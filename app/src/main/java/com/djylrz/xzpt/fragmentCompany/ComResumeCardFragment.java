@@ -24,6 +24,7 @@ import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.ComResumeDeliveryRecordAdapter;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
 import com.djylrz.xzpt.utils.PostParameterName;
+import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -31,6 +32,8 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import com.vondear.rxtool.view.RxToast;
+import com.vondear.rxui.view.dialog.RxDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,8 +55,7 @@ public class ComResumeCardFragment extends Fragment {
     private RecyclerView recyclerView;
     private static final String TAG = "ComResumeCardFragment";
     private int currentPage = 1;
-    private final int PAGE_SIZE = 20;
-    private RequestQueue requestQueue;
+    private final int PAGE_SIZE = 10;
     private long limitNum = 9999;
 
     public static ComResumeCardFragment getInstance(String title) {
@@ -76,26 +78,15 @@ public class ComResumeCardFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // 刷新数据
-        resumeDeliveryList.clear();
-        currentPage = 1;
-        limitNum = 9999;
-        initRecruitments();
-        loadMoreWrapper.notifyDataSetChanged();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fr_recruitment_card, null);
 
         recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-        requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext()); //把上下文context作为参数传递进去
 
         //加载数据
-        //initRecruitments();
+        initResumes();
         LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
         adapter = new ComResumeDeliveryRecordAdapter(resumeDeliveryList,type,getContext());
         loadMoreWrapper = new LoadMoreWrapper(adapter);
@@ -109,7 +100,7 @@ public class ComResumeCardFragment extends Fragment {
                 // 刷新数据
                 resumeDeliveryList.clear();
                 currentPage = 1;
-                initRecruitments();
+                initResumes();
                 loadMoreWrapper.notifyDataSetChanged();
 
                 // 延时1s关闭下拉刷新
@@ -130,7 +121,7 @@ public class ComResumeCardFragment extends Fragment {
             public void onLoadMore() {
                 loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING);
                 if (resumeDeliveryList.size() < limitNum) {
-                    initRecruitments();
+                    initResumes();
                 } else {
                     // 显示加载到底的提示
                     loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
@@ -140,7 +131,7 @@ public class ComResumeCardFragment extends Fragment {
         return v;
     }
 
-    private void initRecruitments(){
+    private void initResumes(){
         //获取token
         SharedPreferences preferences = getActivity().getSharedPreferences("token",0);
         String token = preferences.getString(PostParameterName.TOKEN,null);
@@ -231,9 +222,11 @@ public class ComResumeCardFragment extends Fragment {
                 public void onErrorResponse(VolleyError error) {
                     Log.e("TAG", error.getMessage(), error);
                 }});
-            requestQueue.add(jsonObjectRequest);
+            VolleyNetUtil.getInstance().setRequestQueue(getContext().getApplicationContext());//获取requestQueue
+            VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
         } catch (JSONException e) {
             e.printStackTrace();
+            RxToast.warning("当前网络状态不好，可能导致加载缓慢！");
         }
 //        for(int i = 0; i< 20 ; ++i){
 //            ResumeDelivery test1 = new ResumeDelivery("王铭君","待就业六人组PM","福州大学","软件工程",5);

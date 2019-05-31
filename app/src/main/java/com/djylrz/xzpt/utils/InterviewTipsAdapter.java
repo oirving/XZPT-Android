@@ -48,7 +48,7 @@ public class InterviewTipsAdapter extends RecyclerView.Adapter<InterviewTipsAdap
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                InterviewTipsItem interviewTipsItem = interviewTipsItems.get(position);
+                InterviewTipsItem interviewTipsItem = interviewTipsItems.get(position - 1);
                 String url = interviewTipsItem.getUrl();
                 Intent intent = new Intent(v.getContext(), ActivityWebView.class);
                 intent.putExtra("URL", url);
@@ -63,7 +63,7 @@ public class InterviewTipsAdapter extends RecyclerView.Adapter<InterviewTipsAdap
         InterviewTipsItem interviewTipsItem = interviewTipsItems.get(position);
         viewHolder.title.setText(interviewTipsItem.getTitle());
         viewHolder.author.setText(interviewTipsItem.getInterviewSkill().getAuthor());
-        SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd HH:mm"); //设置格式
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm"); //设置格式
         viewHolder.date.setText(format.format(interviewTipsItem.getInterviewSkill().getTime()));
     }
 
