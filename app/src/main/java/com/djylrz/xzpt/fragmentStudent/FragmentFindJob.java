@@ -102,6 +102,7 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener {
                 searchView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        recruitmentList.clear();
                         keyword = searchView.getSearchEdit().getText().toString();
                         Log.d(TAG, "onClick: 查询" + keyword);
                         searchRecruitment(keyword);
