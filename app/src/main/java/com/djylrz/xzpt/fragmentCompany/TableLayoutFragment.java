@@ -125,7 +125,7 @@ public class TableLayoutFragment
                     importRecruitments();
                     break;
                 case IMPORT_RECRUITMENT_LIST_SUCCESS:
-                    RxToast.info("岗位批量发布成功！");
+                    RxToast.success("岗位批量发布成功！");
                     break;
                 case IMPORT_RECRUITMENT_LIST_FAIL_OVER_LIMIT:
                     RxToast.error("岗位发布失败，超出发布数量限制，请联系客服或者删除无用招聘信息！");

@@ -339,7 +339,6 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             @Override
             public void onItemPicked(int index, String item) {
                 textViewDegree.setText(item);
-                Toast.makeText(activity, item, Toast.LENGTH_SHORT).show();
                 subRecruitmentData.setDegree(item);
             }
         });
@@ -375,10 +374,8 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                 if (selectedFirstIndex <= selectedSecondIndex) {
                     textViewSalary.setText(firstData.get(selectedFirstIndex) + "K - " + secondData.get(selectedSecondIndex) + "K");
                     subRecruitmentData.setSalary(firstData.get(selectedFirstIndex) + "K - " + secondData.get(selectedSecondIndex) + "K");
-                    Toast.makeText(activity, firstData.get(selectedFirstIndex) + "K - " + secondData.get(selectedSecondIndex) + "K", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(activity, "薪资区间应该从小到大，请重新设置", Toast.LENGTH_SHORT).show();
-
+                    RxToast.warning("薪资区间应该从小到大，请重新设置");
                 }
 
             }
@@ -407,7 +404,6 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             public void onItemPicked(int index, String item) {
                 textViewWorkTime.setText(item);
                 subRecruitmentData.setWorkTime(index + "");
-                Toast.makeText(activity, item, Toast.LENGTH_SHORT).show();
             }
         });
         picker.show();
@@ -429,7 +425,6 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             public void onItemPicked(int index, String item) {
                 textViewIndustryLabel.setText(item);
                 subRecruitmentData.setIndustryLabel((index + 1) + "");
-                Toast.makeText(activity, index + " " + item, Toast.LENGTH_SHORT).show();
             }
         });
         picker.show();
@@ -455,7 +450,6 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             public void onItemPicked(int index, String item) {
                 textViewType.setText(item);
                 subRecruitmentData.setJobType((index + 1) + "");
-                Toast.makeText(activity, index + " " + item, Toast.LENGTH_SHORT).show();
             }
         });
         picker.show();
@@ -493,7 +487,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
         Pattern pattern = Pattern.compile("[0-9]*");
         Matcher isNum = pattern.matcher(headCount);
         if (!isNum.matches()) {
-            Toast.makeText(activity, "招聘人数只能填写数字", Toast.LENGTH_SHORT).show();
+            RxToast.warning("招聘人数只能填写数字");
             return false;
         } else {
             subRecruitmentData.setHeadCount(headCount);
@@ -502,7 +496,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
         if (subRecruitmentData.getJobName().equals("") || subRecruitmentData.getJobName() == null || subRecruitmentData.getDescription() == null || subRecruitmentData.getDescription().equals("") || subRecruitmentData.getContact() == null || subRecruitmentData.getContact().equals("") ||
                 subRecruitmentData.getLocation() == null || subRecruitmentData.getDeliveryRequest() == null || subRecruitmentData.getDeliveryRequest().equals("") || subRecruitmentData.getDegree() == null
                 || subRecruitmentData.getWorkTime() == null || subRecruitmentData.getIndustryLabel() == null || subRecruitmentData.getStationLabel() == null || subRecruitmentData.getJobType() == null) {
-            Toast.makeText(activity, "除薪资外，其他项请完整填写", Toast.LENGTH_SHORT).show();
+            RxToast.warning("除薪资外，其他项请完整填写");
             return false;
         } else {
             return true;
@@ -554,7 +548,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                                 @Override
                                 public void run() {
                                     if (postResult.getResultCode() == 200) {
-                                        Toast.makeText(activity, "岗位发布成功", Toast.LENGTH_SHORT).show();
+                                        RxToast.success("岗位发布成功");
                                         Intent intent = new Intent(AddRecruitmentActivity.this, Main2Activity.class);
                                         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);

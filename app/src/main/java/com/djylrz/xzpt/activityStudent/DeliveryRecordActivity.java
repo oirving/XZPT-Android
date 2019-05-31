@@ -22,6 +22,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
+import com.vondear.rxtool.view.RxToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -110,7 +111,7 @@ public class DeliveryRecordActivity extends AppCompatActivity {
                                     public void run() {
                                         //处理空列表
                                         if (deliveryRecordItemList.size()==0){
-                                            Toast.makeText(DeliveryRecordActivity.this, "无投递记录", Toast.LENGTH_SHORT).show();
+                                            RxToast.info("无投递记录");
                                         }
                                     }
                                 });

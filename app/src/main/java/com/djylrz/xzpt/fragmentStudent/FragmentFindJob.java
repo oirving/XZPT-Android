@@ -34,6 +34,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
+import com.vondear.rxtool.view.RxToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -235,13 +236,13 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener {
                                         @Override
                                         public void run() {
                                             if (finalRecruitments.size() != 0) {
-                                                Toast.makeText(getContext(), "获取招聘信息成功", Toast.LENGTH_SHORT).show();
+                                                RxToast.success("获取招聘信息成功");
                                                 for (int i = 0; i < 2; ++i) {
                                                     RecommendCardFragment recommendCardFragment = (RecommendCardFragment) recommendCardFragmentList.get(i);
                                                     recommendCardFragment.updateAdapter(finalRecruitments);
                                                 }
                                             } else {
-                                                Toast.makeText(getContext(), "无符合关键词的招聘信息！", Toast.LENGTH_SHORT).show();
+                                                RxToast.info("无符合关键词的招聘信息");
 
                                             }
                                             //todo 更新页面——尚未实现下拉刷新

@@ -166,7 +166,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
                 try {
                     packageManager.getPackageInfo("com.tencent.mobileqq", 0);
                 } catch (PackageManager.NameNotFoundException e) {
-                    Toast.makeText(getActivity(), "安装手机QQ才能与我联系哦", Toast.LENGTH_SHORT).show();
+                    RxToast.info("安装手机QQ才能与我联系哦");
                     return;
                 }
                 String url = "mqqwpa://im/chat?chat_type=wpa&uin=841930898";
@@ -275,7 +275,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
         switch (requestCode) {
             case 1:
                 if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getActivity(), "拒绝权限将无法使用更新App", Toast.LENGTH_SHORT).show();
+                    RxToast.warning("拒绝权限将无法使用更新App");
                     getActivity().finish();
                 }
                 break;

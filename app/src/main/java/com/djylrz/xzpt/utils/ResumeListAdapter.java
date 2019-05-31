@@ -18,6 +18,7 @@ import com.djylrz.xzpt.activityStudent.ResumeModelDetailsActivity;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Resume;
 
+import com.vondear.rxtool.view.RxToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -93,7 +94,7 @@ public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.Vi
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 DeliveryRecordItem resumeItem = mResumeList.get(position);
-                Toast.makeText(v.getContext(),"clicked "+resumeItem.getJobName() ,Toast.LENGTH_SHORT).show();
+                RxToast.info("");
                 //todo 我的简历点击后跳转到具体的简历页面 ->小榕
                 Intent intent = new Intent(v.getContext(), ResumeModelDetailsActivity.class);
                 intent.putExtra("resume",resumeList.get(position));//传递简历信息
@@ -114,7 +115,7 @@ public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.Vi
             public void onClick(final View v) {
                 final int position = holder.getAdapterPosition();
                 DeliveryRecordItem resumeItem = mResumeList.get(position);
-                Toast.makeText(v.getContext(),"clicked "+resumeItem.getJobName() ,Toast.LENGTH_SHORT).show();
+                RxToast.info("");
                 //todo 删除简历 ->小榕
                 long resumeID = resumeList.get(position).getResumeId();
 

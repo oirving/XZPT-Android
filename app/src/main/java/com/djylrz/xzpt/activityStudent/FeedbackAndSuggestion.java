@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.djylrz.xzpt.R;
+import com.vondear.rxtool.view.RxToast;
 
 public class FeedbackAndSuggestion extends AppCompatActivity implements View.OnClickListener {
 
@@ -54,7 +55,7 @@ public class FeedbackAndSuggestion extends AppCompatActivity implements View.OnC
                 //todo 验证反馈内容是否成功 ——to小榕
                 Intent intent = new Intent(FeedbackAndSuggestion.this,MyFeedback.class);//跳转到我的反馈页面
                 startActivity(intent);
-                Toast.makeText(FeedbackAndSuggestion.this,"反馈成功",Toast.LENGTH_SHORT).show();
+                RxToast.success("反馈成功");
                 break;
         }
     }

@@ -68,7 +68,6 @@ public class ComResumeDeliveryRecordAdapter extends RecyclerView.Adapter<ComResu
                 Intent intent = new Intent(context, ComResumeDeliveryRecordDetailActivity.class);
                 intent.putExtra("resumeDeliveryRecordVO",resumeDeliveryRecordVO);
                 context.startActivity(intent);
-                Toast.makeText(v.getContext(), "you clicked view " + resumeDeliveryRecordVO.getUserName(), Toast.LENGTH_SHORT).show();
             }
         });
         return holder;

@@ -30,6 +30,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
+import com.vondear.rxtool.view.RxToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -201,11 +202,11 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
                         try {
                             switch (response.getString(PostParameterName.RESPOND_RESULTCODE)){
                                 case "200":{
-                                    Toast.makeText(RecruitmentDetailActivity.this, "简历投递成功！", Toast.LENGTH_SHORT).show();
+                                    RxToast.success("简历投递成功");
                                     RecruitmentDetailActivity.this.finish();
                                 }break;
                                 default:{
-                                    Toast.makeText(RecruitmentDetailActivity.this, "简历投递失败！"+response.getString(PostParameterName.RESPOND_RESULTCODE), Toast.LENGTH_SHORT).show();
+                                    RxToast.error("简历投递失败");
                                 }
                             }
                         } catch (JSONException e) {

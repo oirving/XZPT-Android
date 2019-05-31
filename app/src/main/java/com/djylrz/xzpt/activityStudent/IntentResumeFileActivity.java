@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.utils.PostParameterName;
+import com.vondear.rxtool.view.RxToast;
 
 public class IntentResumeFileActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -101,7 +102,7 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     ResumeDisplayActivity.actionStart(IntentResumeFileActivity.this,fileUrl,fileName,templatePath,createOrHistory);
                 } else {
-                    Toast.makeText(this, "你拒绝了权限申请，可能无法下载文件到本地哟！", Toast.LENGTH_SHORT).show();
+                    RxToast.warning("你拒绝了权限申请，可能无法下载文件到本地哟！");
                 }
                 break;
             default:

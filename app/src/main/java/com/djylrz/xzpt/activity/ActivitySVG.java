@@ -259,7 +259,7 @@ public class ActivitySVG extends ActivityBase {
         switch (requestCode) {
             case 1:
                 if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "拒绝权限将无法使用更新App", Toast.LENGTH_SHORT).show();
+                    RxToast.warning("拒绝权限将无法使用更新App");
                     finish();
                 }
                 break;
@@ -296,7 +296,7 @@ public class ActivitySVG extends ActivityBase {
                                         }
                                         break;
                                         default: {
-                                            Toast.makeText(mContext, "使用token登录失败", Toast.LENGTH_SHORT).show();
+                                            RxToast.error("使用token登录失败");
                                             Log.d(TAG, "run: 使用token登录失败，跳转用户名密码登录" + postResult.getResultCode());
                                             studentLogin();
                                         }
@@ -348,7 +348,7 @@ public class ActivitySVG extends ActivityBase {
                                         }
                                         break;
                                         default: {
-                                            Toast.makeText(mContext, "使用token登录失败", Toast.LENGTH_SHORT).show();
+                                            RxToast.error("使用token登录失败");
                                             Log.d(TAG, "run: 使用token登录失败，跳转用户名密码登录" + postResult.getResultCode());
                                             companyLogin();
                                         }
@@ -505,7 +505,7 @@ public class ActivitySVG extends ActivityBase {
         Intent student = new Intent(mContext, StudentLogin.class);
         startActivity(student);
         //finish();
-        Toast.makeText(mContext, "学生用户", Toast.LENGTH_SHORT).show();
+        RxToast.info("学生用户");
     }
 
     //企业端使用用户名和密码登录
@@ -513,6 +513,6 @@ public class ActivitySVG extends ActivityBase {
         Intent company = new Intent(mContext, CompanyLogin.class);
         startActivity(company);
         //finish();
-        Toast.makeText(mContext, "企业用户", Toast.LENGTH_SHORT).show();
+        RxToast.info("企业用户");
     }
 }

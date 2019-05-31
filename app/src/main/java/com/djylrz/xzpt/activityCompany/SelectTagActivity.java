@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.djylrz.xzpt.R;
+import com.vondear.rxtool.view.RxToast;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
@@ -98,7 +99,7 @@ public class SelectTagActivity extends AppCompatActivity {
             @Override
             public void onSelected(Set<Integer> selectPosSet)
             {
-                Toast.makeText(SelectTagActivity.this, selectPosSet.toString(), Toast.LENGTH_SHORT).show();
+                RxToast.info(selectPosSet.toString());
                 selectTagSet = selectPosSet;
             }
         });

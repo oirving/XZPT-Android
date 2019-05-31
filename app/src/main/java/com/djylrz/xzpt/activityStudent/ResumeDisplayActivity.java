@@ -39,6 +39,7 @@ import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.google.gson.Gson;
 import com.tencent.smtt.sdk.TbsReaderView;
 import com.tencent.smtt.sdk.TbsReaderView.ReaderCallback;
+import com.vondear.rxtool.view.RxToast;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -69,8 +70,7 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         if ((mFileUrl == null) || (mFileUrl.length() <= 0)) {
-            Toast.makeText(ResumeDisplayActivity.this, "获取文件url出错了",
-                    Toast.LENGTH_SHORT).show();
+            RxToast.error("获取文件url出错了");
             return;
         }
         mFileName = parseName(mFileUrl);
@@ -125,7 +125,7 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(ResumeDisplayActivity.this, postResult.getResultCode()+postResult.getResultMsg(), Toast.LENGTH_SHORT).show();
+                            RxToast.info(postResult.getResultCode()+postResult.getResultMsg());
                             if (postResult.getResultCode().equals("200")){
                                 //todo 获取到导出简历链接
                                 if (ContextCompat.checkSelfPermission(ResumeDisplayActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {

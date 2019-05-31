@@ -17,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.activityStudent.EditMyResumeActivity;
+import com.vondear.rxtool.view.RxToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -84,7 +85,7 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
                 //使用intent填入对应的简历信息
                 intent.putExtra("editResume",myResumeItem.getResume());
                 intent.putExtra("resumeID",myResumeItem.getResume().getResumeId());
-                Toast.makeText(v.getContext(), Constants.EDIT_RESUME, Toast.LENGTH_SHORT).show();
+                RxToast.info( Constants.EDIT_RESUME);
                 if (forDeliver){
                     ((Activity)v.getContext()).setResult(CHOOSE_RESUME_TO_DELIVER,intent);//选择简历用于投递
                     ((Activity)v.getContext()).finish();//选择并投递
