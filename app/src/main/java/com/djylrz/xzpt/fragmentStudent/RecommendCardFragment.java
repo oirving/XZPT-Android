@@ -178,6 +178,8 @@ public class RecommendCardFragment extends Fragment {
                                                     Recruitment tempRecruitment = gson.fromJson(jsonArray.getJSONObject(i).toString(), Recruitment.class);
                                                     recruitmentList.add(tempRecruitment);
                                                 }
+                                                loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
+                                                limitNum = recruitmentList.size();
                                                 loadMoreWrapper.notifyDataSetChanged();
                                             }
                                         }
