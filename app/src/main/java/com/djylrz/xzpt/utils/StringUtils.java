@@ -15,6 +15,8 @@ public class StringUtils {
 
         if (stringBuilder.length() > 2) {
             return stringBuilder.substring(0, stringBuilder.length() - separator.length());
-        } else return stringBuilder.toString();
+        } else {
+            return stringBuilder.toString();
+        }
     }
 }

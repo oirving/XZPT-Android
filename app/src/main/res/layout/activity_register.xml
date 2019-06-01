@@ -50,7 +50,7 @@
 
             <EditText
                 android:id="@+id/register_password"
-                android:hint="密码"
+                android:hint="密码（不少于8位）"
                 android:inputType="textPassword"
                 style="@style/text_view_item"/>
 

@@ -143,7 +143,7 @@ public class AudioCapture implements Capture {
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private boolean startAGC(int audioSessionId) {
-        if (!automaticGainControl.isAvailable()) {
+        if (!AutomaticGainControl.isAvailable()) {
             Log.w(TAG, "This device does not support AGC.");
             return false;
         }

@@ -29,4 +29,9 @@ public class ChatDTO {
     public void setHeadUrl(String headUrl) {
         this.headUrl = headUrl;
     }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

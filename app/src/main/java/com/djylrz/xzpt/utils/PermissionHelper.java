@@ -34,7 +34,9 @@ public class PermissionHelper {
         if (!check(activity, permissions)) {
             ActivityCompat.requestPermissions(activity, permissions, requestCode);
             return false;
-        } else return true;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -44,6 +46,8 @@ public class PermissionHelper {
         if (!check(fragment.getContext(), permissions)) {
             fragment.requestPermissions(permissions, requestCode);
             return false;
-        } else return true;
+        } else {
+            return true;
+        }
     }
 }

@@ -10,11 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.djylrz.xzpt.activityStudent.ResumeModelDetailsActivity;
+import com.djylrz.xzpt.activity.student.ResumeModelDetailsActivity;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Resume;
 
@@ -129,7 +128,7 @@ public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.Vi
                                 public void onResponse(JSONObject response) {
                                     Log.d(TAG, "onResponse: 返回"+response.toString());
                                     try {
-                                        if (response.getString(PostParameterName.RESPOND_RESULTCODE).equals("200")){
+                                        if ("200".equals(response.getString(PostParameterName.RESPOND_RESULTCODE))){
                                             Log.d(TAG, "onResponse: 删除简历成功");
                                             mResumeList.remove(position);
                                             notifyDataSetChanged();

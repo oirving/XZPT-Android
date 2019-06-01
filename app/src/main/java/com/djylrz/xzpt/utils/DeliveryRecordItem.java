@@ -8,6 +8,7 @@ public class DeliveryRecordItem {
     String companyName;
     String jobName;
     String userName;
+    String companyId;
     int delete;
 
     public ResumeDelivery getResumeDelivery() {
@@ -28,6 +29,7 @@ public class DeliveryRecordItem {
         this.jobName=resumeDelivery.getRecruitmentName();
         this.userName=resumeDelivery.getUserName();
         this.delete=R.drawable.delete_resume;
+        this.companyId = resumeDelivery.getCompanyId();
     }
 
     public DeliveryRecordItem(String state , String companyName , String jobName , String userName) {
@@ -56,5 +58,13 @@ public class DeliveryRecordItem {
 
     public int getDelete() {
         return delete;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 }

@@ -46,10 +46,11 @@ public class ActivityWebView extends ActivityBase {
     WebView webBase;
     ImageView ivFinish;
     RxTextAutoZoom mRxTextAutoZoom;
+    private ImageView share;
     LinearLayout llIncludeTitle;
     private String webPath = "";
     private long mBackPressed;
-
+    private String pageTitle = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +79,26 @@ public class ActivityWebView extends ActivityBase {
                 }
             }
         });
-
+        String type = getIntent().getStringExtra("TYPE");
+        share = findViewById(R.id.iv_share);
+        if(type != null){
+            if("tips".equals(type)){
+                share.setVisibility(View.VISIBLE);
+            }else{
+                share.setVisibility(View.GONE);
+            }
+        }else{
+            share.setVisibility(View.GONE);
+        }
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent textIntent = new Intent(Intent.ACTION_SEND);
+                textIntent.setType("text/plain");
+                textIntent.putExtra(Intent.EXTRA_TEXT, "我在福大校招平台看到一篇很实用的面试技巧["+pageTitle+"]，你也可以看一看：" + webPath);
+                startActivity(Intent.createChooser(textIntent, "分享"));
+            }
+        });
         initAutoFitEditText();
     }
 
@@ -106,7 +126,7 @@ public class ActivityWebView extends ActivityBase {
         //从intent获取URL数据
         webPath = getIntent().getStringExtra("URL");
         //webPath = RxConstants.URL_BAIDU_SEARCH;//加载的URL
-        if (webPath.equals("")) {
+        if ("".equals(webPath)) {
             webPath = "http://www.baidu.com";
         }
         WebSettings webSettings = webBase.getSettings();
@@ -125,18 +145,7 @@ public class ActivityWebView extends ActivityBase {
         }
         webBase.setLayerType(View.LAYER_TYPE_HARDWARE, null);//硬件解码
 
-//        webSettings.setAllowContentAccess(true);
-//        webSettings.setAllowFileAccessFromFileURLs(true);
-//        webSettings.setAppCacheEnabled(true);
-   /*     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        }*/
-
-
-        // setMediaPlaybackRequiresUserGesture(boolean require) //是否需要用户手势来播放Media，默认true
-
         webSettings.setJavaScriptEnabled(true); // 设置支持javascript脚本
-//        webSettings.setPluginState(WebSettings.PluginState.ON);
         webSettings.setSupportZoom(true);// 设置可以支持缩放
         webSettings.setBuiltInZoomControls(true);// 设置出现缩放工具 是否使用WebView内置的缩放组件，由浮动在窗口上的缩放控制和手势缩放控制组成，默认false
 
@@ -148,7 +157,7 @@ public class ActivityWebView extends ActivityBase {
 
         webSettings.setDatabaseEnabled(true);//
         webSettings.setSavePassword(true);//保存密码
-        webSettings.setDomStorageEnabled(true);//是否开启本地DOM存储  鉴于它的安全特性（任何人都能读取到它，尽管有相应的限制，将敏感数据存储在这里依然不是明智之举），Android 默认是关闭该功能的。
+        webSettings.setDomStorageEnabled(false);//是否开启本地DOM存储  鉴于它的安全特性（任何人都能读取到它，尽管有相应的限制，将敏感数据存储在这里依然不是明智之举），Android 默认是关闭该功能的。
         webBase.setSaveEnabled(true);
         webBase.setKeepScreenOn(true);
 
@@ -159,6 +168,7 @@ public class ActivityWebView extends ActivityBase {
             public void onReceivedTitle(WebView view, String title) {
                 super.onReceivedTitle(view, title);
                 mRxTextAutoZoom.setText(title);
+                pageTitle = title;
             }
 
             @Override

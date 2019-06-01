@@ -50,6 +50,7 @@ public class MyDividerItemDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
+    @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         if (parent.getLayoutManager() != null && this.mDivider != null) {
             if (this.mOrientation == 1) {
@@ -115,6 +116,7 @@ public class MyDividerItemDecoration extends RecyclerView.ItemDecoration {
         canvas.restore();
     }
 
+    @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         if (this.mDivider == null) {
             outRect.set(0, 0, 0, 0);

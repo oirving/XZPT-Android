@@ -6,9 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.djylrz.xzpt.activityStudent.RecruitmentDetailActivity;
+import com.djylrz.xzpt.activity.student.RecruitmentDetailActivity;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Recruitment;
 

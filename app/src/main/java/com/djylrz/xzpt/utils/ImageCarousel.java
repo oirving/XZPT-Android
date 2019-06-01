@@ -178,7 +178,7 @@ public class ImageCarousel {
                     }
                 });
 
-                if (this.interrupted()) {
+                if (interrupted()) {
                     Log.e("thrad", "已经是停止状态了，我要退出了");
                     break;
                 }

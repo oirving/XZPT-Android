@@ -8,16 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.djylrz.xzpt.activityCompany.ComRecruitmentDetailActivity;
+import com.djylrz.xzpt.activity.company.ComRecruitmentDetailActivity;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.Recruitment;
 import com.vondear.rxtool.view.RxToast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

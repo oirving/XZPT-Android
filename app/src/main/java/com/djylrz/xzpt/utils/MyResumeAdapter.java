@@ -12,11 +12,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.djylrz.xzpt.R;
-import com.djylrz.xzpt.activityStudent.EditMyResumeActivity;
+import com.djylrz.xzpt.activity.student.EditMyResumeActivity;
 import com.vondear.rxtool.view.RxToast;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +29,7 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
     private static final String TAG = "MyResumeAdapter";
 
     private List<MyResumeItem> myResumeItems;
-    private onRemoveListener onRemoveListener;
+    private OnRemoveListener onRemoveListener;
 
     private boolean forDeliver = false;
 
@@ -54,16 +53,16 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
         TextView companyName;
         ImageView next;
         ImageView delete;
-        LinearLayout delete_button_visible;
-        LinearLayout delete_button_gone;
+        LinearLayout deleteButtonVisible;
+        LinearLayout deleteButtonGone;
         public ViewHolder(View v) {
             super(v);
             myResumeListView = v;
             jobName = (TextView)v.findViewById(R.id.job_name);
             next = (ImageView)v.findViewById(R.id.next);
             delete = (ImageView) v.findViewById(R.id.delete);
-            delete_button_visible = (LinearLayout)v.findViewById(R.id.delete_button_visible);
-            delete_button_visible = (LinearLayout)v.findViewById(R.id.delete_button_gone);
+            deleteButtonVisible = (LinearLayout)v.findViewById(R.id.delete_button_visible);
+            deleteButtonVisible = (LinearLayout)v.findViewById(R.id.delete_button_gone);
 
         }
     }
@@ -131,7 +130,7 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
                                 public void onResponse(JSONObject response) {
                                     Log.d(TAG, "onResponse: 返回"+response.toString());
                                     try {
-                                        if (response.getString(PostParameterName.RESPOND_RESULTCODE).equals("200")){
+                                        if ("200".equals(response.getString(PostParameterName.RESPOND_RESULTCODE))){
                                             Log.d(TAG, "onResponse: 删除简历成功");
                                             //remove(position) notifyDataSetChanged()
                                             onRemoveListener.onDelete(position);
@@ -153,11 +152,11 @@ public class MyResumeAdapter extends RecyclerView.Adapter<MyResumeAdapter.ViewHo
 
     }
 
-    public interface onRemoveListener {
+    public interface OnRemoveListener {
         void onDelete(int i);
     }
 
-    public void setOnRemoveListener(onRemoveListener onRemoveListener) {
+    public void setOnRemoveListener(OnRemoveListener onRemoveListener) {
         this.onRemoveListener = onRemoveListener;
     }
 

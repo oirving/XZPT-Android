@@ -98,7 +98,7 @@ public class DefaultMessagesActivity extends AppCompatActivity
         imageLoader = new ImageLoader() {
             @Override
             public void loadImage(ImageView imageView, String url, Object payload) {
-                if (url == null || url.equals("")) {
+                if (url == null || "".equals(url)) {
                     Glide.with(DefaultMessagesActivity.this).load(R.drawable.avatar_default).into(imageView);
                 } else {
                     Glide.with(DefaultMessagesActivity.this).load(PostParameterName.HOST + "/file/" + url).into(imageView);
@@ -220,7 +220,7 @@ public class DefaultMessagesActivity extends AppCompatActivity
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d("json", "onSuccess: " + response.toString());
                 try {
-                    ParseJson(response.toString());
+                    parseJson(response.toString());
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -228,7 +228,7 @@ public class DefaultMessagesActivity extends AppCompatActivity
         });
     }
 
-    public void ParseJson(String json) throws UnsupportedEncodingException {
+    public void parseJson(String json) throws UnsupportedEncodingException {
         ArrayList<Message> messages = new ArrayList<>();
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
@@ -247,7 +247,7 @@ public class DefaultMessagesActivity extends AppCompatActivity
                 } else {
                     chatUser = new ChatUser("0", "user", "avatar", true);
                 }
-                Log.d(MyApplication.TAG, "ParseJson: :form:" + messageofData.getFromAccount() + "--> to:" + messageofData.getToAccount());
+                Log.d(MyApplication.TAG, "parseJson: :form:" + messageofData.getFromAccount() + "--> to:" + messageofData.getToAccount());
                 Message message;
                 //解析json消息体
                 String payload = new String(android.util.Base64.decode(messageofData.getPayload(), android.util.Base64.DEFAULT));

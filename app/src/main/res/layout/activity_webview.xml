@@ -23,10 +23,10 @@
 
             <ImageView
                 android:id="@+id/iv_finish"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:padding="5dp"
-                android:src="@drawable/previous_icon" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:src="@drawable/ic_arrow_back_white_24dp" />
 
             <com.vondear.rxui.view.RxTextAutoZoom
                 android:id="@+id/afet_tv_title"
@@ -45,6 +45,13 @@
                 android:textColorHint="@android:color/white"
                 android:textSize="22sp" />
 
+            <ImageView
+                android:id="@+id/iv_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:src="@drawable/ic_open_in_new_white_24dp"
+                android:visibility="gone"/>
         </LinearLayout>
 
     </LinearLayout>

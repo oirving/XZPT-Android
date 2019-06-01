@@ -18,16 +18,17 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter {
     protected LayoutInflater mInflater;
     protected List<T> mItems;
     private OnItemClickListener onItemClickListener;
-    private OnClickListener onClickListener;
+    private AbstractOnClickListener abstractOnClickListener;
 
    public BaseRecyclerAdapter(Context context) {
         this.mItems = new ArrayList<>();
         mInflater = LayoutInflater.from(context);
-        onClickListener = new OnClickListener() {
+        abstractOnClickListener = new AbstractOnClickListener() {
             @Override
             public void onClick(int position, long itemId) {
-                if (onItemClickListener != null)
+                if (onItemClickListener != null) {
                     onItemClickListener.onItemClick(position, itemId);
+                }
             }
         };
 
@@ -38,7 +39,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter {
         final RecyclerView.ViewHolder holder = onCreateDefaultViewHolder(parent, viewType);
         if (holder != null) {
             holder.itemView.setTag(holder);
-            holder.itemView.setOnClickListener(onClickListener);
+            holder.itemView.setOnClickListener(abstractOnClickListener);
         }
         return holder;
     }
@@ -81,12 +82,13 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter {
 
 
     final T getItem(int position) {
-        if (position < 0 || position >= mItems.size())
+        if (position < 0 || position >= mItems.size()) {
             return null;
+        }
         return mItems.get(position);
     }
 
-    static abstract class OnClickListener implements View.OnClickListener {
+    static abstract class AbstractOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             RecyclerView.ViewHolder holder = (RecyclerView.ViewHolder) v.getTag();

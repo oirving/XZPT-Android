@@ -1,6 +1,5 @@
 package com.djylrz.xzpt;
 
-import android.Manifest;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Application;
@@ -8,10 +7,9 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
-import com.djylrz.xzpt.activityStudent.MainActivity;
+import com.djylrz.xzpt.activity.student.MainActivity;
 import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.tencent.smtt.sdk.QbSdk;
@@ -222,14 +220,16 @@ public class MyApplication extends Application {
                     //Toast.makeText(context, "设置别名成功："+userId, Toast.LENGTH_LONG).show();
 
                     //小米云消息服务用户初始化
-                    MIMCUser XMUser = UserManager.getInstance().newUser(userId);
-                    if (XMUser != null) {
-                        XMUser.login();
+                    MIMCUser mimcUser = UserManager.getInstance().newUser(userId);
+                    if (mimcUser != null) {
+                        mimcUser.login();
                     }
                     break;
                 case MyApplication.REGISTER_XMPUSH_SUCCESS:
                     //显示xmpush注册成功提示
                     String s = (String) msg.obj;
+                    break;
+                default:
                     break;
             }
 

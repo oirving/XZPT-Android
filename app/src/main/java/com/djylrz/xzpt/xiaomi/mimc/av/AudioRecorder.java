@@ -16,7 +16,7 @@ public class AudioRecorder implements Capture {
     private volatile boolean isExit = false;
     private boolean isCaptureStarted = false;
     private OnAudioCapturedListener onAudioCapturedListener;
-    private int MAX_BUFF_SIZE = 2 * 1024;
+    private final int MAX_BUFF_SIZE = 2 * 1024;
     private static final String TAG = "AudioRecorder";
 
     public void setOnAudioCapturedListener(OnAudioCapturedListener onAudioCapturedListener) {

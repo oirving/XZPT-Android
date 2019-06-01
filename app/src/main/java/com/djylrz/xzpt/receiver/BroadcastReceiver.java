@@ -1,5 +1,6 @@
 package com.djylrz.xzpt.receiver;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Message;
@@ -7,8 +8,7 @@ import android.util.Log;
 
 import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
-import com.djylrz.xzpt.activity.ActorChoose;
-import com.djylrz.xzpt.activityStudent.RecruitmentDetailActivity;
+import com.djylrz.xzpt.activity.student.RecruitmentDetailActivity;
 import com.xiaomi.mipush.sdk.ErrorCode;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.xiaomi.mipush.sdk.MiPushCommandMessage;
@@ -16,6 +16,8 @@ import com.xiaomi.mipush.sdk.MiPushMessage;
 import com.xiaomi.mipush.sdk.PushMessageReceiver;
 
 import java.util.List;
+
+import static com.djylrz.xzpt.MyApplication.getContext;
 
 /**
  * @Description: 接收mipush消息
@@ -58,15 +60,37 @@ public class BroadcastReceiver extends PushMessageReceiver {
 //        } else if(!TextUtils.isEmpty(message.getUserAccount())) {
 //            mUserAccount=message.getUserAccount();
 //        }
-        //跳转到岗位详情
-        Intent intent = new Intent(MyApplication.getContext(), RecruitmentDetailActivity.class);
-        intent.putExtra("recruitmentID",Long.parseLong(mMessage));
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (mMessage != null){
+
+        if (mMessage != null) {
+            if ("-1".equals(mMessage)) {
+                String pageName = "com.djylrz.xzpt";
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                intent.setClassName(pageName, "com.djylrz.xzpt.activity.ActivityWelcome");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                context.startActivity(intent);
+            } else {
+                //跳转到岗位详情
+                //应用仍在运行
+                if (isForegroundRunning()) {
+                    Intent intent = new Intent(context, RecruitmentDetailActivity.class);
+                    intent.putExtra("recruitmentID", Long.parseLong(mMessage));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                } else {//应用已停止运行，则重启
+                    String pageName = "com.djylrz.xzpt";
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    intent.setClassName(pageName, "com.djylrz.xzpt.activity.ActivityWelcome");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    context.startActivity(intent);
+                }
+
+            }
 //            Intent intent = new Intent(MyApplication.getContext(), ActorChoose.class);
 //            intent.putExtra("recruitmentID", Long.parseLong(mMessage));
 //            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-              MyApplication.getContext().startActivity(intent);
+
         }
     }
 
@@ -147,5 +171,24 @@ public class BroadcastReceiver extends PushMessageReceiver {
         msg.what = MyApplication.REGISTER_XMPUSH_SUCCESS;
         msg.obj = log;
         MyApplication.getHandler().sendMessage(msg);
+    }
+
+    /**
+     * 判断UI进程是否正在运行
+     *
+     * @return 返回true表示正在运行，否则没有运行
+     */
+    public static boolean isForegroundRunning() {
+        ActivityManager am = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> list = am.getRunningAppProcesses();
+        if (list != null) {
+            for (ActivityManager.RunningAppProcessInfo info : list) {
+                if (info.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
+                        && getContext().getPackageName().equals(info.processName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

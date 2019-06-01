@@ -6,7 +6,7 @@
     android:id="@+id/activity_svg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.djylrz.xzpt.activity.ActivitySVG">
+    tools:context="com.djylrz.xzpt.activity.ActivityWelcome">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -30,7 +30,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
             app:animatedSvgFillColors="@array/google_glyph_colors"
             app:animatedSvgFillStart="1200"
             app:animatedSvgFillTime="1000"

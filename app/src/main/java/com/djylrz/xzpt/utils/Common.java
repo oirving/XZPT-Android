@@ -154,14 +154,14 @@ public class Common {
         if(string!=null) {
             //对json数据进行解析
             JSONObject jsonObject = new JSONObject(string);
-            String strings[] = new String[3];
+            String[] strings = new String[3];
             strings[0] = jsonObject.getString("code");
             strings[1] = jsonObject.getString("update");
             strings[2] = jsonObject.getString("content");
             return strings;
         }
         else {
-            String strings[] = {"-1","-1","-1"};
+            String[] strings = {"-1", "-1", "-1"};
             return strings;
         }
 
