@@ -42,6 +42,9 @@ public class EditProjectActivity extends AppCompatActivity implements View.OnCli
                 editor.putString("project",project.getText().toString());
                 editor.commit();
                 finish();
+                break;
+            default:
+                break;
         }
     }
 

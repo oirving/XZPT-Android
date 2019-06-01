@@ -56,6 +56,8 @@ public class FeedbackAndSuggestion extends AppCompatActivity implements View.OnC
                 startActivity(intent);
                 RxToast.success("反馈成功");
                 break;
+            default:
+                break;
         }
     }
 }

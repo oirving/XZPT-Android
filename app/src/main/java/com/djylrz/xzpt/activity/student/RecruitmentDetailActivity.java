@@ -117,6 +117,8 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
 //                finish();
                 DefaultMessagesActivity.open(this, compantId, recruitment.getCompanyName(), "");
                 break;
+            default:
+                break;
         }
     }
 
@@ -154,6 +156,7 @@ public class RecruitmentDetailActivity extends AppCompatActivity implements View
                         Type jsonType = new TypeToken<TempResponseData<Recruitment>>() {}.getType();
                         GsonBuilder builder = new GsonBuilder();
                         builder.registerTypeAdapter(Timestamp.class, new JsonDeserializer<Timestamp>() {
+                            @Override
                             public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                                 return new Timestamp(json.getAsJsonPrimitive().getAsLong());
                             }

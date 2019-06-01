@@ -80,7 +80,7 @@ public class FragmentTips extends Fragment implements OnRefreshListener, OnLoadM
     // 图片数据，包括图片标题、图片链接、数据、点击要打开的网站（点击打开的网页或一些提示指令）
     private List<ImageInfo> imageInfoList;
     private int currentPage = 1;
-    static final ArrayList<String> messages = new ArrayList<String>() {
+    static final ArrayList<String> MESSAGES = new ArrayList<String>() {
         {
             add("不要后悔做任何事情，因为曾经有个时候，那正是你想要的");
             add("Don't regret anything, because there was a time, that's exactly what you want");
@@ -127,6 +127,8 @@ public class FragmentTips extends Fragment implements OnRefreshListener, OnLoadM
                     RxToast.error("加载出错[好像没网了哦]");
                     lRecyclerView.refreshComplete(10);
                     lRecyclerViewAdapter.notifyDataSetChanged();
+                    break;
+                default:
                     break;
             }
             return true;
@@ -385,6 +387,7 @@ public class FragmentTips extends Fragment implements OnRefreshListener, OnLoadM
 
                                         GsonBuilder builder = new GsonBuilder();
                                         builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
+                                            @Override
                                             public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
                                                 return new Timestamp(json.getAsJsonPrimitive().getAsLong());
                                             }
@@ -456,6 +459,7 @@ public class FragmentTips extends Fragment implements OnRefreshListener, OnLoadM
 
                                         GsonBuilder builder = new GsonBuilder();
                                         builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
+                                            @Override
                                             public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
                                                 return new Timestamp(json.getAsJsonPrimitive().getAsLong());
                                             }
@@ -479,6 +483,8 @@ public class FragmentTips extends Fragment implements OnRefreshListener, OnLoadM
                                             handler.sendEmptyMessage(1);
                                         }
                                     }
+                                    default:
+                                        break;
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -500,6 +506,6 @@ public class FragmentTips extends Fragment implements OnRefreshListener, OnLoadM
         }
     }
     public String getRandomChickenSoup(){
-        return messages.get(rnd.nextInt(messages.size()));
+        return MESSAGES.get(rnd.nextInt(MESSAGES.size()));
     }
 }

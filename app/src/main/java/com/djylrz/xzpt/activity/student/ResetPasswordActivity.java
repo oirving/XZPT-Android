@@ -63,10 +63,9 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
                     try {
                         requestQueue = Volley.newRequestQueue(getApplicationContext()); //把上下文context作为参数传递进去
 
-
                         //组装URL
                         String url = "";
-                        if (type.equals("student")) {
+                        if ("student".equals(type)) {
                             url = PostParameterName.POST_URL_RESET_PASSWORD +
                                     PostParameterName.REQUEST_CODE + "=" + verificationCode.getText().toString().trim() + "&" +
                                     PostParameterName.REQUEST_EMAIL + "=" + user.getEmail() + "&" +
@@ -99,9 +98,9 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
                                                         //成功后的跳转
                                                         RxToast.success("修改密码成功");
                                                         Intent intent;
-                                                        if(type.equals("student")){
+                                                        if ("student".equals(type)) {
                                                             intent = new Intent(ResetPasswordActivity.this, StudentLogin.class);
-                                                        }else{
+                                                        } else {
                                                             intent = new Intent(ResetPasswordActivity.this, CompanyLogin.class);
                                                         }
                                                         startActivity(intent);
@@ -129,7 +128,9 @@ public class ResetPasswordActivity extends AppCompatActivity implements View.OnC
                 } else {
                     RxToast.warning("两次密码不相同，请重试");
                 }
-
+                break;
+            default:
+                break;
         }
     }
 }

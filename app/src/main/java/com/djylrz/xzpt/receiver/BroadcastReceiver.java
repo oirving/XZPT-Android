@@ -62,11 +62,11 @@ public class BroadcastReceiver extends PushMessageReceiver {
 //        }
 
         if (mMessage != null) {
-            if (mMessage.equals("-1")) {
+            if ("-1".equals(mMessage)) {
                 String pageName = "com.djylrz.xzpt";
                 Intent intent = new Intent(Intent.ACTION_MAIN);
                 intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                intent.setClassName(pageName, "com.djylrz.xzpt.activity.ActivitySVG");
+                intent.setClassName(pageName, "com.djylrz.xzpt.activity.ActivityWelcome");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                 context.startActivity(intent);
             } else {
@@ -81,7 +81,7 @@ public class BroadcastReceiver extends PushMessageReceiver {
                     String pageName = "com.djylrz.xzpt";
                     Intent intent = new Intent(Intent.ACTION_MAIN);
                     intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                    intent.setClassName(pageName, "com.djylrz.xzpt.activity.ActivitySVG");
+                    intent.setClassName(pageName, "com.djylrz.xzpt.activity.ActivityWelcome");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                     context.startActivity(intent);
                 }

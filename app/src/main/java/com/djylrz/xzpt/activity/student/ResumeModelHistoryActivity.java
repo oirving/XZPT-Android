@@ -102,6 +102,7 @@ public class ResumeModelHistoryActivity extends AppCompatActivity {
 
                                         GsonBuilder builder = new GsonBuilder();
                                         builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
+                                            @Override
                                             public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
                                                 return new Timestamp(json.getAsJsonPrimitive().getAsLong());
                                             }
@@ -111,9 +112,9 @@ public class ResumeModelHistoryActivity extends AppCompatActivity {
 
                                         //todo 替换T
                                         Type jsonType = new TypeToken<PageData<ResumeRecord>>() {}.getType();
-                                        final PageData<ResumeRecord> TPageData = gson.fromJson(pageDataResultObject.toString(),jsonType);
+                                        final PageData<ResumeRecord> resumeRecordPageData = gson.fromJson(pageDataResultObject.toString(),jsonType);
 
-                                        List<ResumeRecord> resumeRecordList = TPageData.getContentList();
+                                        List<ResumeRecord> resumeRecordList = resumeRecordPageData.getContentList();
                                         Log.d(TAG, "onResponse: "+resumeRecordList.size());
                                         resumeModelIHistorytemList.clear();
                                         for (ResumeRecord resumeRecord : resumeRecordList){

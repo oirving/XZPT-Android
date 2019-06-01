@@ -104,6 +104,8 @@ public class StudentLogin extends BaseActivity implements View.OnClickListener {
             case R.id.student_back_button:
                 finish();
                 break;
+            default:
+                break;
         }
     }
 

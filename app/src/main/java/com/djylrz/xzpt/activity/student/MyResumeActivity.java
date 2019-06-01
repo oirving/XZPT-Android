@@ -96,7 +96,7 @@ public class MyResumeActivity extends AppCompatActivity {
         initPage();
         //删除item
         //删除的事件在MyResumeAdapter.java里做
-        adapter.setOnRemoveListener(new MyResumeAdapter.onRemoveListener() {
+        adapter.setOnRemoveListener(new MyResumeAdapter.OnRemoveListener() {
             @Override
             public void onDelete(int i) {
                 myResumeList.remove(i);
@@ -137,6 +137,7 @@ public class MyResumeActivity extends AppCompatActivity {
 
                                             GsonBuilder builder = new GsonBuilder();
                                             builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
+                                                @Override
                                                 public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
                                                     return new Timestamp(json.getAsJsonPrimitive().getAsLong());
                                                 }
@@ -163,6 +164,9 @@ public class MyResumeActivity extends AppCompatActivity {
                                             }
                                             adapter.notifyDataSetChanged();
                                         }
+                                        break;
+                                        default:
+                                            break;
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();

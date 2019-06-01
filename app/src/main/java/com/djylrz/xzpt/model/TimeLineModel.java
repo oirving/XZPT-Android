@@ -19,7 +19,7 @@ public class TimeLineModel implements Parcelable,Comparable<TimeLineModel>{
     private String mLocation;
     private String mHour;
     private String mMinutes;
-    private String URL;
+    private String url;
     private OrderStatus mStatus;
 
     public TimeLineModel() {
@@ -45,7 +45,7 @@ public class TimeLineModel implements Parcelable,Comparable<TimeLineModel>{
         this.mStatus = mStatus;
         this.mHour = recruitmentDate.getHour();
         this.mMinutes = recruitmentDate.getMinutes();
-        this.URL = recruitmentDate.getUrl();
+        this.url = recruitmentDate.getUrl();
     }
 
     public String getMessage() {
@@ -96,12 +96,12 @@ public class TimeLineModel implements Parcelable,Comparable<TimeLineModel>{
         this.mMinutes = mMinutes;
     }
 
-    public String getURL() {
-        return URL;
+    public String getUrl() {
+        return url;
     }
 
-    public void setURL(String URL) {
-        this.URL = URL;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override

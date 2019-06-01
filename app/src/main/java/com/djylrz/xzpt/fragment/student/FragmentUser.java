@@ -60,7 +60,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
     private LinearLayout meLayoutAbout;//关于我们
     private View view;
     private DownloadService.DownloadBinder downloadBinder;
-    private String version[];
+    private String[] version;
     private String nowcode;
     private static final String TAG = "FragmentUser";
     private Handler checkhandler = new Handler() {
@@ -77,6 +77,8 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
                     break;
                 case 2:
                     RxToast.info("已是最新版本！");
+                    break;
+                default:
                     break;
             }
         }
@@ -191,6 +193,7 @@ public class FragmentUser extends Fragment implements View.OnClickListener{
      */
     private void checkUpdate() {
         new Thread() {
+            @Override
             public void run() {
                 try {
                     try {

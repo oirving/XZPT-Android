@@ -132,6 +132,8 @@ public class TableLayoutFragment
                 case IMPORT_RECRUITMENT_LIST_FAIL:
                     RxToast.error("岗位发布失败，请重试！");
                     break;
+                default:
+                    break;
             }
         }
     };
@@ -495,6 +497,8 @@ public class TableLayoutFragment
                                     }).create().show();
                             return false;
                         }
+                        break;
+                    default:
                         break;
                 }
             }

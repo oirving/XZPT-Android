@@ -127,6 +127,8 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                                 }
                             }).create().show();
                     break;
+                default:
+                    break;
             }
         }
     };
@@ -636,6 +638,8 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
                 Log.d(TAG, "onClick: " + recruitment.getValidate());
                 modifyRecruitment();
                 break;
+            default:
+                break;
         }
     }
 
@@ -760,12 +764,14 @@ public class ComRecruitmentDetailActivity extends AppCompatActivity implements V
         }
         /* 获取文件的后缀名 */
         String end = fName.substring(dotIndex, fName.length()).toLowerCase();
-        if (end == "")
+        if (end == "") {
             return type;
+        }
         // 在MIME和文件类型的匹配表中找到对应的MIME类型。
         for (int i = 0; i < MIME_MapTable.length; i++) {
-            if (end.equals(MIME_MapTable[i][0]))
+            if (end.equals(MIME_MapTable[i][0])) {
                 type = MIME_MapTable[i][1];
+            }
         }
         return type;
     }

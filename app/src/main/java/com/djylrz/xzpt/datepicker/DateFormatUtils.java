@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.datePicker;
+package com.djylrz.xzpt.datepicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

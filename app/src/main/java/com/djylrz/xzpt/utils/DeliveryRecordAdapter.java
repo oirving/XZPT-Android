@@ -57,7 +57,7 @@ public class DeliveryRecordAdapter extends RecyclerView.Adapter<DeliveryRecordAd
                 v.getContext().startActivity(intent);*/
             }
         });
-        /*holder.delete.setOnClickListener(new View.OnClickListener() {
+        /*holder.delete.setOnClickListener(new View.AbstractOnClickListener() {
             //用户不需要删除投递记录
             @Override
             public void onClick(View v) {

@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.datePicker;
+package com.djylrz.xzpt.datepicker;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -82,7 +82,9 @@ public class PickerView extends View {
         @Override
         public void run() {
             Handler handler = mWeakHandler.get();
-            if (handler == null) return;
+            if (handler == null) {
+                return;
+            }
 
             handler.sendEmptyMessage(0);
         }
@@ -98,7 +100,9 @@ public class PickerView extends View {
         @Override
         public void handleMessage(Message msg) {
             PickerView view = mWeakView.get();
-            if (view == null) return;
+            if (view == null) {
+                return;
+            }
 
             view.keepScrolling();
         }
@@ -138,7 +142,9 @@ public class PickerView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (mSelectedIndex >= mDataList.size()) return;
+        if (mSelectedIndex >= mDataList.size()) {
+            return;
+        }
 
         // 绘制选中的 text
         drawText(canvas, mLightColor, mScrollDistance, mDataList.get(mSelectedIndex));
@@ -158,7 +164,9 @@ public class PickerView extends View {
     }
 
     private void drawText(Canvas canvas, int textColor, float offsetY, String text) {
-        if (TextUtils.isEmpty(text)) return;
+        if (TextUtils.isEmpty(text)) {
+            return;
+        }
 
         float scale = 1 - (float) Math.pow(offsetY / mQuarterHeight, 2);
         scale = scale < 0 ? 0 : scale;
@@ -231,6 +239,8 @@ public class PickerView extends View {
                 mTimerTask = new ScrollTimerTask(mHandler);
                 mTimer.schedule(mTimerTask, 0, 10);
                 break;
+            default:
+                break;
         }
         return true;
     }
@@ -246,7 +256,9 @@ public class PickerView extends View {
     }
 
     private void moveTailToHead() {
-        if (!mCanScrollLoop || mDataList.isEmpty()) return;
+        if (!mCanScrollLoop || mDataList.isEmpty()) {
+            return;
+        }
 
         String tail = mDataList.get(mDataList.size() - 1);
         mDataList.remove(mDataList.size() - 1);
@@ -254,7 +266,9 @@ public class PickerView extends View {
     }
 
     private void moveHeadToTail() {
-        if (!mCanScrollLoop || mDataList.isEmpty()) return;
+        if (!mCanScrollLoop || mDataList.isEmpty()) {
+            return;
+        }
 
         String head = mDataList.get(0);
         mDataList.remove(0);
@@ -285,7 +299,9 @@ public class PickerView extends View {
      * 设置数据
      */
     public void setDataList(List<String> list) {
-        if (list == null || list.isEmpty()) return;
+        if (list == null || list.isEmpty()) {
+            return;
+        }
 
         mDataList = list;
         // 重置 mSelectedIndex，防止溢出
@@ -297,7 +313,9 @@ public class PickerView extends View {
      * 选择选中项
      */
     public void setSelected(int index) {
-        if (index >= mDataList.size()) return;
+        if (index >= mDataList.size()) {
+            return;
+        }
 
         mSelectedIndex = index;
         if (mCanScrollLoop) {
@@ -343,7 +361,9 @@ public class PickerView extends View {
      * 执行滚动动画
      */
     public void startAnim() {
-        if (!mCanShowAnim) return;
+        if (!mCanShowAnim) {
+            return;
+        }
 
         if (mScrollAnim == null) {
             PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 1f, 0f, 1f);

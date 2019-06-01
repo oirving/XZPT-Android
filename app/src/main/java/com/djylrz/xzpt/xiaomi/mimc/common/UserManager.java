@@ -67,9 +67,9 @@ public class UserManager {
     private String urlGetUserInfo;
     private ChatMsg chatMsg;
     private MIMCConstant.OnlineStatus mStatus;
-    private final static UserManager instance = new UserManager();
-    private OnHandleMIMCMsgListener onHandleMIMCMsgListener = null;
-    private OnHandleMessageToMessageActivityListener OnHandleMessageToMessageActivityListener = null;
+    private final static UserManager INSTANCE = new UserManager();
+    private OnHandleMimcMsgListener onHandleMIMCMsgListener = null;
+    private OnHandleMessageToMessageActivityListener onHandleMessageToMessageActivityListener = null;
     private OnCallStateListener onCallStateListener;
     private String userName = null;
     private String headUrl = null;
@@ -102,18 +102,18 @@ public class UserManager {
                                     Log.d(TAG, "onSuccess: 向会话列表更新消息");
                                     onHandleMIMCMsgListener.onHandleMessage(chatMsg, postResult.getResultObject().getUserName(), postResult.getResultObject().getHeadUrl());
                                 }
-                                if (OnHandleMessageToMessageActivityListener != null) {
+                                if (onHandleMessageToMessageActivityListener != null) {
                                     Log.d(TAG, "onSuccess: 向聊天界面更新消息");
-                                    OnHandleMessageToMessageActivityListener.onHandleMessage(chatMsg,postResult.getResultObject().getUserName(), postResult.getResultObject().getHeadUrl());
+                                    onHandleMessageToMessageActivityListener.onHandleMessage(chatMsg,postResult.getResultObject().getUserName(), postResult.getResultObject().getHeadUrl());
                                 }
                             }else{
                                 if (onHandleMIMCMsgListener != null) {
                                     Log.d(TAG, "onSuccess: 向会话列表更新消息");
                                     onHandleMIMCMsgListener.onHandleMessage(chatMsg, "", "");
                                 }
-                                if (OnHandleMessageToMessageActivityListener != null) {
+                                if (onHandleMessageToMessageActivityListener != null) {
                                     Log.d(TAG, "onSuccess: 向聊天界面更新消息");
-                                    OnHandleMessageToMessageActivityListener.onHandleMessage(chatMsg,"", "");
+                                    onHandleMessageToMessageActivityListener.onHandleMessage(chatMsg,"", "");
                                 }
 
                             }
@@ -126,25 +126,26 @@ public class UserManager {
                         }
                     });
                     break;
-
+                default:
+                    break;
             }
         }
     };
 
     // 设置消息监听
-    public void setHandleMIMCMsgListener(OnHandleMIMCMsgListener onHandleMIMCMsgListener) {
+    public void setHandleMIMCMsgListener(OnHandleMimcMsgListener onHandleMIMCMsgListener) {
         this.onHandleMIMCMsgListener = onHandleMIMCMsgListener;
     }
 
-    public void setHandleMessageToMessageActivityListener(OnHandleMessageToMessageActivityListener OnHandleMessageToMessageActivityListener) {
-        this.OnHandleMessageToMessageActivityListener = OnHandleMessageToMessageActivityListener;
+    public void setHandleMessageToMessageActivityListener(OnHandleMessageToMessageActivityListener onHandleMessageToMessageActivityListener) {
+        this.onHandleMessageToMessageActivityListener = onHandleMessageToMessageActivityListener;
     }
 
     public void setCallStateListener(OnCallStateListener onCallStateListener) {
         this.onCallStateListener = onCallStateListener;
     }
 
-    public interface OnHandleMIMCMsgListener {
+    public interface OnHandleMimcMsgListener {
         void onHandleMessage(ChatMsg chatMsg, String userName, String headUrl);
 
         void onHandleGroupMessage(ChatMsg chatMsg);
@@ -195,7 +196,7 @@ public class UserManager {
     }
 
     public static UserManager getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     /**
@@ -289,8 +290,12 @@ public class UserManager {
      * @return 返回新创建的用户
      */
     public MIMCUser newUser(String appAccount) {
-        if (appAccount == null || appAccount.isEmpty()) return null;
-        if (this.appAccount.equals(appAccount)) return getUser();
+        if (appAccount == null || appAccount.isEmpty()) {
+            return null;
+        }
+        if (this.appAccount.equals(appAccount)) {
+            return getUser();
+        }
 
         // 若是新用户，先释放老用户资源
         if (getUser() != null) {
@@ -307,7 +312,7 @@ public class UserManager {
         mUser.registerTokenFetcher(new TokenFetcher());
         mUser.registerMessageHandler(new MessageHandler());
         mUser.registerOnlineStatusListener(new OnlineStatusListener());
-        mUser.registerRtsCallHandler(new RTSHandler());
+        mUser.registerRtsCallHandler(new RtsHandler());
         mUser.registerUnlimitedGroupHandler(new UnlimitedGroupHandler());
         this.appAccount = appAccount;
 
@@ -342,15 +347,15 @@ public class UserManager {
         }
     }
 
-    class RTSHandler implements MIMCRtsCallHandler {
+    class RtsHandler implements MIMCRtsCallHandler {
         @Override
         public LaunchedResponse onLaunched(String fromAccount, String fromResource, long callId, byte[] appContent) {
             synchronized (lock) {
                 Log.i(TAG, String.format("-----------新会话请求来了 callId:%d", callId));
                 String callType = new String(appContent);
-                if (callType.equalsIgnoreCase("AUDIO")) {
+                if ("AUDIO".equalsIgnoreCase(callType)) {
                     //VoiceCallActivity.actionStartActivity(MyApplication.getContext(), fromAccount, callId);
-                } else if (callType.equalsIgnoreCase("VIDEO")) {
+                } else if ("VIDEO".equalsIgnoreCase(callType)) {
 
                 }
 
@@ -365,7 +370,9 @@ public class UserManager {
                 boolean isAgree = false;
                 String msg = "timeout";
                 if (answer == STATE_TIMEOUT) {
-                    if (onCallStateListener != null) onCallStateListener.onClosed(callId, msg);
+                    if (onCallStateListener != null) {
+                        onCallStateListener.onClosed(callId, msg);
+                    }
                 } else if (answer == STATE_AGREE) {
                     isAgree = true;
                     msg = "agreed";
@@ -388,8 +395,9 @@ public class UserManager {
         @Override
         public void onAnswered(long callId, boolean accepted, String errMsg) {
             Log.i(TAG, "-------------会话接通 callId:" + callId + " accepted:" + accepted + " errMsg:" + errMsg);
-            if (onCallStateListener != null)
+            if (onCallStateListener != null) {
                 onCallStateListener.onAnswered(callId, accepted, errMsg);
+            }
         }
 
         @Override
@@ -400,7 +408,9 @@ public class UserManager {
         @Override
         public void onClosed(long callId, String errMsg) {
             Log.i(TAG, "-------------会话关闭 callId:" + callId + " errMsg:" + errMsg);
-            if (onCallStateListener != null) onCallStateListener.onClosed(callId, errMsg);
+            if (onCallStateListener != null) {
+                onCallStateListener.onClosed(callId, errMsg);
+            }
         }
 
         @Override
@@ -588,12 +598,12 @@ public class UserManager {
             url = domain + "api/account/token";
             String json = "{\"appId\":" + appId + ",\"appKey\":\"" + appKey + "\",\"appSecret\":\"" +
                     appSecret + "\",\"appAccount\":\"" + appAccount + "\",\"regionKey\":\"" + regionKey + "\"}";
-            MediaType JSON = MediaType.parse("application/json;charset=utf-8");
+            MediaType mediaType = MediaType.parse("application/json;charset=utf-8");
             OkHttpClient client = new OkHttpClient();
             Request request = new Request
                     .Builder()
                     .url(url)
-                    .post(RequestBody.create(JSON, json))
+                    .post(RequestBody.create(mediaType, json))
                     .build();
             Call call = client.newCall(request);
             JSONObject data = null;
@@ -644,13 +654,13 @@ public class UserManager {
     public void createGroup(final String groupName, final String users) {
         url = domain + "api/topic/" + appId;
         String json = "{\"topicName\":\"" + groupName + "\", \"accounts\":\"" + users + "\"}";
-        MediaType JSON = MediaType.parse("application/json");
+        MediaType mediaType = MediaType.parse("application/json");
         OkHttpClient client = new OkHttpClient();
         Request request = new Request
                 .Builder()
                 .url(url)
                 .addHeader("token", mUser.getToken())
-                .post(RequestBody.create(JSON, json))
+                .post(RequestBody.create(mediaType, json))
                 .build();
         try {
             Call call = client.newCall(request);
@@ -747,13 +757,13 @@ public class UserManager {
     public void joinGroup(final String groupId, final String users) {
         url = domain + "api/topic/" + appId + "/" + groupId + "/accounts";
         String json = "{\"accounts\":\"" + users + "\"}";
-        MediaType JSON = MediaType.parse("application/json");
+        MediaType mediaType = MediaType.parse("application/json");
         OkHttpClient client = new OkHttpClient();
         Request request = new Request
                 .Builder()
                 .url(url)
                 .addHeader("token", mUser.getToken())
-                .post(RequestBody.create(JSON, json))
+                .post(RequestBody.create(mediaType, json))
                 .build();
         try {
             Call call = client.newCall(request);
@@ -866,13 +876,13 @@ public class UserManager {
             json += "\"bulletin\":\"" + newGroupBulletin + "\"";
         }
         json += "}";
-        MediaType JSON = MediaType.parse("application/json");
+        MediaType mediaType = MediaType.parse("application/json");
         OkHttpClient client = new OkHttpClient();
         Request request = new Request
                 .Builder()
                 .url(url)
                 .addHeader("token", mUser.getToken())
-                .put(RequestBody.create(JSON, json))
+                .put(RequestBody.create(mediaType, json))
                 .build();
         try {
             Call call = client.newCall(request);
@@ -942,14 +952,14 @@ public class UserManager {
         String json = "{\"toAccount\":\"" + toAccount + "\", \"fromAccount\":\""
                 + fromAccount + "\", \"utcFromTime\":\"" + utcFromTime + "\", \"utcToTime\":\"" +
                 utcToTime + "\"}";
-        MediaType JSON = MediaType.parse("application/json;charset=UTF-8");
+        MediaType mediaType = MediaType.parse("application/json;charset=UTF-8");
         OkHttpClient client = new OkHttpClient();
         Request request = new Request
                 .Builder()
                 .url(url)
                 .addHeader("Accept", "application/json;charset=UTF-8")
                 .addHeader("token", mUser.getToken())
-                .post(RequestBody.create(JSON, json))
+                .post(RequestBody.create(mediaType, json))
                 .build();
         try {
             Call call = client.newCall(request);
@@ -984,14 +994,14 @@ public class UserManager {
         url = domain + "api/msg/p2t/query/";
         String json = "{\"account\":\"" + account + "\", \"topicId\":\""
                 + topicId + "\", \"utcFromTime\":\"" + utcFromTime + "\", \"utcToTime\":\"" + utcToTime + "\"}";
-        MediaType JSON = MediaType.parse("application/json;charset=UTF-8");
+        MediaType mediaType = MediaType.parse("application/json;charset=UTF-8");
         OkHttpClient client = new OkHttpClient();
         Request request = new Request
                 .Builder()
                 .url(url)
                 .addHeader("Accept", "application/json;charset=UTF-8")
                 .addHeader("token", mUser.getToken())
-                .post(RequestBody.create(JSON, json))
+                .post(RequestBody.create(mediaType, json))
                 .build();
         try {
             Call call = client.newCall(request);

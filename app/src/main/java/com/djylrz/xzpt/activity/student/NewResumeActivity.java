@@ -27,8 +27,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-
 import com.vondear.rxtool.view.RxToast;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -85,7 +85,7 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_resume);
         //获取布局控件
-        toolbar = (Toolbar)findViewById(R.id.new_resume_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.new_resume_toolbar);
         name = (TextView) findViewById(R.id.name);
         sex = (TextView) findViewById(R.id.sex);//性别
         age = (TextView) findViewById(R.id.age);
@@ -120,7 +120,6 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
         practiceTextView = (TextView) findViewById(R.id.practice_textview);
 
 
-
         sharedPreferences = getSharedPreferences("user", 0);
         //设置标题栏
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
@@ -135,16 +134,18 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.add_menu_done:
                         switch (toolbar.getTitle() + "") {
-                        case "修改简历":
-                            editResume();
-                            break;
-                        case "创建新简历":
-                            //创建一份新的简历
-                            createResume();
-                            break;
+                            case "修改简历":
+                                editResume();
+                                break;
+                            case "创建新简历":
+                                //创建一份新的简历
+                                createResume();
+                                break;
+                            default:
+                                break;
                         }
                         break;
                     default:
@@ -510,6 +511,7 @@ public class NewResumeActivity extends AppCompatActivity implements View.OnClick
 
                                     GsonBuilder builder = new GsonBuilder();
                                     builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
+                                        @Override
                                         public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
                                             return new Timestamp(json.getAsJsonPrimitive().getAsLong());
                                         }

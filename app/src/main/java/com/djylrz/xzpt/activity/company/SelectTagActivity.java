@@ -117,12 +117,12 @@ public class SelectTagActivity extends AppCompatActivity {
 
     private void parseSelectTags(){
         for(Integer tag : selectTagSet){
-            if(tagIndex.equals("")){
+            if("".equals(tagIndex)){
                 tagIndex = (tag+1)+"";
             }else{
                 tagIndex = (tagIndex+1) + "," + tag;
             }
-            if(tagNames.equals("")){
+            if("".equals(tagNames)){
                 tagNames =  mVals[tag];
             }else{
                 tagNames = tagNames + "," + mVals[tag];

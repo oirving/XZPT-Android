@@ -144,6 +144,8 @@ public class EditMyResumeActivity extends AppCompatActivity implements View.OnCl
             case Constants.CREATE_RESUME:
                 getStudentInfo();
                 break;
+            default:
+                break;
         }
 
 
@@ -174,6 +176,8 @@ public class EditMyResumeActivity extends AppCompatActivity implements View.OnCl
                     case Constants.CREATE_RESUME:
                         createResume();
                         break;
+                    default:
+                        break;
                 }
                 break;
                 //跳转到个人信息进行编辑
@@ -200,6 +204,8 @@ public class EditMyResumeActivity extends AppCompatActivity implements View.OnCl
             case R.id.awards_next:
                 intent = new Intent(EditMyResumeActivity.this,EditAwardsActivity.class);
                 startActivity(intent);
+                break;
+            default:
                 break;
         }
     }
@@ -349,6 +355,7 @@ public class EditMyResumeActivity extends AppCompatActivity implements View.OnCl
                                     GsonBuilder builder = new GsonBuilder();
                                     builder.setDateFormat("yyyy-MM-dd HH:mm:ss");
                                     builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
+                                        @Override
                                         public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
                                             return new Timestamp(json.getAsJsonPrimitive().getAsLong());
                                         }

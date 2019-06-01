@@ -62,7 +62,7 @@
         android:paddingStart="20dp"
         android:paddingTop="15dp">
 
-        <com.djylrz.xzpt.datePicker.PickerView
+        <com.djylrz.xzpt.datepicker.PickerView
             android:id="@+id/dpv_year"
             android:layout_width="0dp"
             android:layout_height="160dp"
@@ -76,7 +76,7 @@
             android:text="@string/year"
              />
 
-        <com.djylrz.xzpt.datePicker.PickerView
+        <com.djylrz.xzpt.datepicker.PickerView
             android:id="@+id/dpv_month"
             android:layout_width="0dp"
             android:layout_height="160dp"
@@ -90,7 +90,7 @@
             android:text="@string/month"
              />
 
-        <com.djylrz.xzpt.datePicker.PickerView
+        <com.djylrz.xzpt.datepicker.PickerView
             android:id="@+id/dpv_day"
             android:layout_width="0dp"
             android:layout_height="160dp"
@@ -104,7 +104,7 @@
             android:text="@string/day"
              />
 
-        <com.djylrz.xzpt.datePicker.PickerView
+        <com.djylrz.xzpt.datepicker.PickerView
             android:id="@+id/dpv_hour"
             android:layout_width="0dp"
             android:layout_height="160dp"
@@ -119,7 +119,7 @@
             android:text="@string/hour"
             />
 
-        <com.djylrz.xzpt.datePicker.PickerView
+        <com.djylrz.xzpt.datepicker.PickerView
             android:id="@+id/dpv_minute"
             android:layout_width="0dp"
             android:layout_height="160dp"

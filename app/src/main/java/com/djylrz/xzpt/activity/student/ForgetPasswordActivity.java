@@ -75,6 +75,7 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
                                                 default:{
                                                     RxToast.error("请求发送验证码失败");
                                                 }
+                                                break;
                                             }
                                         }
                                     });
@@ -88,6 +89,8 @@ public class ForgetPasswordActivity extends AppCompatActivity implements View.On
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            default:
+                break;
 
 
         }

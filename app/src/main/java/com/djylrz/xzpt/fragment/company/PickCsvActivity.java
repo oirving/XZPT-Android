@@ -8,11 +8,11 @@ import com.djylrz.xzpt.R;
 
 import java.io.File;
 /**
-  *@Description: PickCSVActivity
+  *@Description: PickCsvActivity
   *@Author: mingjun
   *@Date: 2019/5/20 下午 2:43
   */
-public class PickCSVActivity extends AppCompatActivity implements
+public class PickCsvActivity extends AppCompatActivity implements
         CsvPickerFragment.OnCsvFileSelectedListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

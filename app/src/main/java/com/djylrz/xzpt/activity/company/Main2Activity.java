@@ -50,6 +50,8 @@ public class Main2Activity extends AppCompatActivity {
                 case R.id.navigation_mine:
                     viewPager.setCurrentItem(3);
                     return true;
+                default:
+                    break;
             }
             return false;
         }

@@ -46,7 +46,7 @@
         <activity android:name=".activity.company.ComResumeDeliveryRecordDetailActivity" />
         <activity android:name=".activity.company.ComRecruitmentDetailActivity" />
         <activity android:name=".activity.company.SelectTagActivity" />
-        <activity android:name=".fragment.company.PickCSVActivity" />
+        <activity android:name=".fragment.company.PickCsvActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -76,7 +76,7 @@
         <activity android:name=".activity.student.MainActivity" />
         <activity android:name=".activity.ActivityWebView" />
         <activity android:name=".activity.DefaultMessagesActivity" />
-        <activity android:name=".activity.ActivitySVG">
+        <activity android:name=".activity.ActivityWelcome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

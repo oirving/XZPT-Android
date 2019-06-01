@@ -42,6 +42,9 @@ public class EditAwardsActivity extends AppCompatActivity implements View.OnClic
                 editor.putString("award",awards.getText().toString());
                 editor.commit();
                 finish();
+                break;
+            default:
+                break;
         }
     }
 

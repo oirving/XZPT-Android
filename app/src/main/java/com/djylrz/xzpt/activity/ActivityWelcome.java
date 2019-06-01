@@ -63,7 +63,7 @@ import butterknife.ButterKnife;
 /**
  * @author vondear
  */
-public class ActivitySVG extends ActivityBase {
+public class ActivityWelcome extends ActivityBase {
 
     @BindView(R.id.animated_svg_view)
     AnimatedSvgView mSvgView;
@@ -73,9 +73,9 @@ public class ActivitySVG extends ActivityBase {
     ImageView mAppName;
 
     private DownloadService.DownloadBinder downloadBinder;
-    private String version[];
+    private String[] version;
     private String nowcode;
-    private static final String TAG = "ActivitySVG";
+    private static final String TAG = "ActivityWelcome";
     private String userToken;
     private String companyToken;
     private User user = new User();//用户实体对象
@@ -87,15 +87,16 @@ public class ActivitySVG extends ActivityBase {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    if (ContextCompat.checkSelfPermission(ActivitySVG.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    if (ContextCompat.checkSelfPermission(ActivityWelcome.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                             != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(ActivitySVG.this,
+                        ActivityCompat.requestPermissions(ActivityWelcome.this,
                                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                     }
                     showUpdataDialog();
                     break;
                 case 2:
                     new Thread() {
+                        @Override
                         public void run() {
                             try {
                                 Thread.sleep(2000);
@@ -109,7 +110,7 @@ public class ActivitySVG extends ActivityBase {
                                         Company company = new Company();
                                         company.setToken(companyToken);
                                         companyLoginWithToken(company);
-                                    }else{
+                                    } else {
                                         toMain();
                                     }
                                 } else {
@@ -123,6 +124,8 @@ public class ActivitySVG extends ActivityBase {
                         }
                     }.start();
                     break;
+                default:
+                    break;
             }
         }
     };
@@ -130,9 +133,9 @@ public class ActivitySVG extends ActivityBase {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(this,DownloadService.class);
+        Intent intent = new Intent(this, DownloadService.class);
         startService(intent);//启动服务
-        bindService(intent,connection,BIND_ABOVE_CLIENT);//绑定服务
+        bindService(intent, connection, BIND_ABOVE_CLIENT);//绑定服务
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelId = "downloadyifzu";
             String channelName = "下载";
@@ -149,7 +152,7 @@ public class ActivitySVG extends ActivityBase {
         companyToken = preferences.getString(PostParameterName.TOKEN, null);
         if (NetWorkUtils.isNetwork(mContext)) {
             checkUpdate();
-        }else{
+        } else {
             RxToast.error("请检查网络连接！");
         }
     }
@@ -169,6 +172,7 @@ public class ActivitySVG extends ActivityBase {
      */
     private void checkUpdate() {
         new Thread() {
+            @Override
             public void run() {
                 try {
                     try {
@@ -219,7 +223,7 @@ public class ActivitySVG extends ActivityBase {
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            downloadBinder = (DownloadService.DownloadBinder)service;
+            downloadBinder = (DownloadService.DownloadBinder) service;
         }
 
         @Override
@@ -227,11 +231,13 @@ public class ActivitySVG extends ActivityBase {
 
         }
     };
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unbindService(connection);
     }
+
     /**
      * 弹出对话框
      */
@@ -253,6 +259,7 @@ public class ActivitySVG extends ActivityBase {
                     }
                 }).create().show();
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {

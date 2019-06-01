@@ -91,7 +91,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
             public void onClick(View v) {
                 if (timeLineModel.getmLocation() != null) {
                     Intent intent = new Intent(mContext, ActivityWebView.class);
-                    intent.putExtra("URL", timeLineModel.getURL());
+                    intent.putExtra("URL", timeLineModel.getUrl());
                     mContext.startActivity(intent);
                 }
                 //Toast.makeText(mContext, "你点击了" + timeLineModel.getMessage(), Toast.LENGTH_SHORT).show();
@@ -115,8 +115,8 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
                                         pe.printStackTrace();
                                     }
                                     CalendarUtils calendarUtils = CalendarUtils.getInstance();
-                                    calendarUtils.addCalendarEvent(mContext, timeLineModel.getMessage(),
-                                            "[时间] : " + timeLineModel.getDate() + "\n[地点] : " + timeLineModel.getmLocation() + "\n[网址] : " + timeLineModel.getURL(),
+                                    CalendarUtils.addCalendarEvent(mContext, timeLineModel.getMessage(),
+                                            "[时间] : " + timeLineModel.getDate() + "\n[地点] : " + timeLineModel.getmLocation() + "\n[网址] : " + timeLineModel.getUrl(),
                                             date.getTime(), 1);
                                     RxToast.info("已添加招聘会[" + timeLineModel.getMessage() + "]到系统日历");
                                 }

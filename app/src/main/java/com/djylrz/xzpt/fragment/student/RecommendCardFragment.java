@@ -21,7 +21,7 @@ import com.djylrz.xzpt.bean.PageData;
 import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.bean.User;
-import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
+import com.djylrz.xzpt.listener.AbstractEndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.StudentRecruitmentAdapter;
@@ -116,7 +116,7 @@ public class RecommendCardFragment extends Fragment {
         });
 
         // 设置加载更多监听
-        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+        recyclerView.addOnScrollListener(new AbstractEndlessRecyclerOnScrollListener() {
             @Override
             public void onLoadMore() {
                 loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING);
@@ -137,7 +137,7 @@ public class RecommendCardFragment extends Fragment {
                     "Java实习生","xxxxxxx","15659769111","福州","中文简历","100K-120K","博士以上",996,1,"开发",1);
             recruitmentList.add(test1);
         }*/
-        if (mTitle.equals("推荐")) {
+        if ("推荐".equals(mTitle)) {
             //查询招聘推荐并显示
             VolleyNetUtil.getInstance().setRequestQueue(getContext().getApplicationContext());//获取requestQueue
             SharedPreferences userToken = getContext().getSharedPreferences("token", 0);
@@ -162,6 +162,7 @@ public class RecommendCardFragment extends Fragment {
 
                                                 GsonBuilder builder = new GsonBuilder();
                                                 builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
+                                                    @Override
                                                     public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
                                                         return new Timestamp(json.getAsJsonPrimitive().getAsLong());
                                                     }
@@ -228,7 +229,7 @@ public class RecommendCardFragment extends Fragment {
             } else {
                 Log.d(TAG, "initRecruitments: 没有获取到token");
             }
-        } else if (mTitle.equals("热门")) {
+        } else if ("热门".equals(mTitle)) {
             //查询热门招聘并显示
             //获取token
             SharedPreferences preferences = getActivity().getSharedPreferences("token", 0);
@@ -248,7 +249,7 @@ public class RecommendCardFragment extends Fragment {
                             public void onResponse(JSONObject response) {
                                 Log.d(TAG, "onResponse: 返回" + response.toString());
                                 try {
-                                    if (response.getString(PostParameterName.RESPOND_RESULTCODE).equals("200")) {
+                                    if ("200".equals(response.getString(PostParameterName.RESPOND_RESULTCODE))) {
                                         GsonBuilder builder = new GsonBuilder();
                                         builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
                                             @Override
@@ -277,7 +278,7 @@ public class RecommendCardFragment extends Fragment {
                                                 }
                                             }
                                         });
-                                    } else if (response.getString(PostParameterName.RESPOND_RESULTCODE).equals("2018")) {
+                                    } else if ("2018".equals(response.getString(PostParameterName.RESPOND_RESULTCODE))) {
                                         getActivity().runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {

@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
  * Created by yangle on 2017/10/12.
  */
 
-public abstract class EndlessRecyclerOnScrollListener extends RecyclerView.OnScrollListener {
+public abstract class AbstractEndlessRecyclerOnScrollListener extends RecyclerView.OnScrollListener {
 
     // 用来标记是否正在向上滑动
     private boolean isSlidingUpward = false;

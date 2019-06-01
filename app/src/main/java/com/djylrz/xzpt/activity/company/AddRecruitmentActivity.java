@@ -72,6 +72,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
     private RelativeLayout layoutType;
     private TextView textViewType;
     List<String> data = new ArrayList<>();
+    private final String PATTERN = "[0-9]*";
     private String[] mVals = new String[]
             {"C++", "Javascript", "金融", "直播", "电商", "Java", "移动互联网", "分布式", "C", "服务器端", "社交",
                     "带薪年假", "银行", "云计算", "MySQL", "Linux/Unix", "旅游", "绩效奖金", "工具软件", "大数据",
@@ -94,6 +95,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
     //动画控件
     private SubRecruitmentData subRecruitmentData;
     private RequestQueue requestQueue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -224,9 +226,9 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
 
             textViewWorkTime.setText(strWorkTime);
             subRecruitmentData.setWorkTime(recruitment.getWorkTime() + "");
-            if(recruitment.getIndustryLabel() > 0){
-                textViewIndustryLabel.setText(data.get((int) recruitment.getIndustryLabel()-1));
-            }else{
+            if (recruitment.getIndustryLabel() > 0) {
+                textViewIndustryLabel.setText(data.get((int) recruitment.getIndustryLabel() - 1));
+            } else {
                 textViewIndustryLabel.setText("请选择所属行业");
             }
             subRecruitmentData.setIndustryLabel(recruitment.getIndustryLabel() + "");
@@ -248,24 +250,24 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             textViewType.setText(strJobType);
             subRecruitmentData.setJobType(recruitment.getJobType() + "");
             String strStationLabels = recruitment.getStationLabel();
-            if(strStationLabels != null){
+            if (strStationLabels != null) {
                 String[] strStationLabel = strStationLabels.split(",");
                 strStationLabels = "";
-                if(strStationLabel.length == 1){
-                    strStationLabels = mVals[Integer.parseInt(strStationLabel[0])-1];
-                }else{
+                if (strStationLabel.length == 1) {
+                    strStationLabels = mVals[Integer.parseInt(strStationLabel[0]) - 1];
+                } else {
                     for (String stationLabel : strStationLabel) {
-                        strStationLabels = strStationLabels + mVals[Integer.parseInt(stationLabel)-1] + ",";
+                        strStationLabels = strStationLabels + mVals[Integer.parseInt(stationLabel) - 1] + ",";
                     }
                 }
-            }else{
+            } else {
                 strStationLabels = "请选择岗位标签";
             }
             textViewStationLabel.setText(strStationLabels);
             subRecruitmentData.setStationLabel(recruitment.getStationLabel());
 
             //显示招聘人数
-            String headCount = recruitment.getHeadCount()+"";
+            String headCount = recruitment.getHeadCount() + "";
             subRecruitmentData.setHeadCount(headCount);
             editTextCHeadCount.setText(headCount);
 
@@ -311,6 +313,8 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                 break;
             case R.id.job_type_layout:
                 onTypePicker(this.getWindow().getDecorView());
+                break;
+            default:
                 break;
         }
     }
@@ -483,7 +487,7 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
 
         //判断招聘人数是否为数字
         String headCount = editTextCHeadCount.getText().toString();
-        Pattern pattern = Pattern.compile("[0-9]*");
+        Pattern pattern = Pattern.compile(PATTERN);
         Matcher isNum = pattern.matcher(headCount);
         if (!isNum.matches()) {
             RxToast.warning("招聘人数只能填写数字");
@@ -492,8 +496,8 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
             subRecruitmentData.setHeadCount(headCount);
         }
         Log.d(TAG, "checkData: " + subRecruitmentData.getJobName() + "," + subRecruitmentData.getDescription() + "," + subRecruitmentData.getDeliveryRequest() + "," + subRecruitmentData.getContact());
-        if (subRecruitmentData.getJobName().equals("") || subRecruitmentData.getJobName() == null || subRecruitmentData.getDescription() == null || subRecruitmentData.getDescription().equals("") || subRecruitmentData.getContact() == null || subRecruitmentData.getContact().equals("") ||
-                subRecruitmentData.getLocation() == null || subRecruitmentData.getDeliveryRequest() == null || subRecruitmentData.getDeliveryRequest().equals("") || subRecruitmentData.getDegree() == null
+        if ("".equals(subRecruitmentData.getJobName()) || subRecruitmentData.getJobName() == null || subRecruitmentData.getDescription() == null || "".equals(subRecruitmentData.getDescription()) || subRecruitmentData.getContact() == null || "".equals(subRecruitmentData.getContact()) ||
+                subRecruitmentData.getLocation() == null || subRecruitmentData.getDeliveryRequest() == null || "".equals(subRecruitmentData.getDeliveryRequest()) || subRecruitmentData.getDegree() == null
                 || subRecruitmentData.getWorkTime() == null || subRecruitmentData.getIndustryLabel() == null || subRecruitmentData.getStationLabel() == null || subRecruitmentData.getJobType() == null) {
             RxToast.warning("除薪资外，其他项请完整填写");
             return false;
@@ -552,9 +556,9 @@ public class AddRecruitmentActivity extends AppCompatActivity implements View.On
                                         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
                                         finish();
-                                    } else if(postResult.getResultCode() == 2022){
+                                    } else if (postResult.getResultCode() == 2022) {
                                         RxToast.error("发布数量超过限制，请联系客服或删除无用招聘信息！");
-                                    }else{
+                                    } else {
                                         RxToast.error("岗位发布失败，请重试！");
 //                                        Toast.makeText(activity, "岗位发布失败，请重试！", Toast.LENGTH_SHORT).show();
                                     }

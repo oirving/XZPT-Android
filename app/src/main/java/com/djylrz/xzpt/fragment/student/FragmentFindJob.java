@@ -26,7 +26,7 @@ import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PageData;
 import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.bean.User;
-import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
+import com.djylrz.xzpt.listener.AbstractEndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.StudentRecruitmentAdapter;
@@ -89,6 +89,8 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener {
                         searchView.setVisibility(View.VISIBLE);
                         searchView.showWithAnim();
                         break;
+                    default:
+                        break;
                 }
                 return true;
             }
@@ -102,7 +104,7 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener {
                     public void run() {
                         recruitmentList.clear();
                         keyword = searchView.getSearchEdit().getText().toString().trim();//trim()用于去掉收尾空格
-                        if (keyword.equals("")) {
+                        if ("".equals(keyword)) {
                             searchView.setSearching(false);
                             RxToast.warning("没有想好搜索什么？可以去看看推荐或热门岗位！");
                         } else {
@@ -147,7 +149,7 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener {
         });
 
         // 设置加载更多监听
-        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+        recyclerView.addOnScrollListener(new AbstractEndlessRecyclerOnScrollListener() {
             @Override
             public void onLoadMore() {
                 loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING);
@@ -160,7 +162,7 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener {
             }
         });
         for (String title : mTitles) {
-            if (title.equals("联系")) {
+            if ("联系".equals(title)) {
                 mFragments.add(MessageCardFragment.getInstance(title));
             } else {
                 mFragments.add(RecommendCardFragment.getInstance(title));
@@ -267,6 +269,7 @@ public class FragmentFindJob extends Fragment implements View.OnClickListener {
                                             GsonBuilder builder = new GsonBuilder();
                                             builder.setDateFormat("yyyy-MM-dd HH:mm:ss");
                                             builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
+                                                @Override
                                                 public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
                                                     return new Timestamp(json.getAsJsonPrimitive().getAsLong());
                                                 }

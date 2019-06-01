@@ -2,8 +2,8 @@ package com.djylrz.xzpt.xiaomi.mimc.av;
 
 import com.djylrz.xzpt.xiaomi.mimc.listener.OnAudioDecodedListener;
 
-public class FFmpegAudioDecoder implements Codec {
-    private static final String TAG = "FFmpegAudioDecoder";
+public class FFMpegAudioDecoder implements Codec {
+    private static final String TAG = "FFMpegAudioDecoder";
     private OnAudioDecodedListener onAudioDecodedListener;
 
 
@@ -14,8 +14,11 @@ public class FFmpegAudioDecoder implements Codec {
     @Override
     public boolean start() {
         int ret = startDecoder();
-        if (ret != -1) return true;
-        else return false;
+        if (ret != -1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -26,8 +29,11 @@ public class FFmpegAudioDecoder implements Codec {
     @Override
     public boolean codec(byte[] data) {
         int ret = decode(data, data.length);
-        if (ret != -1) return true;
-        else return false;
+        if (ret != -1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void onAudioDecoded(byte[] data) {

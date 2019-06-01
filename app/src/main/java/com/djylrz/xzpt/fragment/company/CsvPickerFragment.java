@@ -113,6 +113,8 @@ public class CsvPickerFragment extends Fragment implements View.OnClickListener 
                 case REQUEST_CODE_PERMISSION_READ_EXTERNAL_STORAGE_DEMO:
                     createDemoFile();
                     break;
+                default:
+                    break;
             }
         }
     }

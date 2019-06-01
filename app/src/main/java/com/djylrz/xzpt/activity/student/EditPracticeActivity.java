@@ -41,6 +41,9 @@ public class EditPracticeActivity extends AppCompatActivity implements View.OnCl
                 editor.putString("practice",practice.getText().toString());
                 editor.commit();
                 finish();
+                break;
+            default:
+                break;
         }
     }
 

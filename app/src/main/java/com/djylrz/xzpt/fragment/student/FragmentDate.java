@@ -121,6 +121,8 @@ public class FragmentDate extends Fragment implements
                     initViewTimeLine();
                     RxToast.error("招聘会数据获取失败，请检查网络连接！");
                     break;
+                default:
+                    break;
             }
         }
     };
@@ -362,6 +364,7 @@ public class FragmentDate extends Fragment implements
       *@Author: mingjun
       *@Date: 2019/5/18 下午 1:42
       */
+    @Override
     @SuppressLint("SetTextI18n")
     public void onCalendarSelect(com.haibin.calendarview.Calendar calendar, boolean isClick) {
         mTextLunar.setVisibility(View.VISIBLE);

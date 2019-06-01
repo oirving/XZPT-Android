@@ -1,4 +1,4 @@
-package com.djylrz.xzpt.datePicker;
+package com.djylrz.xzpt.datepicker;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -144,6 +144,8 @@ public class CustomDatePicker implements View.OnClickListener, PickerView.OnSele
                     mCallback.onTimeSelected(mSelectedTime.getTimeInMillis());
                 }
                 break;
+            default:
+                break;
         }
 
         if (mPickerDialog != null && mPickerDialog.isShowing()) {
@@ -153,7 +155,9 @@ public class CustomDatePicker implements View.OnClickListener, PickerView.OnSele
 
     @Override
     public void onSelect(View view, String selected) {
-        if (view == null || TextUtils.isEmpty(selected)) return;
+        if (view == null || TextUtils.isEmpty(selected)) {
+            return;
+        }
 
         int timeUnit;
         try {
@@ -187,6 +191,8 @@ public class CustomDatePicker implements View.OnClickListener, PickerView.OnSele
 
             case R.id.dpv_minute:
                 mSelectedTime.set(Calendar.MINUTE, timeUnit);
+                break;
+            default:
                 break;
         }
     }
@@ -479,7 +485,9 @@ public class CustomDatePicker implements View.OnClickListener, PickerView.OnSele
      * @param dateStr 日期字符串，格式为 yyyy-MM-dd 或 yyyy-MM-dd HH:mm
      */
     public void show(String dateStr) {
-        if (!canShow() || TextUtils.isEmpty(dateStr)) return;
+        if (!canShow() || TextUtils.isEmpty(dateStr)) {
+            return;
+        }
 
         // 弹窗时，考虑用户体验，不展示滚动动画
         if (setSelectedTime(dateStr, false)) {
@@ -509,7 +517,9 @@ public class CustomDatePicker implements View.OnClickListener, PickerView.OnSele
      * @param timestamp 时间戳，毫秒级别
      */
     public void show(long timestamp) {
-        if (!canShow()) return;
+        if (!canShow()) {
+            return;
+        }
 
         if (setSelectedTime(timestamp, false)) {
             mPickerDialog.show();
@@ -524,7 +534,9 @@ public class CustomDatePicker implements View.OnClickListener, PickerView.OnSele
      * @return 是否设置成功
      */
     public boolean setSelectedTime(long timestamp, boolean showAnim) {
-        if (!canShow()) return false;
+        if (!canShow()) {
+            return false;
+        }
 
         if (timestamp < mBeginTime.getTimeInMillis()) {
             timestamp = mBeginTime.getTimeInMillis();
@@ -547,7 +559,9 @@ public class CustomDatePicker implements View.OnClickListener, PickerView.OnSele
      * 设置是否允许点击屏幕或物理返回键关闭
      */
     public void setCancelable(boolean cancelable) {
-        if (!canShow()) return;
+        if (!canShow()) {
+            return;
+        }
 
         mPickerDialog.setCancelable(cancelable);
     }
@@ -556,7 +570,9 @@ public class CustomDatePicker implements View.OnClickListener, PickerView.OnSele
      * 设置日期控件是否显示时和分
      */
     public void setCanShowPreciseTime(boolean canShowPreciseTime) {
-        if (!canShow()) return;
+        if (!canShow()) {
+            return;
+        }
 
         if (canShowPreciseTime) {
             initScrollUnit();
@@ -588,7 +604,9 @@ public class CustomDatePicker implements View.OnClickListener, PickerView.OnSele
      * 设置日期控件是否可以循环滚动
      */
     public void setScrollLoop(boolean canLoop) {
-        if (!canShow()) return;
+        if (!canShow()) {
+            return;
+        }
 
         mDpvYear.setCanScrollLoop(canLoop);
         mDpvMonth.setCanScrollLoop(canLoop);
@@ -601,7 +619,9 @@ public class CustomDatePicker implements View.OnClickListener, PickerView.OnSele
      * 设置日期控件是否展示滚动动画
      */
     public void setCanShowAnim(boolean canShowAnim) {
-        if (!canShow()) return;
+        if (!canShow()) {
+            return;
+        }
 
         mDpvYear.setCanShowAnim(canShowAnim);
         mDpvMonth.setCanShowAnim(canShowAnim);

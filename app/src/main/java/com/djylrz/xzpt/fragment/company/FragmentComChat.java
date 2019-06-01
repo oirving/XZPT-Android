@@ -60,7 +60,7 @@ import cz.msebera.android.httpclient.Header;
 public class FragmentComChat extends Fragment
         implements DialogsListAdapter.OnDialogClickListener<Dialog>,
         DialogsListAdapter.OnDialogLongClickListener<Dialog>,
-        UserManager.OnHandleMIMCMsgListener,
+        UserManager.OnHandleMimcMsgListener,
         DateFormatter.Formatter {
     private static final String TAG = "FragmentComChat";
     private View mDecorView;
@@ -83,6 +83,8 @@ public class FragmentComChat extends Fragment
                     if(++finishCount == dialogSize){
                         dialogsAdapter.sortByLastMessageDate();
                     }
+                    break;
+                default:
                     break;
             }
         }
@@ -133,7 +135,7 @@ public class FragmentComChat extends Fragment
         imageLoader = new ImageLoader() {
             @Override
             public void loadImage(ImageView imageView, String url, Object payload) {
-                if (url == null || url.equals("")) {
+                if (url == null || "".equals(url)) {
                     Glide.with(getActivity()).load(R.drawable.avatar_default).into(imageView);
                 } else {
                     Glide.with(getActivity()).load(PostParameterName.HOST + "/file/" + url).into(imageView);
@@ -188,7 +190,7 @@ public class FragmentComChat extends Fragment
                 Log.d(TAG, "获取消息列表成功: " + content);
                 //解析会话列表json
                 try {
-                    ParseJson(content);
+                    parseJson(content);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -230,7 +232,7 @@ public class FragmentComChat extends Fragment
      * @Author: mingjun
      * @Date: 2019/5/22 下午 4:29
      */
-    public void ParseJson(String json) throws UnsupportedEncodingException {
+    public void parseJson(String json) throws UnsupportedEncodingException {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         Type jsonType = new TypeToken<ContactResponseData<List<Data<LastMessage>>>>() {
@@ -288,7 +290,7 @@ public class FragmentComChat extends Fragment
                         //需要对Payload进行base64解密
                         //解析json消息体
                         String payload = new String(android.util.Base64.decode(dialogContent.getLastMessage().getPayload(), android.util.Base64.DEFAULT));
-                        Log.d(TAG, "ParseJson: " + payload);
+                        Log.d(TAG, "parseJson: " + payload);
                         Log.d(TAG, "unParseJson: " + dialogContent.getLastMessage().getPayload());
 
                         String regExp = "\"payload\":\"(.*)\"";
@@ -490,7 +492,7 @@ public class FragmentComChat extends Fragment
         }
     }
 
-    public interface messageCallBack {
+    public interface MessageCallBack {
         public void getNewMessage(Message message);
     }
 

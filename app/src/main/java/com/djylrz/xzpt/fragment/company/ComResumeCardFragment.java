@@ -20,7 +20,7 @@ import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PageData;
 import com.djylrz.xzpt.bean.ResumeDelivery;
 import com.djylrz.xzpt.bean.TempResponseData;
-import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
+import com.djylrz.xzpt.listener.AbstractEndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.ComResumeDeliveryRecordAdapter;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
 import com.djylrz.xzpt.utils.PostParameterName;
@@ -62,19 +62,19 @@ public class ComResumeCardFragment extends Fragment {
     public static ComResumeCardFragment getInstance(String title) {
         ComResumeCardFragment sf = new ComResumeCardFragment();
         sf.mTitle = title;
-        if (title.equals("已拒绝")) {
+        if ("已拒绝".equals(title)) {
             sf.type = 0;
             sf.statusA = -1;
             sf.statusB = -1;
-        } else if (title.equals("已通过")) {
+        } else if ("已通过".equals(title)) {
             sf.type = 1;
             sf.statusA = 7;
             sf.statusB = 7;
-        } else if (title.equals("面试中")) {
+        } else if ("面试中".equals(title)) {
             sf.type = 2;
             sf.statusA = 3;
             sf.statusB = 6;
-        } else if (title.equals("待审核")) {
+        } else if ("待审核".equals(title)) {
             sf.type = 3;
             sf.statusA = 1;
             sf.statusB = 2;
@@ -134,7 +134,7 @@ public class ComResumeCardFragment extends Fragment {
         });
 
         // 设置加载更多监听
-        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+        recyclerView.addOnScrollListener(new AbstractEndlessRecyclerOnScrollListener() {
             @Override
             public void onLoadMore() {
                 loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING);
@@ -168,7 +168,7 @@ public class ComResumeCardFragment extends Fragment {
                         public void onResponse(JSONObject response) {
                             Log.d(TAG, "onResponse: 返回" + response.toString());
                             try {
-                                if (response.getString(PostParameterName.RESPOND_RESULTCODE).equals("200")) {
+                                if ("200".equals(response.getString(PostParameterName.RESPOND_RESULTCODE))) {
                                     GsonBuilder builder = new GsonBuilder();
                                     builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
                                         @Override
@@ -195,7 +195,7 @@ public class ComResumeCardFragment extends Fragment {
                                             }
                                         }
                                     });
-                                } else if (response.getString(PostParameterName.RESPOND_RESULTCODE).equals("2018")) {
+                                } else if ("2018".equals(response.getString(PostParameterName.RESPOND_RESULTCODE))) {
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {

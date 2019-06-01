@@ -5,7 +5,7 @@ package com.djylrz.xzpt.model;
  */
 public enum Orientation {
 
-    VERTICAL,
-    HORIZONTAL;
+    VERTICAL,//垂直
+    HORIZONTAL;//水平
 
 }

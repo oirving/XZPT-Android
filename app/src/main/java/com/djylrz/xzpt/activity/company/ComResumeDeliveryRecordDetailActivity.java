@@ -69,11 +69,11 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
     private Button btnNext;//下一步按钮
     private Button btnChat;//发起聊天按钮
     private BoomMenuButton bmbNext;//弹出式选择器
-    private String strNext[]={"面试待安排","进入一面","进入二面","进入终面","通过面试"};//弹出式菜单文字
+    private String[] strNext = {"面试待安排", "进入一面", "进入二面", "进入终面", "通过面试"};//弹出式菜单文字
     private int nextNum = 0;//用户点击哪一个next菜单
     private static final String TAG = "ComResumeDeliveryRecord";
     private ResumeDelivery resumeDelivery;//用于发送json的简历投递记录对象
-    private int colorArray[]={
+    private int[] colorArray = {
             R.color.course_color6,
             R.color.course_color7,
             R.color.course_color8,
@@ -240,6 +240,7 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
 //                            });
 //                            Gson gson =builder.create();
                             builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
+                                @Override
                                 public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
                                     return new Timestamp(json.getAsJsonPrimitive().getAsLong());
                                 }
@@ -430,6 +431,8 @@ public class ComResumeDeliveryRecordDetailActivity extends AppCompatActivity imp
                 break;
             case R.id.btn_message:
                 DefaultMessagesActivity.open(this,resumeDeliveryRecordVO.getUserId() , resumeDeliveryRecordVO.getUserName(), "");
+                break;
+            default:
                 break;
         }
 

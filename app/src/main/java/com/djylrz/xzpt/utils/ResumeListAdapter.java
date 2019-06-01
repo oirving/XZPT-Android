@@ -128,7 +128,7 @@ public class ResumeListAdapter extends RecyclerView.Adapter<ResumeListAdapter.Vi
                                 public void onResponse(JSONObject response) {
                                     Log.d(TAG, "onResponse: 返回"+response.toString());
                                     try {
-                                        if (response.getString(PostParameterName.RESPOND_RESULTCODE).equals("200")){
+                                        if ("200".equals(response.getString(PostParameterName.RESPOND_RESULTCODE))){
                                             Log.d(TAG, "onResponse: 删除简历成功");
                                             mResumeList.remove(position);
                                             notifyDataSetChanged();

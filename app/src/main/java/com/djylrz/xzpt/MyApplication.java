@@ -220,14 +220,16 @@ public class MyApplication extends Application {
                     //Toast.makeText(context, "设置别名成功："+userId, Toast.LENGTH_LONG).show();
 
                     //小米云消息服务用户初始化
-                    MIMCUser XMUser = UserManager.getInstance().newUser(userId);
-                    if (XMUser != null) {
-                        XMUser.login();
+                    MIMCUser mimcUser = UserManager.getInstance().newUser(userId);
+                    if (mimcUser != null) {
+                        mimcUser.login();
                     }
                     break;
                 case MyApplication.REGISTER_XMPUSH_SUCCESS:
                     //显示xmpush注册成功提示
                     String s = (String) msg.obj;
+                    break;
+                default:
                     break;
             }
 

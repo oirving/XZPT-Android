@@ -21,7 +21,7 @@ import com.djylrz.xzpt.bean.PageData;
 import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.bean.TempResponseRecruitmentData;
-import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
+import com.djylrz.xzpt.listener.AbstractEndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.RecruitmentAdapter;
@@ -61,9 +61,9 @@ public class RecruitmentCardFragment extends Fragment {
     public static RecruitmentCardFragment getInstance(String title) {
         RecruitmentCardFragment sf = new RecruitmentCardFragment();
         sf.mTitle = title;
-        if (title.equals("已发布岗位")) {
+        if ("已发布岗位".equals(title)) {
             sf.type = 0;
-        } else if (title.equals("已停招岗位")) {
+        } else if ("已停招岗位".equals(title)) {
             sf.type = 1;
         }
         return sf;
@@ -122,7 +122,7 @@ public class RecruitmentCardFragment extends Fragment {
         });
 
         // 设置加载更多监听
-        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener() {
+        recyclerView.addOnScrollListener(new AbstractEndlessRecyclerOnScrollListener() {
             @Override
             public void onLoadMore() {
                 loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING);
@@ -156,7 +156,7 @@ public class RecruitmentCardFragment extends Fragment {
                         public void onResponse(JSONObject response) {
                             Log.d(TAG, "onResponse: 返回" + response.toString());
                             try {
-                                if (response.getString(PostParameterName.RESPOND_RESULTCODE).equals("200")) {
+                                if ("200".equals(response.getString(PostParameterName.RESPOND_RESULTCODE))) {
                                     GsonBuilder builder = new GsonBuilder();
                                     builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
                                         @Override
@@ -188,7 +188,7 @@ public class RecruitmentCardFragment extends Fragment {
                                             }
                                         }
                                     });
-                                } else if (response.getString(PostParameterName.RESPOND_RESULTCODE).equals("2018")) {
+                                } else if ("2018".equals(response.getString(PostParameterName.RESPOND_RESULTCODE))) {
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {

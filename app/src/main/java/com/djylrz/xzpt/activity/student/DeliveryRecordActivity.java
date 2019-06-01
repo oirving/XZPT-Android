@@ -90,6 +90,7 @@ public class DeliveryRecordActivity extends AppCompatActivity {
 
                                             GsonBuilder builder = new GsonBuilder();
                                             builder.registerTypeAdapter(Timestamp.class, new com.google.gson.JsonDeserializer<Timestamp>() {
+                                                @Override
                                                 public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
                                                     return new Timestamp(json.getAsJsonPrimitive().getAsLong());
                                                 }
@@ -111,6 +112,9 @@ public class DeliveryRecordActivity extends AppCompatActivity {
                                             }
                                             deliveryRecordAdapter.notifyDataSetChanged();
                                         }
+                                        break;
+                                        default:
+                                            break;
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();

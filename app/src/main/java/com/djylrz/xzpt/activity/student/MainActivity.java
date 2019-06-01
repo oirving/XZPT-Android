@@ -72,6 +72,8 @@ public class MainActivity extends BaseActivity {
                 case R.id.navigation_user:
                     viewPager.setCurrentItem(4);
                     return true;
+                default:
+                    break;
             }
             return false;
         }

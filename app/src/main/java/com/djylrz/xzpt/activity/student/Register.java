@@ -67,7 +67,7 @@ public class Register extends BaseActivity implements View.OnClickListener {
             dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if(!et.getText().toString().equals("")) {//验证码不为空
+                    if(!"".equals(et.getText().toString())) {//验证码不为空
                         verificationCode=et.getText().toString();//获取输入的验证码
                         new RegisterAsyncTask().execute();//注册
                     } else {
@@ -100,10 +100,11 @@ public class Register extends BaseActivity implements View.OnClickListener {
 
     private boolean passwordCheck (String password,String passwordCheck) {
         //密码长度和两次输入检查
-        if(password.length()>=8&&password.equals(passwordCheck))
+        if(password.length()>=8&&password.equals(passwordCheck)) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     //获取验证码

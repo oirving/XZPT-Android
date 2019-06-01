@@ -51,9 +51,9 @@ import static com.tencent.smtt.sdk.TbsReaderView.TAG;
 
 public class ResumeDisplayActivity extends Activity implements ReaderCallback {
     private TbsReaderView mTbsReaderView;
-    private TextView tv_download;
-    private RelativeLayout rl_tbsView;    //rl_tbsView为装载TbsReaderView的视图
-    private ProgressBar progressBar_download;//进度条
+    private TextView tvDownload;
+    private RelativeLayout rlTbsView;    //rl_tbsView为装载TbsReaderView的视图
+    private ProgressBar progressBarDownload;//进度条
     private DownloadManager mDownloadManager;//下载文件
     private long mRequestId;
     private Toolbar toolbar;//标题栏
@@ -71,7 +71,7 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
         findViewById(); //初始化各个控件
         getFileUrlByIntent(); //获得其他页面传过来的URL地址
         mTbsReaderView = new TbsReaderView(this, this);
-        rl_tbsView.addView(mTbsReaderView, new RelativeLayout.LayoutParams(
+        rlTbsView.addView(mTbsReaderView, new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
         if ((mFileUrl == null) || (mFileUrl.length() <= 0)) {
@@ -80,8 +80,8 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
         }
         mFileName = parseName(mFileUrl);
         if (isLocalExist()) {
-            tv_download.setText("打开文件");
-            tv_download.setVisibility(View.GONE);
+            tvDownload.setText("打开文件");
+            tvDownload.setVisibility(View.GONE);
             displayFile();
         } else {
             if (!mFileUrl.contains("http")) {
@@ -165,7 +165,7 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (postResult.getResultCode().equals("200")) {
+                            if ("200".equals(postResult.getResultCode())) {
                                 RxToast.success("生成简历成功");
                                 //todo 获取到导出简历链接
                                 if (ContextCompat.checkSelfPermission(ResumeDisplayActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -215,8 +215,9 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
                 }
                 for (int j = 0; j < b.length; j++) {
                     int k = b[j];
-                    if (k < 0)
+                    if (k < 0) {
                         k += 256;
+                    }
                     sb.append("%" + Integer.toHexString(k).toUpperCase());
                 }
             }
@@ -225,9 +226,9 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
     }
 
     private void findViewById() {
-        tv_download = (TextView) findViewById(R.id.tv_download);
-        progressBar_download = (ProgressBar) findViewById(R.id.progressBar_download);
-        rl_tbsView = (RelativeLayout) findViewById(R.id.rl_tbsView);
+        tvDownload = (TextView) findViewById(R.id.tv_download);
+        progressBarDownload = (ProgressBar) findViewById(R.id.progressBar_download);
+        rlTbsView = (RelativeLayout) findViewById(R.id.rl_tbsView);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         //设置标题栏
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
@@ -308,12 +309,14 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
         }
         /* 获取文件的后缀名 */
         String end = fName.substring(dotIndex, fName.length()).toLowerCase();
-        if (end == "")
+        if (end == "") {
             return type;
+        }
         // 在MIME和文件类型的匹配表中找到对应的MIME类型。
         for (int i = 0; i < MIME_MapTable.length; i++) {
-            if (end.equals(MIME_MapTable[i][0]))
+            if (end.equals(MIME_MapTable[i][0])) {
                 type = MIME_MapTable[i][1];
+            }
         }
         return type;
     }
@@ -463,20 +466,20 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
                 // 状态所在的列索引
                 int status = cursor.getInt(cursor
                         .getColumnIndex(DownloadManager.COLUMN_STATUS));
-                tv_download.setText("下载中...(" + formatKMGByBytes(currentBytes)
+                tvDownload.setText("下载中...(" + formatKMGByBytes(currentBytes)
                         + "/" + formatKMGByBytes(totalBytes) + ")");
                 // 将当前下载的字节数转化为进度位置
                 int progress = (int) ((currentBytes * 1.0) / totalBytes * 100);
-                progressBar_download.setProgress(progress);
+                progressBarDownload.setProgress(progress);
 
                 Log.i("downloadUpdate: ", currentBytes + " " + totalBytes + " "
                         + status + " " + progress);
                 if (DownloadManager.STATUS_SUCCESSFUL == status
-                        && tv_download.getVisibility() == View.VISIBLE) {
-                    tv_download.setVisibility(View.GONE);
-                    tv_download.performClick();
+                        && tvDownload.getVisibility() == View.VISIBLE) {
+                    tvDownload.setVisibility(View.GONE);
+                    tvDownload.performClick();
                     if (isLocalExist()) {
-                        tv_download.setVisibility(View.GONE);
+                        tvDownload.setVisibility(View.GONE);
                         displayFile();
                     }
                 }
@@ -502,6 +505,7 @@ public class ResumeDisplayActivity extends Activity implements ReaderCallback {
         }
     }
 
+    @Override
     @SuppressLint("Override")
     public void onPointerCaptureChanged(boolean hasCapture) {
 

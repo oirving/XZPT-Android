@@ -76,21 +76,7 @@ public class IntentResumeFileActivity extends AppCompatActivity implements View.
     }
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-//            case R.id.resume_file_download:
-//                //从输入框获取远程文件地址，正式版请去除
-//                //fileUrl = url.getText().toString();
-//                url.setText(fileUrl);
-//                //动态权限申请
-//                if (ContextCompat.checkSelfPermission(IntentResumeFileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                    ActivityCompat.requestPermissions(IntentResumeFileActivity.this, new String[]{ Manifest.permission. WRITE_EXTERNAL_STORAGE }, 1);
-//                } else {
-//                    ResumeDisplayActivity.actionStart(IntentResumeFileActivity.this,fileUrl,fileName,templatePath,createOrHistory);
-//                }
-//                break;
-//            default:
-//                break;
-        }
+
     }
 
     @Override

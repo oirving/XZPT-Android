@@ -56,7 +56,7 @@ public class FragmentComHome extends Fragment {
                         break;
                     case R.id.home_menu_file_add:
                         //从文件批量导入岗位
-                        Intent intent1 = new Intent(getContext(), PickCSVActivity.class);
+                        Intent intent1 = new Intent(getContext(), PickCsvActivity.class);
                         startActivity(intent1);
                         break;
                     default:
@@ -139,6 +139,8 @@ public class FragmentComHome extends Fragment {
         switch (requestCode) {
             case 1:
                 if (resultCode == RESULT_OK) { }
+                break;
+            default:
                 break;
         }
     }

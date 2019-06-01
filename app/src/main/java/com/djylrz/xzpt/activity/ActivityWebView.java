@@ -82,7 +82,7 @@ public class ActivityWebView extends ActivityBase {
         String type = getIntent().getStringExtra("TYPE");
         share = findViewById(R.id.iv_share);
         if(type != null){
-            if(type.equals("tips")){
+            if("tips".equals(type)){
                 share.setVisibility(View.VISIBLE);
             }else{
                 share.setVisibility(View.GONE);
@@ -126,7 +126,7 @@ public class ActivityWebView extends ActivityBase {
         //从intent获取URL数据
         webPath = getIntent().getStringExtra("URL");
         //webPath = RxConstants.URL_BAIDU_SEARCH;//加载的URL
-        if (webPath.equals("")) {
+        if ("".equals(webPath)) {
             webPath = "http://www.baidu.com";
         }
         WebSettings webSettings = webBase.getSettings();
@@ -145,18 +145,7 @@ public class ActivityWebView extends ActivityBase {
         }
         webBase.setLayerType(View.LAYER_TYPE_HARDWARE, null);//硬件解码
 
-//        webSettings.setAllowContentAccess(true);
-//        webSettings.setAllowFileAccessFromFileURLs(true);
-//        webSettings.setAppCacheEnabled(true);
-   /*     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        }*/
-
-
-        // setMediaPlaybackRequiresUserGesture(boolean require) //是否需要用户手势来播放Media，默认true
-
         webSettings.setJavaScriptEnabled(true); // 设置支持javascript脚本
-//        webSettings.setPluginState(WebSettings.PluginState.ON);
         webSettings.setSupportZoom(true);// 设置可以支持缩放
         webSettings.setBuiltInZoomControls(true);// 设置出现缩放工具 是否使用WebView内置的缩放组件，由浮动在窗口上的缩放控制和手势缩放控制组成，默认false
 
