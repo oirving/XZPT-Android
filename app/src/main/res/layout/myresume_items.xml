@@ -1,85 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/my_resume_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:layout_margin="10dp"
     android:background="@color/white"
-    >
+    android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
+
         <TextView
             android:id="@+id/resume_state_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="通过"
-            android:textSize="14sp"
             android:background="@color/course_color7"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="通过"
             android:textColor="@color/white"
-            android:padding="4dp"/>
+            android:textSize="14sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <ImageView
             android:layout_width="50dp"
             android:layout_height="70dp"
             android:layout_gravity="center"
-            android:src="@drawable/resume"/>
+            android:src="@drawable/resume" />
+
         <TextView
-            android:layout_marginTop="5dp"
             android:id="@+id/job_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="安卓工程师"
-            android:textSize="16dp"
-            android:textColor="@color/colorDark"
             android:layout_gravity="center"
-            />
-        <TextView
             android:layout_marginTop="5dp"
+            android:text="安卓工程师"
+            android:textColor="@color/colorDark"
+            android:textSize="16dp" />
+
+        <TextView
             android:id="@+id/company_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="锐捷"
-            android:textSize="12dp"
-            android:textColor="@color/colorDark"
             android:layout_gravity="center"
-            />
-
+            android:layout_marginTop="5dp"
+            android:text="锐捷"
+            android:textColor="@color/colorDark"
+            android:textSize="12dp" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            >
+            android:layout_marginTop="8dp">
+
             <TextView
                 android:id="@+id/resume_username_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:text="小李"
-                android:textSize="15dp"
-                android:layout_marginBottom="5dp"/>
+                android:textSize="15dp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="right"
-                >
+                android:gravity="right">
+
                 <ImageView
-                        android:visibility="gone"
                     android:id="@+id/delete_resume"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/delete_resume"
                     android:layout_marginBottom="5dp"
-                    />
+                    android:src="@drawable/delete_resume"
+                    android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

@@ -1,8 +1,13 @@
 package com.djylrz.xzpt.activity.student;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +31,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import static com.djylrz.xzpt.MyApplication.getContext;
 
 /**
  * @Description: TODO
@@ -101,31 +108,57 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
             @Override
             public boolean onLongClick(View v) {
                 if (timeLineModel.getmLocation() != null) {
-                    //提示弹窗
-                    new AlertDialog.Builder(mContext).setTitle("招聘会信息").setMessage("是否将该场招聘会添加到系统日历提醒 ")
-                            .setCancelable(false)
-                            .setPositiveButton("是", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                                    Date date = new Date();
-                                    try {
-                                        date = df.parse(timeLineModel.getDate());
-                                    } catch (ParseException pe) {
-                                        pe.printStackTrace();
+                    int checkSelfPermission = 999;
+                    try {
+                        checkSelfPermission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_CALENDAR);
+                    } catch (RuntimeException e) {
+                        e.printStackTrace();
+                    }
+                    if (checkSelfPermission == PackageManager.PERMISSION_GRANTED) {
+                        //提示弹窗
+                        new AlertDialog.Builder(mContext).setTitle("招聘会信息").setMessage("是否将该场招聘会添加到系统日历提醒 ")
+                                .setCancelable(false)
+                                .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                                        Date date = new Date();
+                                        try {
+                                            date = df.parse(timeLineModel.getDate());
+                                        } catch (ParseException pe) {
+                                            pe.printStackTrace();
+                                        }
+                                        CalendarUtils calendarUtils = CalendarUtils.getInstance();
+                                        CalendarUtils.addCalendarEvent(mContext, timeLineModel.getMessage(),
+                                                "[时间] : " + timeLineModel.getDate() + "\n[地点] : " + timeLineModel.getmLocation() + "\n[网址] : " + timeLineModel.getUrl(),
+                                                date.getTime(), 1);
+                                        RxToast.info("已添加招聘会[" + timeLineModel.getMessage() + "]到系统日历");
                                     }
-                                    CalendarUtils calendarUtils = CalendarUtils.getInstance();
-                                    CalendarUtils.addCalendarEvent(mContext, timeLineModel.getMessage(),
-                                            "[时间] : " + timeLineModel.getDate() + "\n[地点] : " + timeLineModel.getmLocation() + "\n[网址] : " + timeLineModel.getUrl(),
-                                            date.getTime(), 1);
-                                    RxToast.info("已添加招聘会[" + timeLineModel.getMessage() + "]到系统日历");
-                                }
-                            }).setNegativeButton("否", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).create().show();
+                                })
+                                .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).create().show();
+                    } else {
+                        //提示弹窗
+                        new AlertDialog.Builder(mContext).setTitle("权限申请").setMessage("尚未获取访问日历权限，无法使用添加日程功能 ")
+                                .setCancelable(false)
+                                .setPositiveButton("去授权", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        getAppDetailSettingIntent();
+                                    }
+                                })
+                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).create().show();
+                    }
+
                 } else {
                     new RxDialogAcfunVideoLoading(mContext).show();
                 }
@@ -138,6 +171,27 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
     @Override
     public int getItemCount() {
         return (mFeedList != null ? mFeedList.size() : 0);
+    }
+
+    /**
+     * @Description: 跳转到系统设置页
+     * @Param: []
+     * @Return: void
+     * @Author: mingjun
+     * @Date: 2019/5/30 下午 3:08
+     */
+    private void getAppDetailSettingIntent() {
+        Intent localIntent = new Intent();
+        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= 9) {
+            localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+            localIntent.setData(Uri.fromParts("package", mContext.getPackageName(), null));
+        } else if (Build.VERSION.SDK_INT <= 8) {
+            localIntent.setAction(Intent.ACTION_VIEW);
+            localIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails");
+            localIntent.putExtra("com.android.settings.ApplicationPkgName", mContext.getPackageName());
+        }
+        mContext.startActivity(localIntent);
     }
 
 }

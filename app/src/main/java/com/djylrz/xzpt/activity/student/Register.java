@@ -81,10 +81,10 @@ public class Register extends BaseActivity implements View.OnClickListener {
             dialog.show();
         }
         else if(!mailChek(mail)) {
-            RxToast.warning("邮箱错误");
+            RxToast.warning("邮箱格式错误");
         }
         else if(!passwordCheck(password,passwordCheck)) {
-            RxToast.warning("两次输入的密码不同或为空");
+            RxToast.warning("两次输入的密码不同或为密码长度不足8位");
         }
     }
 
