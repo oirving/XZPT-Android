@@ -304,19 +304,32 @@ public class FragmentDate extends Fragment implements
         Calendar aCalendar = Calendar.getInstance(Locale.CHINA);
         int year = aCalendar.get(Calendar.YEAR);
         int month = aCalendar.get(Calendar.MONTH) + 1;
-        int dayNum=aCalendar.getActualMaximum(Calendar.DATE);
-        int[] day = new int [dayNum];
+        int nowDayNum=aCalendar.getActualMaximum(Calendar.DATE);
+        aCalendar.add(Calendar.MONTH, -1);
+        int beforeDayNum=aCalendar.getActualMaximum(Calendar.DATE);
+        int[] nowMonthDay = new int [nowDayNum];
+        int[] lastMonthDay = new int[beforeDayNum];
         for (RecruitmentDate redate:recruitmentDateList) {
             if (redate.getYear().equals(year+"")&&redate.getMonth().equals(month+"")){
-                day[Integer.parseInt(redate.getDay())] = 1;
+                nowMonthDay[Integer.parseInt(redate.getDay())] = 1;
+            }
+            if(redate.getYear().equals(year+"")&&redate.getMonth().equals((month-1)+"")){
+                lastMonthDay[Integer.parseInt(redate.getDay())] = 1;
             }
         }
         //只对当前月的日期添加上标
         Map<String, com.haibin.calendarview.Calendar> map = new HashMap<>();
-        for(int i = 0; i < dayNum; ++i){
-            if(day[i]==1){
+        for(int i = 0; i < nowDayNum; ++i){
+            if(nowMonthDay[i]==1){
                 map.put(getSchemeCalendar(year, month, i, 0xFF40db25, "会").toString(),
                         getSchemeCalendar(year, month, i, 0xFF40db25, "会"));
+            }
+        }
+        //只对上一个月的日期添加上标
+        for(int i = 0; i < beforeDayNum; ++i){
+            if(lastMonthDay[i]==1){
+                map.put(getSchemeCalendar(year, month-1, i, 0xFF40db25, "会").toString(),
+                        getSchemeCalendar(year, month-1, i, 0xFF40db25, "会"));
             }
         }
         //此方法在巨大的数据量上不影响遍历性能，推荐使用
