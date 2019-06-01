@@ -104,7 +104,7 @@ public class ComResumeCardFragment extends Fragment {
         recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
 
         //加载数据
-        initResumes();
+//        initResumes();
         LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
         adapter = new ComResumeDeliveryRecordAdapter(resumeDeliveryList, type, getContext());
         loadMoreWrapper = new LoadMoreWrapper(adapter);
@@ -190,7 +190,7 @@ public class ComResumeCardFragment extends Fragment {
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            if(loadMoreWrapper != null){
+                                            if (loadMoreWrapper != null) {
                                                 loadMoreWrapper.notifyDataSetChanged();
                                             }
                                         }
@@ -199,8 +199,10 @@ public class ComResumeCardFragment extends Fragment {
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
-                                            limitNum = resumeDeliveryList.size();
+                                            if (loadMoreWrapper != null) {
+                                                loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
+                                                limitNum = resumeDeliveryList.size();
+                                            }
                                         }
                                     });
                                 } else {

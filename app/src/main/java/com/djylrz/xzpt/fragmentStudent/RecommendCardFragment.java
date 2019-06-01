@@ -2,12 +2,9 @@ package com.djylrz.xzpt.fragmentStudent;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,20 +13,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.djylrz.xzpt.R;
 import com.djylrz.xzpt.bean.PageData;
 import com.djylrz.xzpt.bean.Recruitment;
 import com.djylrz.xzpt.bean.TempResponseData;
-import com.djylrz.xzpt.bean.TempResponseRecruitmentData;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.listener.EndlessRecyclerOnScrollListener;
 import com.djylrz.xzpt.utils.LoadMoreWrapper;
-import com.djylrz.xzpt.utils.MyDividerItemDecoration;
 import com.djylrz.xzpt.utils.PostParameterName;
 import com.djylrz.xzpt.utils.StudentRecruitmentAdapter;
 import com.djylrz.xzpt.utils.VolleyNetUtil;
@@ -77,6 +70,7 @@ public class RecommendCardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -179,13 +173,33 @@ public class RecommendCardFragment extends Fragment {
                                                     Recruitment tempRecruitment = gson.fromJson(jsonArray.getJSONObject(i).toString(), Recruitment.class);
                                                     recruitmentList.add(tempRecruitment);
                                                 }
-                                                loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
-                                                limitNum = recruitmentList.size();
-                                                loadMoreWrapper.notifyDataSetChanged();
+                                                getActivity().runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
+                                                        limitNum = recruitmentList.size();
+                                                        loadMoreWrapper.notifyDataSetChanged();
+                                                    }
+                                                });
                                             }
+                                            break;
+                                            case "2018":
+                                                getActivity().runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
+                                                        limitNum = recruitmentList.size();
+                                                        loadMoreWrapper.notifyDataSetChanged();
+                                                    }
+                                                });
+                                                break;
+                                            default:
+                                                RxToast.error("服务器返回数据异常！错误代码：" + response.getString(PostParameterName.RESPOND_RESULTCODE));
+                                                break;
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
+                                        RxToast.error("无法连接服务器！");
                                     }
 
                                 }
@@ -193,6 +207,7 @@ public class RecommendCardFragment extends Fragment {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.e("TAG Response failed", error.getMessage(), error);
+                            RxToast.error("无法连接服务器！");
                         }
                     });
                     //设置超时时间
@@ -213,63 +228,80 @@ public class RecommendCardFragment extends Fragment {
             } else {
                 Log.d(TAG, "initRecruitments: 没有获取到token");
             }
-        }else if (mTitle.equals("热门")){
+        } else if (mTitle.equals("热门")) {
             //查询热门招聘并显示
             //获取token
-            SharedPreferences preferences = getActivity().getSharedPreferences("token",0);
-            String token = preferences.getString(PostParameterName.STUDENT_TOKEN,null);
+            SharedPreferences preferences = getActivity().getSharedPreferences("token", 0);
+            String token = preferences.getString(PostParameterName.STUDENT_TOKEN, null);
             //组装URL
-            String url = PostParameterName.POST_URL_GET_HOT_RECRUIMENT + token ;
+            String url = PostParameterName.POST_URL_GET_HOT_RECRUIMENT + token;
             //
             PageData pageData = new PageData();
             pageData.setCurrentPage(currentPage++);
             pageData.setPageSize(PAGE_SIZE);
             //请求数据
             try {
-                Log.d(TAG, "onCreate: 开始发送json请求"+ url);
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,new JSONObject(new Gson().toJson(pageData)),
+                Log.d(TAG, "onCreate: 开始发送json请求" + url);
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url, new JSONObject(new Gson().toJson(pageData)),
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                Log.d(TAG, "onResponse: 返回"+response.toString());
-                                GsonBuilder builder = new GsonBuilder();
-                                builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
-                                    @Override
-                                    public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                                        return new Date(json.getAsJsonPrimitive().getAsLong());
-                                    }
-                                });
-                                Gson gson =builder.create();
-                                Type jsonType = new TypeToken<TempResponseData<List<Recruitment>>>() {}.getType();
-                                final TempResponseData<List<Recruitment>> postResult = gson.fromJson(response.toString(), jsonType);
-                                Log.d(TAG, "onResponse: "+postResult.getResultCode());
-                                if(postResult.getResultCode().equals(200)){
-                                    List<Recruitment>  recruitments = postResult.getResultObject();
-                                    if(recruitments != null){
-                                        for (int i = 0; i < recruitments.size(); ++i) {
-                                            recruitmentList.add(recruitments.get(i));
+                                Log.d(TAG, "onResponse: 返回" + response.toString());
+                                try {
+                                    if (response.getString(PostParameterName.RESPOND_RESULTCODE).equals("200")) {
+                                        GsonBuilder builder = new GsonBuilder();
+                                        builder.registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
+                                            @Override
+                                            public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                                                return new Date(json.getAsJsonPrimitive().getAsLong());
+                                            }
+                                        });
+                                        Gson gson = builder.create();
+                                        Type jsonType = new TypeToken<TempResponseData<List<Recruitment>>>() {
+                                        }.getType();
+                                        final TempResponseData<List<Recruitment>> postResult = gson.fromJson(response.toString(), jsonType);
+                                        Log.d(TAG, "onResponse: " + postResult.getResultCode());
+                                        if (postResult.getResultCode().equals(200)) {
+                                            List<Recruitment> recruitments = postResult.getResultObject();
+                                            if (recruitments != null) {
+                                                for (int i = 0; i < recruitments.size(); ++i) {
+                                                    recruitmentList.add(recruitments.get(i));
+                                                }
+                                            }
                                         }
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (loadMoreWrapper != null) {
+                                                    loadMoreWrapper.notifyDataSetChanged();
+                                                }
+                                            }
+                                        });
+                                    } else if (response.getString(PostParameterName.RESPOND_RESULTCODE).equals("2018")) {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (loadMoreWrapper != null) {
+                                                    loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
+                                                    limitNum = recruitmentList.size();
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        RxToast.error("服务器返回数据异常！错误代码：" + response.getString(PostParameterName.RESPOND_RESULTCODE));
                                     }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    RxToast.error("无法连接服务器！");
                                 }
-
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if(postResult.getResultCode().equals(200)){
-                                            loadMoreWrapper.notifyDataSetChanged();
-                                        }else{
-                                            loadMoreWrapper.setLoadState(loadMoreWrapper.LOADING_END);
-                                            limitNum = recruitmentList.size();
-                                        }
-                                    }
-                                });
                             }
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        RxToast.error("服务器返回数据异常");
+                        RxToast.error("无法连接服务器！");
                         Log.e("TAG", error.getMessage(), error);
-                    }});
+                    }
+                });
                 VolleyNetUtil.getInstance().setRequestQueue(getContext().getApplicationContext());//获取requestQueue
                 VolleyNetUtil.getInstance().getRequestQueue().add(jsonObjectRequest);//添加request
             } catch (JSONException e) {
