@@ -1,6 +1,5 @@
 package com.djylrz.xzpt;
 
-import android.Manifest;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.Application;
@@ -8,10 +7,9 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
-import com.djylrz.xzpt.activityStudent.MainActivity;
+import com.djylrz.xzpt.activity.student.MainActivity;
 import com.djylrz.xzpt.xiaomi.mimc.common.UserManager;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.tencent.smtt.sdk.QbSdk;

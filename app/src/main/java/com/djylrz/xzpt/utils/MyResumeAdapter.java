@@ -12,11 +12,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.djylrz.xzpt.R;
-import com.djylrz.xzpt.activityStudent.EditMyResumeActivity;
+import com.djylrz.xzpt.activity.student.EditMyResumeActivity;
 import com.vondear.rxtool.view.RxToast;
 import org.json.JSONException;
 import org.json.JSONObject;

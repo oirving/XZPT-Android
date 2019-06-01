@@ -1,22 +1,14 @@
 package com.djylrz.xzpt.utils;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.djylrz.xzpt.R;
-import com.djylrz.xzpt.activityStudent.EditMyResumeActivity;
-import com.djylrz.xzpt.activityStudent.IntentResumeFileActivity;
-import com.djylrz.xzpt.activityStudent.MyResumeActivity;
-import com.djylrz.xzpt.activityStudent.MyResumePreviewActivity;
 
 import java.util.List;
 

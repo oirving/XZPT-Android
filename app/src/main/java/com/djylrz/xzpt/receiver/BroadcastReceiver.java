@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
-import com.djylrz.xzpt.activityStudent.RecruitmentDetailActivity;
+import com.djylrz.xzpt.activity.student.RecruitmentDetailActivity;
 import com.xiaomi.mipush.sdk.ErrorCode;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.xiaomi.mipush.sdk.MiPushCommandMessage;

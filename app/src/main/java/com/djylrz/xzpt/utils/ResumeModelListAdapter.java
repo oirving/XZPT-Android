@@ -1,13 +1,8 @@
 package com.djylrz.xzpt.utils;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +11,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.djylrz.xzpt.R;
-import com.djylrz.xzpt.activityStudent.IntentResumeFileActivity;
-import com.djylrz.xzpt.activityStudent.ResumeDisplayActivity;
+import com.djylrz.xzpt.activity.student.IntentResumeFileActivity;
 
 import java.util.List;
 public class ResumeModelListAdapter extends RecyclerView.Adapter<ResumeModelListAdapter.ViewHolder> {

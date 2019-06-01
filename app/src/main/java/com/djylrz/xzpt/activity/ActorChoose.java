@@ -4,41 +4,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.djylrz.xzpt.MyApplication;
 import com.djylrz.xzpt.R;
-import com.djylrz.xzpt.activityCompany.CompanyLogin;
-import com.djylrz.xzpt.activityCompany.Main2Activity;
-import com.djylrz.xzpt.activityStudent.MainActivity;
-import com.djylrz.xzpt.activityStudent.StudentLogin;
+import com.djylrz.xzpt.activity.company.CompanyLogin;
+import com.djylrz.xzpt.activity.student.StudentLogin;
 import com.djylrz.xzpt.bean.Company;
-import com.djylrz.xzpt.bean.PostResult;
-import com.djylrz.xzpt.bean.TempResponseData;
 import com.djylrz.xzpt.bean.User;
 import com.djylrz.xzpt.utils.PostParameterName;
-import com.djylrz.xzpt.utils.VolleyNetUtil;
 import com.djylrz.xzpt.xiaomi.mimc.common.NetWorkUtils;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.vondear.rxtool.view.RxToast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
 
 
 public class ActorChoose extends BaseActivity implements View.OnClickListener {
